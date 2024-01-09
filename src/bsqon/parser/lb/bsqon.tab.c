@@ -141,86 +141,88 @@ enum yysymbol_kind_t
   YYSYMBOL_KW_OK = 14,                     /* "ok"  */
   YYSYMBOL_KW_ERR = 15,                    /* "err"  */
   YYSYMBOL_SYM_DOUBLE_COLON = 16,          /* "::"  */
-  YYSYMBOL_SYM_ELLIPSIS = 17,              /* SYM_ELLIPSIS  */
-  YYSYMBOL_SYM_ENTRY = 18,                 /* SYM_ENTRY  */
-  YYSYMBOL_SYM_BANG = 19,                  /* SYM_BANG  */
-  YYSYMBOL_SYM_EQUALS = 20,                /* SYM_EQUALS  */
-  YYSYMBOL_SYM_DOT = 21,                   /* SYM_DOT  */
-  YYSYMBOL_SYM_AT = 22,                    /* SYM_AT  */
-  YYSYMBOL_SYM_UNDERSCORE = 23,            /* SYM_UNDERSCORE  */
-  YYSYMBOL_KW_SOME = 24,                   /* KW_SOME  */
-  YYSYMBOL_KW_SRC = 25,                    /* KW_SRC  */
-  YYSYMBOL_KW_LET = 26,                    /* KW_LET  */
-  YYSYMBOL_KW_IN = 27,                     /* KW_IN  */
-  YYSYMBOL_TOKEN_NAT = 28,                 /* TOKEN_NAT  */
-  YYSYMBOL_TOKEN_INT = 29,                 /* TOKEN_INT  */
-  YYSYMBOL_TOKEN_BIG_NAT = 30,             /* TOKEN_BIG_NAT  */
-  YYSYMBOL_TOKEN_BIG_INT = 31,             /* TOKEN_BIG_INT  */
-  YYSYMBOL_TOKEN_RATIONAL = 32,            /* TOKEN_RATIONAL  */
-  YYSYMBOL_TOKEN_FLOAT = 33,               /* TOKEN_FLOAT  */
-  YYSYMBOL_TOKEN_DOUBLE = 34,              /* TOKEN_DOUBLE  */
-  YYSYMBOL_TOKEN_NUMBERINO = 35,           /* "numberino"  */
-  YYSYMBOL_TOKEN_BYTE_BUFFER = 36,         /* TOKEN_BYTE_BUFFER  */
-  YYSYMBOL_TOKEN_UUID_V4 = 37,             /* TOKEN_UUID_V4  */
-  YYSYMBOL_TOKEN_UUID_V7 = 38,             /* TOKEN_UUID_V7  */
-  YYSYMBOL_TOKEN_SHA_HASH = 39,            /* TOKEN_SHA_HASH  */
-  YYSYMBOL_TOKEN_STRING = 40,              /* TOKEN_STRING  */
-  YYSYMBOL_TOKEN_ASCII_STRING = 41,        /* TOKEN_ASCII_STRING  */
-  YYSYMBOL_TOKEN_REGEX = 42,               /* TOKEN_REGEX  */
-  YYSYMBOL_TOKEN_PATH_ITEM = 43,           /* TOKEN_PATH_ITEM  */
-  YYSYMBOL_TOKEN_DATE_TIME = 44,           /* TOKEN_DATE_TIME  */
-  YYSYMBOL_TOKEN_UTC_DATE_TIME = 45,       /* TOKEN_UTC_DATE_TIME  */
-  YYSYMBOL_TOKEN_PLAIN_DATE = 46,          /* TOKEN_PLAIN_DATE  */
-  YYSYMBOL_TOKEN_PLAIN_TIME = 47,          /* TOKEN_PLAIN_TIME  */
-  YYSYMBOL_TOKEN_LOGICAL_TIME = 48,        /* TOKEN_LOGICAL_TIME  */
-  YYSYMBOL_TOKEN_TICK_TIME = 49,           /* TOKEN_TICK_TIME  */
-  YYSYMBOL_TOKEN_TIMESTAMP = 50,           /* TOKEN_TIMESTAMP  */
-  YYSYMBOL_TOKEN_IDENTIFIER = 51,          /* "identifier"  */
-  YYSYMBOL_TOKEN_TYPE_COMPONENT = 52,      /* "type name"  */
-  YYSYMBOL_TOKEN_UNSPEC_IDENTIFIER = 53,   /* "unspec identifier"  */
-  YYSYMBOL_54_ = 54,                       /* '<'  */
-  YYSYMBOL_55_ = 55,                       /* '>'  */
-  YYSYMBOL_56_ = 56,                       /* '['  */
-  YYSYMBOL_57_ = 57,                       /* ']'  */
-  YYSYMBOL_58_ = 58,                       /* '{'  */
-  YYSYMBOL_59_ = 59,                       /* '}'  */
-  YYSYMBOL_60_ = 60,                       /* '('  */
-  YYSYMBOL_61_ = 61,                       /* ')'  */
-  YYSYMBOL_62_ = 62,                       /* ':'  */
-  YYSYMBOL_YYACCEPT = 63,                  /* $accept  */
-  YYSYMBOL_bsqontypel = 64,                /* bsqontypel  */
-  YYSYMBOL_bsqontypel_entry = 65,          /* bsqontypel_entry  */
-  YYSYMBOL_bsqonnametypel = 66,            /* bsqonnametypel  */
-  YYSYMBOL_bsqonnametypel_entry = 67,      /* bsqonnametypel_entry  */
-  YYSYMBOL_bsqonnominaltype = 68,          /* bsqonnominaltype  */
-  YYSYMBOL_bsqontermslist = 69,            /* bsqontermslist  */
-  YYSYMBOL_bsqontupletype = 70,            /* bsqontupletype  */
-  YYSYMBOL_bsqonrecordtype = 71,           /* bsqonrecordtype  */
-  YYSYMBOL_bsqontype = 72,                 /* bsqontype  */
-  YYSYMBOL_bsqontspec = 73,                /* bsqontspec  */
-  YYSYMBOL_bsqonliteral = 74,              /* bsqonliteral  */
-  YYSYMBOL_bsqonunspecvar = 75,            /* bsqonunspecvar  */
-  YYSYMBOL_bsqonidentifier = 76,           /* bsqonidentifier  */
-  YYSYMBOL_bsqonscopedidentifier = 77,     /* bsqonscopedidentifier  */
-  YYSYMBOL_bsqonstringof = 78,             /* bsqonstringof  */
-  YYSYMBOL_bsqonpath = 79,                 /* bsqonpath  */
-  YYSYMBOL_bsqontypeliteral = 80,          /* bsqontypeliteral  */
-  YYSYMBOL_bsqonterminal = 81,             /* bsqonterminal  */
-  YYSYMBOL_bsqon_mapentry = 82,            /* bsqon_mapentry  */
-  YYSYMBOL_bsqonvall = 83,                 /* bsqonvall  */
-  YYSYMBOL_bsqonl_entry = 84,              /* bsqonl_entry  */
-  YYSYMBOL_bsqonbracketvalue = 85,         /* bsqonbracketvalue  */
-  YYSYMBOL_bsqonnamevall = 86,             /* bsqonnamevall  */
-  YYSYMBOL_bsqon_braceval = 87,            /* bsqon_braceval  */
-  YYSYMBOL_bsqonnameval_entry = 88,        /* bsqonnameval_entry  */
-  YYSYMBOL_bsqonbracevalue = 89,           /* bsqonbracevalue  */
-  YYSYMBOL_bsqonbracketbracevalue = 90,    /* bsqonbracketbracevalue  */
-  YYSYMBOL_bsqontypedvalue = 91,           /* bsqontypedvalue  */
-  YYSYMBOL_bsqonstructvalue = 92,          /* bsqonstructvalue  */
-  YYSYMBOL_bsqonspecialcons = 93,          /* bsqonspecialcons  */
-  YYSYMBOL_bsqonval = 94,                  /* bsqonval  */
-  YYSYMBOL_bsqonletexp = 95,               /* bsqonletexp  */
-  YYSYMBOL_bsqonroot = 96                  /* bsqonroot  */
+  YYSYMBOL_SYM_ENTRY = 17,                 /* SYM_ENTRY  */
+  YYSYMBOL_SYM_BANG = 18,                  /* SYM_BANG  */
+  YYSYMBOL_SYM_EQUALS = 19,                /* SYM_EQUALS  */
+  YYSYMBOL_SYM_DOT = 20,                   /* SYM_DOT  */
+  YYSYMBOL_SYM_AT = 21,                    /* SYM_AT  */
+  YYSYMBOL_SYM_UNDERSCORE = 22,            /* SYM_UNDERSCORE  */
+  YYSYMBOL_KW_SOME = 23,                   /* KW_SOME  */
+  YYSYMBOL_KW_SRC = 24,                    /* KW_SRC  */
+  YYSYMBOL_KW_LET = 25,                    /* KW_LET  */
+  YYSYMBOL_KW_IN = 26,                     /* KW_IN  */
+  YYSYMBOL_TOKEN_NAT = 27,                 /* TOKEN_NAT  */
+  YYSYMBOL_TOKEN_INT = 28,                 /* TOKEN_INT  */
+  YYSYMBOL_TOKEN_BIG_NAT = 29,             /* TOKEN_BIG_NAT  */
+  YYSYMBOL_TOKEN_BIG_INT = 30,             /* TOKEN_BIG_INT  */
+  YYSYMBOL_TOKEN_RATIONAL = 31,            /* TOKEN_RATIONAL  */
+  YYSYMBOL_TOKEN_FLOAT = 32,               /* TOKEN_FLOAT  */
+  YYSYMBOL_TOKEN_DECIMAL = 33,             /* TOKEN_DECIMAL  */
+  YYSYMBOL_TOKEN_DECIMAL_DEGREE = 34,      /* TOKEN_DECIMAL_DEGREE  */
+  YYSYMBOL_TOKEN_COMPLEX = 35,             /* TOKEN_COMPLEX  */
+  YYSYMBOL_TOKEN_LAT_LONG = 36,            /* TOKEN_LAT_LONG  */
+  YYSYMBOL_TOKEN_NUMBERINO = 37,           /* "numberino"  */
+  YYSYMBOL_TOKEN_BYTE_BUFFER = 38,         /* TOKEN_BYTE_BUFFER  */
+  YYSYMBOL_TOKEN_UUID_V4 = 39,             /* TOKEN_UUID_V4  */
+  YYSYMBOL_TOKEN_UUID_V7 = 40,             /* TOKEN_UUID_V7  */
+  YYSYMBOL_TOKEN_SHA_HASH = 41,            /* TOKEN_SHA_HASH  */
+  YYSYMBOL_TOKEN_STRING = 42,              /* TOKEN_STRING  */
+  YYSYMBOL_TOKEN_ASCII_STRING = 43,        /* TOKEN_ASCII_STRING  */
+  YYSYMBOL_TOKEN_REGEX = 44,               /* TOKEN_REGEX  */
+  YYSYMBOL_TOKEN_PATH_ITEM = 45,           /* TOKEN_PATH_ITEM  */
+  YYSYMBOL_TOKEN_DATE_TIME = 46,           /* TOKEN_DATE_TIME  */
+  YYSYMBOL_TOKEN_UTC_DATE_TIME = 47,       /* TOKEN_UTC_DATE_TIME  */
+  YYSYMBOL_TOKEN_PLAIN_DATE = 48,          /* TOKEN_PLAIN_DATE  */
+  YYSYMBOL_TOKEN_PLAIN_TIME = 49,          /* TOKEN_PLAIN_TIME  */
+  YYSYMBOL_TOKEN_LOGICAL_TIME = 50,        /* TOKEN_LOGICAL_TIME  */
+  YYSYMBOL_TOKEN_TICK_TIME = 51,           /* TOKEN_TICK_TIME  */
+  YYSYMBOL_TOKEN_TIMESTAMP = 52,           /* TOKEN_TIMESTAMP  */
+  YYSYMBOL_TOKEN_IDENTIFIER = 53,          /* "identifier"  */
+  YYSYMBOL_TOKEN_TYPE_COMPONENT = 54,      /* "type name"  */
+  YYSYMBOL_TOKEN_UNSPEC_IDENTIFIER = 55,   /* "unspec identifier"  */
+  YYSYMBOL_56_ = 56,                       /* '<'  */
+  YYSYMBOL_57_ = 57,                       /* '>'  */
+  YYSYMBOL_58_ = 58,                       /* '['  */
+  YYSYMBOL_59_ = 59,                       /* ']'  */
+  YYSYMBOL_60_ = 60,                       /* '{'  */
+  YYSYMBOL_61_ = 61,                       /* '}'  */
+  YYSYMBOL_62_ = 62,                       /* '('  */
+  YYSYMBOL_63_ = 63,                       /* ')'  */
+  YYSYMBOL_64_ = 64,                       /* ':'  */
+  YYSYMBOL_YYACCEPT = 65,                  /* $accept  */
+  YYSYMBOL_bsqontypel = 66,                /* bsqontypel  */
+  YYSYMBOL_bsqontypel_entry = 67,          /* bsqontypel_entry  */
+  YYSYMBOL_bsqonnametypel = 68,            /* bsqonnametypel  */
+  YYSYMBOL_bsqonnametypel_entry = 69,      /* bsqonnametypel_entry  */
+  YYSYMBOL_bsqonnominaltype = 70,          /* bsqonnominaltype  */
+  YYSYMBOL_bsqontermslist = 71,            /* bsqontermslist  */
+  YYSYMBOL_bsqontupletype = 72,            /* bsqontupletype  */
+  YYSYMBOL_bsqonrecordtype = 73,           /* bsqonrecordtype  */
+  YYSYMBOL_bsqontype = 74,                 /* bsqontype  */
+  YYSYMBOL_bsqontspec = 75,                /* bsqontspec  */
+  YYSYMBOL_bsqonliteral = 76,              /* bsqonliteral  */
+  YYSYMBOL_bsqonunspecvar = 77,            /* bsqonunspecvar  */
+  YYSYMBOL_bsqonidentifier = 78,           /* bsqonidentifier  */
+  YYSYMBOL_bsqonscopedidentifier = 79,     /* bsqonscopedidentifier  */
+  YYSYMBOL_bsqonstringof = 80,             /* bsqonstringof  */
+  YYSYMBOL_bsqonpath = 81,                 /* bsqonpath  */
+  YYSYMBOL_bsqontypeliteral = 82,          /* bsqontypeliteral  */
+  YYSYMBOL_bsqonterminal = 83,             /* bsqonterminal  */
+  YYSYMBOL_bsqon_mapentry = 84,            /* bsqon_mapentry  */
+  YYSYMBOL_bsqonvall = 85,                 /* bsqonvall  */
+  YYSYMBOL_bsqonl_entry = 86,              /* bsqonl_entry  */
+  YYSYMBOL_bsqonbracketvalue = 87,         /* bsqonbracketvalue  */
+  YYSYMBOL_bsqonnamevall = 88,             /* bsqonnamevall  */
+  YYSYMBOL_bsqon_braceval = 89,            /* bsqon_braceval  */
+  YYSYMBOL_bsqonnameval_entry = 90,        /* bsqonnameval_entry  */
+  YYSYMBOL_bsqonbracevalue = 91,           /* bsqonbracevalue  */
+  YYSYMBOL_bsqonbracketbracevalue = 92,    /* bsqonbracketbracevalue  */
+  YYSYMBOL_bsqontypedvalue = 93,           /* bsqontypedvalue  */
+  YYSYMBOL_bsqonstructvalue = 94,          /* bsqonstructvalue  */
+  YYSYMBOL_bsqonspecialcons = 95,          /* bsqonspecialcons  */
+  YYSYMBOL_bsqonval = 96,                  /* bsqonval  */
+  YYSYMBOL_bsqonletexp = 97,               /* bsqonletexp  */
+  YYSYMBOL_bsqonroot = 98                  /* bsqonroot  */
 };
 typedef enum yysymbol_kind_t yysymbol_kind_t;
 
@@ -551,10 +553,10 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  93
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   778
+#define YYLAST   749
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  63
+#define YYNTOKENS  65
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  34
 /* YYNRULES -- Number of rules.  */
@@ -563,7 +565,7 @@ union yyalloc
 #define YYNSTATES  208
 
 /* YYMAXUTOK -- Last valid token kind.  */
-#define YYMAXUTOK   308
+#define YYMAXUTOK   310
 
 
 /* YYTRANSLATE(TOKEN-NUM) -- Symbol number corresponding to TOKEN-NUM
@@ -581,15 +583,15 @@ static const yytype_int8 yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-      60,    61,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,    62,     2,
-      54,     2,    55,     2,     2,     2,     2,     2,     2,     2,
+      62,    63,     2,     2,     2,     2,     2,     2,     2,     2,
+       2,     2,     2,     2,     2,     2,     2,     2,    64,     2,
+      56,     2,    57,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,    56,     2,    57,     2,     2,     2,     2,     2,     2,
+       2,    58,     2,    59,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,    58,     2,    59,     2,     2,     2,     2,
+       2,     2,     2,    60,     2,    61,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -607,7 +609,8 @@ static const yytype_int8 yytranslate[] =
       15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
       25,    26,    27,    28,    29,    30,    31,    32,    33,    34,
       35,    36,    37,    38,    39,    40,    41,    42,    43,    44,
-      45,    46,    47,    48,    49,    50,    51,    52,    53
+      45,    46,    47,    48,    49,    50,    51,    52,    53,    54,
+      55
 };
 
 #if YYDEBUG
@@ -645,26 +648,27 @@ static const char *const yytname[] =
   "\"end of file\"", "error", "\"invalid token\"", "SYM_BAR", "\"|\"",
   "SYM_AMP", "\"&\"", "\":\"", "\",\"", "\"none\"", "\"nothing\"",
   "\"true\"", "\"false\"", "\"something\"", "\"ok\"", "\"err\"", "\"::\"",
-  "SYM_ELLIPSIS", "SYM_ENTRY", "SYM_BANG", "SYM_EQUALS", "SYM_DOT",
-  "SYM_AT", "SYM_UNDERSCORE", "KW_SOME", "KW_SRC", "KW_LET", "KW_IN",
-  "TOKEN_NAT", "TOKEN_INT", "TOKEN_BIG_NAT", "TOKEN_BIG_INT",
-  "TOKEN_RATIONAL", "TOKEN_FLOAT", "TOKEN_DOUBLE", "\"numberino\"",
-  "TOKEN_BYTE_BUFFER", "TOKEN_UUID_V4", "TOKEN_UUID_V7", "TOKEN_SHA_HASH",
-  "TOKEN_STRING", "TOKEN_ASCII_STRING", "TOKEN_REGEX", "TOKEN_PATH_ITEM",
-  "TOKEN_DATE_TIME", "TOKEN_UTC_DATE_TIME", "TOKEN_PLAIN_DATE",
-  "TOKEN_PLAIN_TIME", "TOKEN_LOGICAL_TIME", "TOKEN_TICK_TIME",
-  "TOKEN_TIMESTAMP", "\"identifier\"", "\"type name\"",
-  "\"unspec identifier\"", "'<'", "'>'", "'['", "']'", "'{'", "'}'", "'('",
-  "')'", "':'", "$accept", "bsqontypel", "bsqontypel_entry",
-  "bsqonnametypel", "bsqonnametypel_entry", "bsqonnominaltype",
-  "bsqontermslist", "bsqontupletype", "bsqonrecordtype", "bsqontype",
-  "bsqontspec", "bsqonliteral", "bsqonunspecvar", "bsqonidentifier",
-  "bsqonscopedidentifier", "bsqonstringof", "bsqonpath",
-  "bsqontypeliteral", "bsqonterminal", "bsqon_mapentry", "bsqonvall",
-  "bsqonl_entry", "bsqonbracketvalue", "bsqonnamevall", "bsqon_braceval",
-  "bsqonnameval_entry", "bsqonbracevalue", "bsqonbracketbracevalue",
-  "bsqontypedvalue", "bsqonstructvalue", "bsqonspecialcons", "bsqonval",
-  "bsqonletexp", "bsqonroot", YY_NULLPTR
+  "SYM_ENTRY", "SYM_BANG", "SYM_EQUALS", "SYM_DOT", "SYM_AT",
+  "SYM_UNDERSCORE", "KW_SOME", "KW_SRC", "KW_LET", "KW_IN", "TOKEN_NAT",
+  "TOKEN_INT", "TOKEN_BIG_NAT", "TOKEN_BIG_INT", "TOKEN_RATIONAL",
+  "TOKEN_FLOAT", "TOKEN_DECIMAL", "TOKEN_DECIMAL_DEGREE", "TOKEN_COMPLEX",
+  "TOKEN_LAT_LONG", "\"numberino\"", "TOKEN_BYTE_BUFFER", "TOKEN_UUID_V4",
+  "TOKEN_UUID_V7", "TOKEN_SHA_HASH", "TOKEN_STRING", "TOKEN_ASCII_STRING",
+  "TOKEN_REGEX", "TOKEN_PATH_ITEM", "TOKEN_DATE_TIME",
+  "TOKEN_UTC_DATE_TIME", "TOKEN_PLAIN_DATE", "TOKEN_PLAIN_TIME",
+  "TOKEN_LOGICAL_TIME", "TOKEN_TICK_TIME", "TOKEN_TIMESTAMP",
+  "\"identifier\"", "\"type name\"", "\"unspec identifier\"", "'<'", "'>'",
+  "'['", "']'", "'{'", "'}'", "'('", "')'", "':'", "$accept", "bsqontypel",
+  "bsqontypel_entry", "bsqonnametypel", "bsqonnametypel_entry",
+  "bsqonnominaltype", "bsqontermslist", "bsqontupletype",
+  "bsqonrecordtype", "bsqontype", "bsqontspec", "bsqonliteral",
+  "bsqonunspecvar", "bsqonidentifier", "bsqonscopedidentifier",
+  "bsqonstringof", "bsqonpath", "bsqontypeliteral", "bsqonterminal",
+  "bsqon_mapentry", "bsqonvall", "bsqonl_entry", "bsqonbracketvalue",
+  "bsqonnamevall", "bsqon_braceval", "bsqonnameval_entry",
+  "bsqonbracevalue", "bsqonbracketbracevalue", "bsqontypedvalue",
+  "bsqonstructvalue", "bsqonspecialcons", "bsqonval", "bsqonletexp",
+  "bsqonroot", YY_NULLPTR
 };
 
 static const char *
@@ -674,7 +678,7 @@ yysymbol_name (yysymbol_kind_t yysymbol)
 }
 #endif
 
-#define YYPACT_NINF (-94)
+#define YYPACT_NINF (-69)
 
 #define yypact_value_is_default(Yyn) \
   ((Yyn) == YYPACT_NINF)
@@ -688,27 +692,27 @@ yysymbol_name (yysymbol_kind_t yysymbol)
    STATE-NUM.  */
 static const yytype_int16 yypact[] =
 {
-     291,   -39,   -94,   -94,   -94,   -94,   -57,   -55,   -40,   -94,
-     -94,   -94,   -94,   -94,   -94,   -94,   -94,    15,   -94,   -94,
-     -94,   -94,    40,    40,   -94,    40,   -94,   -94,   -94,   -94,
-     -94,   -94,   -94,   -94,   -14,   -94,    35,   183,   237,    49,
-     107,    30,   -94,   -94,   -94,   -94,   -94,   -94,   -94,   -94,
-     -94,   -94,   -94,   -94,   -94,   -94,   -94,   146,   -94,   345,
-     345,   345,    40,   132,   132,   132,    14,   -94,    95,    11,
-      -8,   132,   -94,   -94,   114,   716,   -94,   -94,   399,   -94,
-     149,   -11,   102,   159,   -94,   453,    -7,   -94,   163,   134,
-     -18,   -94,    40,   -94,   -39,   128,   129,   138,   132,   135,
-     127,    21,    44,   -94,   132,   -94,   -94,    39,   -39,    31,
-     -94,    55,    27,   179,   -94,   137,   -94,   -39,   -94,   507,
-     -94,   720,   -94,     5,   -94,   561,   -94,   -94,   -94,   615,
-     677,   184,    -4,   -94,   -94,   -94,   141,   -94,   -94,   132,
-     -94,   -94,   -94,   -94,   -94,   148,     3,   145,   -94,   125,
-     -31,   -31,   -94,   -94,   -94,   -94,   126,   109,   -94,    84,
-     199,   -94,   -94,   -39,   -94,   -94,   -94,   -39,   -94,    93,
-       6,   -94,   669,   -94,   -31,   -94,   -94,   -94,   -94,   202,
-     -94,   -94,   -94,   108,    23,    85,   -94,   -94,   -94,   -94,
-     118,   116,   151,   -94,   -94,   -94,   -94,   119,   100,   -94,
-     -94,   345,   -94,   -94,   215,   345,   192,   -94
+     295,   -16,   -69,   -69,   -69,   -69,   -48,   -44,   -43,   -69,
+     -69,   -69,   -69,   -69,   -69,   -69,   -69,    14,   -69,   -69,
+     -69,   -69,    -9,    -9,   -69,    -9,   -69,   -69,   -69,   -69,
+     -69,   -69,   -69,   -69,   -10,   -69,    76,   183,   239,    22,
+      91,    42,   -69,   -69,   -69,   -69,   -69,   -69,   -69,   -69,
+     -69,   -69,   -69,   -69,   -69,   -69,   -69,   103,   -69,   351,
+     351,   351,    -9,   107,   107,   107,    11,   -69,    69,     8,
+     -22,   107,   -69,   -69,   101,   256,   -69,   -69,   407,   -69,
+     152,    13,   116,   144,   -69,   463,    20,   -69,   149,   122,
+     -46,   -69,    -9,   -69,   -16,   124,   137,   139,   107,   125,
+      -4,    34,    50,   -69,   107,   -69,   -69,    -2,   -16,    -3,
+     -69,    83,   108,   196,   -69,   151,   -69,   -16,   -69,   519,
+     -69,   312,   -69,   110,   -69,   575,   -69,   -69,   -69,   631,
+     148,   198,    25,   -69,   -69,   -69,   154,   -69,   -69,   107,
+     -69,   -69,   -69,   -69,   -69,   156,    12,    93,   -69,    17,
+     128,   128,   -69,   -69,   -69,   -69,    55,   112,   -69,    86,
+     237,   -69,   -69,   -16,   -69,   -69,   -69,   -16,   -69,    94,
+      30,   -69,   687,   -69,   128,   -69,   -69,   -69,   -69,   241,
+     -69,   -69,   -69,    32,    18,    99,   -69,   -69,   -69,   -69,
+     120,    44,   180,   -69,   -69,   -69,   -69,    74,    24,   -69,
+     -69,   351,   -69,   -69,   221,   351,   192,   -69
 };
 
 /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -742,10 +746,10 @@ static const yytype_int8 yydefact[] =
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int16 yypgoto[] =
 {
-     -94,   175,   -93,   -94,   130,   -12,   -94,   174,   218,   -53,
-     -94,   -94,   -94,   -94,   -94,   -94,   -94,   -94,   -94,   -94,
-     -94,   177,   -94,   -94,   117,   171,   -94,     1,   -94,   -94,
-     -94,     0,   -94,   -94
+     -69,   187,   -68,   -69,   142,   -12,   -69,   222,   223,   -53,
+     -69,   -69,   -69,   -69,   -69,   -69,   -69,   -69,   -69,   -69,
+     -69,   182,   -69,   -69,   104,   176,   -69,     1,   -69,   -69,
+     -69,     0,   -69,   -69
 };
 
 /* YYDEFGOTO[NTERM-NUM].  */
@@ -762,211 +766,205 @@ static const yytype_int8 yydefgoto[] =
    number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_uint8 yytable[] =
 {
-      55,   134,    58,    59,   134,    60,   150,   125,   151,   148,
-      63,    64,   109,    65,   188,   100,   112,    37,   148,    38,
-      61,    34,   145,   125,    71,    69,   150,    70,   151,   101,
-     150,   195,   151,   137,   138,   152,    68,    81,    62,   143,
-      66,    91,   150,   113,   151,   147,   126,   152,   146,   149,
-      98,   114,   135,    92,   104,   173,   156,   104,   157,    95,
-      96,    97,   166,    34,   176,   189,    34,    69,   110,    70,
-      69,   101,    70,    34,   101,    89,    58,    69,   123,    70,
-     139,   101,   196,    58,   158,   183,   197,    34,   155,   104,
-     104,    69,    34,    70,   153,    58,    34,   179,   180,   104,
-      69,   186,    70,   150,   101,   151,   184,    34,   195,   154,
-     127,    69,   150,    70,   151,   101,   193,   152,   162,   164,
-     119,   192,    58,    90,   188,   168,   186,   193,   150,   170,
-     151,    58,   198,   152,   143,   143,    34,    34,   104,   104,
-      69,    69,    70,    70,   101,   101,    93,   104,    99,    37,
-     108,    38,   187,   143,   150,    86,   151,   124,    37,   203,
-      38,   128,   104,    37,    58,    38,   182,   194,    58,   117,
-      58,   201,   191,   104,    37,   200,    38,   199,   202,   129,
-     178,   125,   144,   181,    75,   136,   159,   138,   160,   140,
-     141,    58,     2,     3,     4,     5,     6,     7,     8,   142,
-     177,   204,   132,   174,   172,   206,   185,   151,     9,   175,
-      72,    10,    11,    12,    13,    14,    15,    16,    17,    18,
-      19,    20,    21,    22,    23,    24,    25,    26,    27,    28,
-      29,    30,    31,    32,    33,    34,    35,    36,    82,    37,
-      76,    38,   205,    39,   111,   161,     2,     3,     4,     5,
-       6,     7,     8,   207,    73,   122,   133,     0,     0,     0,
-       0,     0,     9,     0,     0,    10,    11,    12,    13,    14,
-      15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
-      25,    26,    27,    28,    29,    30,    31,    32,    83,    34,
-      35,    36,     1,    37,     0,    38,    84,    39,     0,     0,
-       2,     3,     4,     5,     6,     7,     8,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     9,     0,     0,    10,
-      11,    12,    13,    14,    15,    16,    17,    18,    19,    20,
-      21,    22,    23,    24,    25,    26,    27,    28,    29,    30,
-      31,    32,    33,    34,    35,    36,    94,    37,     0,    38,
-       0,    39,     0,     0,     2,     3,     4,     5,     6,     7,
-       8,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       9,     0,     0,    10,    11,    12,    13,    14,    15,    16,
+      55,   150,    58,   151,   143,   143,   152,   137,   138,   109,
+      63,    64,   100,    65,    59,   150,   112,   151,    60,    61,
+     150,   150,   151,   151,    71,   152,   195,   150,   134,   151,
+     125,   113,   195,   134,   148,   145,    62,    81,   188,   114,
+     193,    91,    37,   148,    38,    34,    66,    89,   146,   149,
+      98,   147,   188,   144,   104,   153,   155,   104,   157,    95,
+      96,    97,    34,   143,    92,    34,    69,   110,    70,    69,
+     101,    70,   126,   101,   178,   176,    58,    68,   123,   196,
+     139,   135,   193,    58,   156,   203,   173,   183,    34,   104,
+     104,   189,    69,   194,    70,    58,   101,   179,   180,   104,
+     197,   143,   186,    93,    34,   200,   184,    90,    69,   154,
+      70,   150,   101,   151,   181,   150,   152,   151,   162,   164,
+     152,   192,    58,    99,   127,   168,   108,   125,   186,   170,
+      34,    58,   198,   119,    69,   202,    70,    34,   104,   104,
+      34,    69,    86,    70,    69,   101,    70,   104,   101,    37,
+     177,    38,    37,    34,    38,   187,   127,    69,   117,    70,
+     124,   101,   104,   129,    58,   119,   125,   158,    58,   166,
+      58,   182,   191,   104,    37,   136,    38,   128,    37,   138,
+      38,   199,    34,   150,    75,   151,    69,   140,    70,   132,
+     101,    58,     2,     3,     4,     5,     6,     7,     8,   201,
+     141,   204,   142,   159,   160,   206,    37,     9,    38,   171,
+      10,    11,    12,    13,    14,    15,    16,   172,   174,   175,
       17,    18,    19,    20,    21,    22,    23,    24,    25,    26,
       27,    28,    29,    30,    31,    32,    33,    34,    35,    36,
-     121,    37,     0,    38,     0,    39,     0,     0,     2,     3,
-       4,     5,     6,     7,     8,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     9,     0,     0,    10,    11,    12,
-      13,    14,    15,    16,    17,    18,    19,    20,    21,    22,
+      82,    37,    76,    38,   185,    39,   151,   205,     2,     3,
+       4,     5,     6,     7,     8,   207,   111,   161,    72,    73,
+     122,   133,     0,     9,   118,     0,    10,    11,    12,    13,
+      14,    15,    16,   119,     0,     0,    17,    18,    19,    20,
+      21,    22,    23,    24,    25,    26,    27,    28,    29,    30,
+      31,    32,    83,    34,    35,    36,     1,    37,     0,    38,
+      84,    39,     0,     0,     2,     3,     4,     5,     6,     7,
+       8,     0,     0,     0,    37,   120,    38,     0,     0,     9,
+     118,     0,    10,    11,    12,    13,    14,    15,    16,   119,
+       0,     0,    17,    18,    19,    20,    21,    22,    23,    24,
+      25,    26,    27,    28,    29,    30,    31,    32,    33,    34,
+      35,    36,    94,    37,     0,    38,     0,    39,     0,     0,
+       2,     3,     4,     5,     6,     7,     8,     0,     0,     0,
+      37,   165,    38,     0,     0,     9,     0,     0,    10,    11,
+      12,    13,    14,    15,    16,     0,     0,     0,    17,    18,
+      19,    20,    21,    22,    23,    24,    25,    26,    27,    28,
+      29,    30,    31,    32,    33,    34,    35,    36,   121,    37,
+       0,    38,     0,    39,     0,     0,     2,     3,     4,     5,
+       6,     7,     8,     0,     0,     0,     0,     0,     0,     0,
+       0,     9,     0,     0,    10,    11,    12,    13,    14,    15,
+      16,     0,     0,     0,    17,    18,    19,    20,    21,    22,
       23,    24,    25,    26,    27,    28,    29,    30,    31,    32,
       33,    34,    35,    36,   130,    37,     0,    38,     0,    39,
        0,     0,     2,     3,     4,     5,     6,     7,     8,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,     9,     0,
-       0,    10,    11,    12,    13,    14,    15,    16,    17,    18,
+       0,     0,     0,     0,     0,     0,     0,     9,     0,     0,
+      10,    11,    12,    13,    14,    15,    16,     0,     0,     0,
+      17,    18,    19,    20,    21,    22,    23,    24,    25,    26,
+      27,    28,    29,    30,    31,    32,   131,    34,    35,    36,
+     163,    37,     0,    38,     0,    39,     0,     0,     2,     3,
+       4,     5,     6,     7,     8,     0,     0,     0,     0,     0,
+       0,     0,     0,     9,     0,     0,    10,    11,    12,    13,
+      14,    15,    16,     0,     0,     0,    17,    18,    19,    20,
+      21,    22,    23,    24,    25,    26,    27,    28,    29,    30,
+      31,    32,    33,    34,    35,    36,   167,    37,     0,    38,
+       0,    39,     0,     0,     2,     3,     4,     5,     6,     7,
+       8,     0,     0,     0,     0,     0,     0,     0,     0,     9,
+       0,     0,    10,    11,    12,    13,    14,    15,    16,     0,
+       0,     0,    17,    18,    19,    20,    21,    22,    23,    24,
+      25,    26,    27,    28,    29,    30,    31,    32,    33,    34,
+      35,    36,   169,    37,     0,    38,     0,    39,     0,     0,
+       2,     3,     4,     5,     6,     7,     8,     0,     0,     0,
+       0,     0,     0,     0,     0,     9,     0,     0,    10,    11,
+      12,    13,    14,    15,    16,     0,     0,     0,    17,    18,
       19,    20,    21,    22,    23,    24,    25,    26,    27,    28,
-      29,    30,    31,    32,   131,    34,    35,    36,   163,    37,
+      29,    30,    31,    32,    33,    34,    35,    36,   190,    37,
        0,    38,     0,    39,     0,     0,     2,     3,     4,     5,
        6,     7,     8,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     9,     0,     0,    10,    11,    12,    13,    14,
-      15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
-      25,    26,    27,    28,    29,    30,    31,    32,    33,    34,
-      35,    36,   167,    37,     0,    38,     0,    39,     0,     0,
-       2,     3,     4,     5,     6,     7,     8,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     9,     0,     0,    10,
-      11,    12,    13,    14,    15,    16,    17,    18,    19,    20,
-      21,    22,    23,    24,    25,    26,    27,    28,    29,    30,
-      31,    32,    33,    34,    35,    36,   169,    37,     0,    38,
-       0,    39,     0,     0,     2,     3,     4,     5,     6,     7,
-       8,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       9,     0,     0,    10,    11,    12,    13,    14,    15,    16,
-      17,    18,    19,    20,    21,    22,    23,    24,    25,    26,
-      27,    28,    29,    30,    31,    32,    33,    34,    35,    36,
-     190,    37,     0,    38,     0,    39,     0,     0,     2,     3,
-       4,     5,     6,     7,     8,   127,     0,     0,     0,     0,
-       0,     0,     0,     0,     9,   119,     0,    10,    11,    12,
-      13,    14,    15,    16,    17,    18,    19,    20,    21,    22,
+       0,     9,     0,     0,    10,    11,    12,    13,    14,    15,
+      16,     0,     0,     0,    17,    18,    19,    20,    21,    22,
       23,    24,    25,    26,    27,    28,    29,    30,    31,    32,
-      33,    34,    35,    36,   118,    37,     0,    38,   118,    39,
-       0,     0,     0,    37,   119,    38,   171,     0,   119,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,    37,   120,    38,     0,    37,   165,    38
+      33,    34,    35,    36,     0,    37,     0,    38,     0,    39
 };
 
 static const yytype_int16 yycheck[] =
 {
-       0,     8,     1,    60,     8,    60,     3,    18,     5,   102,
-      22,    23,     1,    25,     8,     1,    69,    56,   111,    58,
-      60,    52,     1,    18,    36,    56,     3,    58,     5,    60,
-       3,     8,     5,    51,    52,     8,     1,    37,    23,     8,
-      54,    40,     3,    51,     5,     1,    57,     8,   101,   102,
-      62,    59,    59,    23,    66,    59,     1,    69,   111,    59,
-      60,    61,    57,    52,    61,    59,    52,    56,    57,    58,
-      56,    60,    58,    52,    60,    26,    75,    56,    78,    58,
-      92,    60,    59,    82,    57,     1,     1,    52,    57,   101,
-     102,    56,    52,    58,    55,    94,    52,   150,   151,   111,
-      56,     8,    58,     3,    60,     5,   159,    52,     8,   108,
-       8,    56,     3,    58,     5,    60,     8,     8,   117,   119,
-      18,   174,   121,    16,     8,   125,     8,     8,     3,   129,
-       5,   130,   185,     8,     8,     8,    52,    52,   150,   151,
-      56,    56,    58,    58,    60,    60,     0,   159,    16,    56,
-      55,    58,    59,     8,     3,    38,     5,     8,    56,    59,
-      58,    59,   174,    56,   163,    58,    57,    59,   167,    55,
-     169,    20,   172,   185,    56,    59,    58,    59,    59,    20,
-      55,    18,    55,    57,     1,    51,     7,    52,    51,    61,
-      61,   190,     9,    10,    11,    12,    13,    14,    15,    61,
-      55,   201,    85,    62,    20,   205,     7,     5,    25,    61,
-      36,    28,    29,    30,    31,    32,    33,    34,    35,    36,
+       0,     3,     1,     5,     8,     8,     8,    53,    54,     1,
+      22,    23,     1,    25,    62,     3,    69,     5,    62,    62,
+       3,     3,     5,     5,    36,     8,     8,     3,     8,     5,
+      17,    53,     8,     8,   102,     1,    22,    37,     8,    61,
+       8,    40,    58,   111,    60,    54,    56,    25,   101,   102,
+      62,     1,     8,    57,    66,    57,    59,    69,   111,    59,
+      60,    61,    54,     8,    22,    54,    58,    59,    60,    58,
+      62,    60,    59,    62,    57,    63,    75,     1,    78,    61,
+      92,    61,     8,    82,     1,    61,    61,     1,    54,   101,
+     102,    61,    58,    61,    60,    94,    62,   150,   151,   111,
+       1,     8,     8,     0,    54,    61,   159,    16,    58,   108,
+      60,     3,    62,     5,    59,     3,     8,     5,   117,   119,
+       8,   174,   121,    16,     8,   125,    57,    17,     8,   129,
+      54,   130,   185,    17,    58,    61,    60,    54,   150,   151,
+      54,    58,    38,    60,    58,    62,    60,   159,    62,    58,
+      57,    60,    58,    54,    60,    61,     8,    58,    57,    60,
+       8,    62,   174,    19,   163,    17,    17,    59,   167,    59,
+     169,    59,   172,   185,    58,    53,    60,    61,    58,    54,
+      60,    61,    54,     3,     1,     5,    58,    63,    60,    85,
+      62,   190,     9,    10,    11,    12,    13,    14,    15,    19,
+      63,   201,    63,     7,    53,   205,    58,    24,    60,    61,
+      27,    28,    29,    30,    31,    32,    33,    19,    64,    63,
       37,    38,    39,    40,    41,    42,    43,    44,    45,    46,
-      47,    48,    49,    50,    51,    52,    53,    54,     1,    56,
-      57,    58,    27,    60,    69,   115,     9,    10,    11,    12,
-      13,    14,    15,    61,    36,    78,    85,    -1,    -1,    -1,
-      -1,    -1,    25,    -1,    -1,    28,    29,    30,    31,    32,
-      33,    34,    35,    36,    37,    38,    39,    40,    41,    42,
-      43,    44,    45,    46,    47,    48,    49,    50,    51,    52,
-      53,    54,     1,    56,    -1,    58,    59,    60,    -1,    -1,
-       9,    10,    11,    12,    13,    14,    15,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    25,    -1,    -1,    28,
-      29,    30,    31,    32,    33,    34,    35,    36,    37,    38,
-      39,    40,    41,    42,    43,    44,    45,    46,    47,    48,
-      49,    50,    51,    52,    53,    54,     1,    56,    -1,    58,
-      -1,    60,    -1,    -1,     9,    10,    11,    12,    13,    14,
-      15,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      25,    -1,    -1,    28,    29,    30,    31,    32,    33,    34,
-      35,    36,    37,    38,    39,    40,    41,    42,    43,    44,
-      45,    46,    47,    48,    49,    50,    51,    52,    53,    54,
-       1,    56,    -1,    58,    -1,    60,    -1,    -1,     9,    10,
-      11,    12,    13,    14,    15,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    25,    -1,    -1,    28,    29,    30,
-      31,    32,    33,    34,    35,    36,    37,    38,    39,    40,
+      47,    48,    49,    50,    51,    52,    53,    54,    55,    56,
+       1,    58,    59,    60,     7,    62,     5,    26,     9,    10,
+      11,    12,    13,    14,    15,    63,    69,   115,    36,    36,
+      78,    85,    -1,    24,     8,    -1,    27,    28,    29,    30,
+      31,    32,    33,    17,    -1,    -1,    37,    38,    39,    40,
       41,    42,    43,    44,    45,    46,    47,    48,    49,    50,
-      51,    52,    53,    54,     1,    56,    -1,    58,    -1,    60,
-      -1,    -1,     9,    10,    11,    12,    13,    14,    15,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    25,    -1,
-      -1,    28,    29,    30,    31,    32,    33,    34,    35,    36,
-      37,    38,    39,    40,    41,    42,    43,    44,    45,    46,
-      47,    48,    49,    50,    51,    52,    53,    54,     1,    56,
-      -1,    58,    -1,    60,    -1,    -1,     9,    10,    11,    12,
+      51,    52,    53,    54,    55,    56,     1,    58,    -1,    60,
+      61,    62,    -1,    -1,     9,    10,    11,    12,    13,    14,
+      15,    -1,    -1,    -1,    58,    59,    60,    -1,    -1,    24,
+       8,    -1,    27,    28,    29,    30,    31,    32,    33,    17,
+      -1,    -1,    37,    38,    39,    40,    41,    42,    43,    44,
+      45,    46,    47,    48,    49,    50,    51,    52,    53,    54,
+      55,    56,     1,    58,    -1,    60,    -1,    62,    -1,    -1,
+       9,    10,    11,    12,    13,    14,    15,    -1,    -1,    -1,
+      58,    59,    60,    -1,    -1,    24,    -1,    -1,    27,    28,
+      29,    30,    31,    32,    33,    -1,    -1,    -1,    37,    38,
+      39,    40,    41,    42,    43,    44,    45,    46,    47,    48,
+      49,    50,    51,    52,    53,    54,    55,    56,     1,    58,
+      -1,    60,    -1,    62,    -1,    -1,     9,    10,    11,    12,
       13,    14,    15,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    25,    -1,    -1,    28,    29,    30,    31,    32,
-      33,    34,    35,    36,    37,    38,    39,    40,    41,    42,
+      -1,    24,    -1,    -1,    27,    28,    29,    30,    31,    32,
+      33,    -1,    -1,    -1,    37,    38,    39,    40,    41,    42,
       43,    44,    45,    46,    47,    48,    49,    50,    51,    52,
-      53,    54,     1,    56,    -1,    58,    -1,    60,    -1,    -1,
-       9,    10,    11,    12,    13,    14,    15,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    25,    -1,    -1,    28,
-      29,    30,    31,    32,    33,    34,    35,    36,    37,    38,
-      39,    40,    41,    42,    43,    44,    45,    46,    47,    48,
-      49,    50,    51,    52,    53,    54,     1,    56,    -1,    58,
-      -1,    60,    -1,    -1,     9,    10,    11,    12,    13,    14,
-      15,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      25,    -1,    -1,    28,    29,    30,    31,    32,    33,    34,
-      35,    36,    37,    38,    39,    40,    41,    42,    43,    44,
-      45,    46,    47,    48,    49,    50,    51,    52,    53,    54,
-       1,    56,    -1,    58,    -1,    60,    -1,    -1,     9,    10,
-      11,    12,    13,    14,    15,     8,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    25,    18,    -1,    28,    29,    30,
-      31,    32,    33,    34,    35,    36,    37,    38,    39,    40,
+      53,    54,    55,    56,     1,    58,    -1,    60,    -1,    62,
+      -1,    -1,     9,    10,    11,    12,    13,    14,    15,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    24,    -1,    -1,
+      27,    28,    29,    30,    31,    32,    33,    -1,    -1,    -1,
+      37,    38,    39,    40,    41,    42,    43,    44,    45,    46,
+      47,    48,    49,    50,    51,    52,    53,    54,    55,    56,
+       1,    58,    -1,    60,    -1,    62,    -1,    -1,     9,    10,
+      11,    12,    13,    14,    15,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    24,    -1,    -1,    27,    28,    29,    30,
+      31,    32,    33,    -1,    -1,    -1,    37,    38,    39,    40,
       41,    42,    43,    44,    45,    46,    47,    48,    49,    50,
-      51,    52,    53,    54,     8,    56,    -1,    58,     8,    60,
-      -1,    -1,    -1,    56,    18,    58,    59,    -1,    18,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    56,    57,    58,    -1,    56,    57,    58
+      51,    52,    53,    54,    55,    56,     1,    58,    -1,    60,
+      -1,    62,    -1,    -1,     9,    10,    11,    12,    13,    14,
+      15,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    24,
+      -1,    -1,    27,    28,    29,    30,    31,    32,    33,    -1,
+      -1,    -1,    37,    38,    39,    40,    41,    42,    43,    44,
+      45,    46,    47,    48,    49,    50,    51,    52,    53,    54,
+      55,    56,     1,    58,    -1,    60,    -1,    62,    -1,    -1,
+       9,    10,    11,    12,    13,    14,    15,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    24,    -1,    -1,    27,    28,
+      29,    30,    31,    32,    33,    -1,    -1,    -1,    37,    38,
+      39,    40,    41,    42,    43,    44,    45,    46,    47,    48,
+      49,    50,    51,    52,    53,    54,    55,    56,     1,    58,
+      -1,    60,    -1,    62,    -1,    -1,     9,    10,    11,    12,
+      13,    14,    15,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    24,    -1,    -1,    27,    28,    29,    30,    31,    32,
+      33,    -1,    -1,    -1,    37,    38,    39,    40,    41,    42,
+      43,    44,    45,    46,    47,    48,    49,    50,    51,    52,
+      53,    54,    55,    56,    -1,    58,    -1,    60,    -1,    62
 };
 
 /* YYSTOS[STATE-NUM] -- The symbol kind of the accessing symbol of
    state STATE-NUM.  */
 static const yytype_int8 yystos[] =
 {
-       0,     1,     9,    10,    11,    12,    13,    14,    15,    25,
-      28,    29,    30,    31,    32,    33,    34,    35,    36,    37,
-      38,    39,    40,    41,    42,    43,    44,    45,    46,    47,
-      48,    49,    50,    51,    52,    53,    54,    56,    58,    60,
-      68,    74,    75,    76,    77,    78,    79,    80,    81,    85,
-      89,    90,    91,    92,    93,    94,    95,    96,    90,    60,
-      60,    60,    23,    68,    68,    68,    54,    69,     1,    56,
-      58,    68,    70,    71,    73,     1,    57,    82,    83,    84,
-      87,    94,     1,    51,    59,    86,    87,    88,    94,    26,
-      16,    90,    23,     0,     1,    94,    94,    94,    68,    16,
-       1,    60,    64,    65,    68,    70,    71,    72,    55,     1,
-      57,    64,    72,    51,    59,    66,    67,    55,     8,    18,
-      57,     1,    84,    94,     8,    18,    57,     8,    59,    20,
-       1,    51,    87,    88,     8,    59,    51,    51,    52,    68,
-      61,    61,    61,     8,    55,     1,    72,     1,    65,    72,
-       3,     5,     8,    55,    90,    57,     1,    72,    57,     7,
-      51,    67,    90,     1,    94,    57,    57,     1,    94,     1,
-      94,    59,    20,    59,    62,    61,    61,    55,    55,    72,
-      72,    57,    57,     1,    72,     7,     8,    59,     8,    59,
-       1,    94,    72,     8,    59,     8,    59,     1,    72,    59,
-      59,    20,    59,    59,    94,    27,    94,    61
+       0,     1,     9,    10,    11,    12,    13,    14,    15,    24,
+      27,    28,    29,    30,    31,    32,    33,    37,    38,    39,
+      40,    41,    42,    43,    44,    45,    46,    47,    48,    49,
+      50,    51,    52,    53,    54,    55,    56,    58,    60,    62,
+      70,    76,    77,    78,    79,    80,    81,    82,    83,    87,
+      91,    92,    93,    94,    95,    96,    97,    98,    92,    62,
+      62,    62,    22,    70,    70,    70,    56,    71,     1,    58,
+      60,    70,    72,    73,    75,     1,    59,    84,    85,    86,
+      89,    96,     1,    53,    61,    88,    89,    90,    96,    25,
+      16,    92,    22,     0,     1,    96,    96,    96,    70,    16,
+       1,    62,    66,    67,    70,    72,    73,    74,    57,     1,
+      59,    66,    74,    53,    61,    68,    69,    57,     8,    17,
+      59,     1,    86,    96,     8,    17,    59,     8,    61,    19,
+       1,    53,    89,    90,     8,    61,    53,    53,    54,    70,
+      63,    63,    63,     8,    57,     1,    74,     1,    67,    74,
+       3,     5,     8,    57,    92,    59,     1,    74,    59,     7,
+      53,    69,    92,     1,    96,    59,    59,     1,    96,     1,
+      96,    61,    19,    61,    64,    63,    63,    57,    57,    74,
+      74,    59,    59,     1,    74,     7,     8,    61,     8,    61,
+       1,    96,    74,     8,    61,     8,    61,     1,    74,    61,
+      61,    19,    61,    61,    96,    26,    96,    63
 };
 
 /* YYR1[RULE-NUM] -- Symbol kind of the left-hand side of rule RULE-NUM.  */
 static const yytype_int8 yyr1[] =
 {
-       0,    63,    64,    64,    65,    65,    66,    66,    67,    67,
-      68,    68,    68,    69,    69,    69,    69,    70,    70,    70,
-      70,    70,    71,    71,    71,    71,    71,    72,    72,    72,
-      72,    72,    72,    72,    73,    73,    73,    74,    74,    74,
-      74,    74,    74,    74,    74,    74,    74,    74,    74,    74,
-      74,    74,    74,    74,    74,    74,    74,    74,    74,    74,
-      74,    74,    74,    75,    76,    76,    77,    78,    78,    79,
-      80,    80,    81,    81,    81,    81,    81,    81,    81,    82,
-      82,    82,    82,    83,    83,    84,    84,    85,    85,    85,
-      85,    85,    86,    86,    87,    87,    88,    88,    88,    88,
-      89,    89,    89,    89,    89,    89,    89,    89,    89,    90,
-      90,    91,    91,    91,    91,    92,    92,    93,    93,    93,
-      94,    94,    94,    94,    95,    96,    96
+       0,    65,    66,    66,    67,    67,    68,    68,    69,    69,
+      70,    70,    70,    71,    71,    71,    71,    72,    72,    72,
+      72,    72,    73,    73,    73,    73,    73,    74,    74,    74,
+      74,    74,    74,    74,    75,    75,    75,    76,    76,    76,
+      76,    76,    76,    76,    76,    76,    76,    76,    76,    76,
+      76,    76,    76,    76,    76,    76,    76,    76,    76,    76,
+      76,    76,    76,    77,    78,    78,    79,    80,    80,    81,
+      82,    82,    83,    83,    83,    83,    83,    83,    83,    84,
+      84,    84,    84,    85,    85,    86,    86,    87,    87,    87,
+      87,    87,    88,    88,    89,    89,    90,    90,    90,    90,
+      91,    91,    91,    91,    91,    91,    91,    91,    91,    92,
+      92,    93,    93,    93,    93,    94,    94,    95,    95,    95,
+      96,    96,    96,    96,    97,    98,    98
 };
 
 /* YYR2[RULE-NUM] -- Number of symbols on the right-hand side of rule RULE-NUM.  */
@@ -1834,409 +1832,409 @@ yyreduce:
   case 2: /* bsqontypel: bsqontypel bsqontypel_entry  */
 #line 110 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                { (yyval.bsqon_t_list) = BSQON_TYPE_AST_ListCons((yyvsp[0].bsqon_t), (yyvsp[-1].bsqon_t_list)); }
-#line 1838 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 1836 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 3: /* bsqontypel: bsqontypel_entry  */
 #line 111 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                       { (yyval.bsqon_t_list) = BSQON_TYPE_AST_ListCons((yyvsp[0].bsqon_t), NULL); }
-#line 1844 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 1842 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 4: /* bsqontypel_entry: bsqontype ","  */
 #line 115 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                        { (yyval.bsqon_t) = (yyvsp[-1].bsqon_t); }
-#line 1850 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 1848 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 5: /* bsqontypel_entry: error ","  */
 #line 116 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                      { (yyval.bsqon_t) = BSQON_TYPE_AST_ErrorNodeCreate(MK_SPOS_S((yylsp[-1]))); yyerrok; }
-#line 1856 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 1854 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 6: /* bsqonnametypel: bsqonnametypel bsqonnametypel_entry  */
 #line 120 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                        { (yyval.bsqon_t_namedlist) = BSQON_TYPE_AST_NamedListCons((yyvsp[0].bsqon_t_nametypel_entry), (yyvsp[-1].bsqon_t_namedlist)); }
-#line 1862 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 1860 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 7: /* bsqonnametypel: bsqonnametypel_entry  */
 #line 121 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                           { (yyval.bsqon_t_namedlist) = BSQON_TYPE_AST_NamedListCons((yyvsp[0].bsqon_t_nametypel_entry), NULL); }
-#line 1868 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 1866 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 8: /* bsqonnametypel_entry: "identifier" ":" bsqontype ","  */
 #line 125 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                                   { (yyval.bsqon_t_nametypel_entry) = BSQON_TYPE_AST_NamedListEntryCreate((yyvsp[-3].str), (yyvsp[-1].bsqon_t)); }
-#line 1874 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 1872 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 9: /* bsqonnametypel_entry: "identifier" ":" error ","  */
 #line 126 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                                 { (yyval.bsqon_t_nametypel_entry) = BSQON_TYPE_AST_NamedListEntryCreate((yyvsp[-3].str), BSQON_TYPE_AST_ErrorNodeCreate(MK_SPOS_S((yylsp[-1])))); yyerrok; }
-#line 1880 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 1878 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 10: /* bsqonnominaltype: "type name"  */
 #line 130 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                         { (yyval.bsqon_t) = BSQON_AST_NominalNodeCreate((yyvsp[0].str), NULL); }
-#line 1886 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 1884 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 11: /* bsqonnominaltype: "type name" bsqontermslist  */
 #line 131 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                          { (yyval.bsqon_t) = BSQON_AST_NominalNodeCreate((yyvsp[-1].str), (yyvsp[0].bsqon_t_list)); }
-#line 1892 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 1890 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 12: /* bsqonnominaltype: bsqonnominaltype "::" "type name"  */
 #line 132 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                                             { (yyval.bsqon_t) = BSQON_AST_NominalExtNodeCreate(BSQON_AST_asNominalNode((yyvsp[-2].bsqon_t)), (yyvsp[0].str)); }
-#line 1898 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 1896 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 13: /* bsqontermslist: '<' bsqontype '>'  */
 #line 136 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                      { (yyval.bsqon_t_list) = BSQON_TYPE_AST_ListCons((yyvsp[-1].bsqon_t), NULL); }
-#line 1904 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 1902 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 14: /* bsqontermslist: '<' bsqontypel bsqontype '>'  */
 #line 137 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                   { (yyval.bsqon_t_list) = BSQON_TYPE_AST_ListCompleteParse(BSQON_TYPE_AST_ListCons((yyvsp[-1].bsqon_t), (yyvsp[-2].bsqon_t_list))); }
-#line 1910 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 1908 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 15: /* bsqontermslist: '<' error '>'  */
 #line 138 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                    { (yyval.bsqon_t_list) = BSQON_TYPE_AST_ListCons(BSQON_TYPE_AST_ErrorNodeCreate(MK_SPOS_S((yylsp[-1]))), NULL); yyerrok; }
-#line 1916 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 1914 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 16: /* bsqontermslist: '<' bsqontypel error '>'  */
 #line 139 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                               { (yyval.bsqon_t_list) = BSQON_TYPE_AST_ListCompleteParse(BSQON_TYPE_AST_ListCons(BSQON_TYPE_AST_ErrorNodeCreate(MK_SPOS_S((yylsp[-1]))), (yyvsp[-2].bsqon_t_list))); yyerrok; }
-#line 1922 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 1920 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 17: /* bsqontupletype: '[' ']'  */
 #line 143 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
            { (yyval.bsqon_t) = BSQON_AST_TupleNodeCreate(NULL); }
-#line 1928 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 1926 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 18: /* bsqontupletype: '[' bsqontype ']'  */
 #line 144 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                        { (yyval.bsqon_t) = BSQON_AST_TupleNodeCreate(BSQON_TYPE_AST_ListCons((yyvsp[-1].bsqon_t), NULL)); }
-#line 1934 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 1932 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 19: /* bsqontupletype: '[' bsqontypel bsqontype ']'  */
 #line 145 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                   { (yyval.bsqon_t) = BSQON_AST_TupleNodeCreate(BSQON_TYPE_AST_ListCompleteParse(BSQON_TYPE_AST_ListCons((yyvsp[-1].bsqon_t), (yyvsp[-2].bsqon_t_list)))); }
-#line 1940 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 1938 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 20: /* bsqontupletype: '[' error ']'  */
 #line 146 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                    { (yyval.bsqon_t) = BSQON_AST_TupleNodeCreate(BSQON_TYPE_AST_ListCons(BSQON_TYPE_AST_ErrorNodeCreate(MK_SPOS_S((yylsp[-1]))), NULL)); yyerrok; }
-#line 1946 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 1944 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 21: /* bsqontupletype: '[' bsqontypel error ']'  */
 #line 147 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                               { (yyval.bsqon_t) = BSQON_AST_TupleNodeCreate(BSQON_TYPE_AST_ListCompleteParse(BSQON_TYPE_AST_ListCons(BSQON_TYPE_AST_ErrorNodeCreate(MK_SPOS_S((yylsp[-1]))), (yyvsp[-2].bsqon_t_list)))); yyerrok; }
-#line 1952 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 1950 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 22: /* bsqonrecordtype: '{' '}'  */
 #line 151 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
            { (yyval.bsqon_t) = BSQON_AST_RecordNodeCreate(NULL); }
-#line 1958 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 1956 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 23: /* bsqonrecordtype: '{' "identifier" ":" bsqontype '}'  */
 #line 152 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                                   { (yyval.bsqon_t) = BSQON_AST_RecordNodeCreate(BSQON_TYPE_AST_NamedListCons(BSQON_TYPE_AST_NamedListEntryCreate((yyvsp[-3].str), (yyvsp[-1].bsqon_t)), NULL)); }
-#line 1964 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 1962 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 24: /* bsqonrecordtype: '{' bsqonnametypel "identifier" ":" bsqontype '}'  */
 #line 153 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                                                  { (yyval.bsqon_t) = BSQON_AST_RecordNodeCreate(BSQON_TYPE_AST_NamedListCompleteParse(BSQON_TYPE_AST_NamedListCons(BSQON_TYPE_AST_NamedListEntryCreate((yyvsp[-3].str), (yyvsp[-1].bsqon_t)), (yyvsp[-4].bsqon_t_namedlist)))); }
-#line 1970 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 1968 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 25: /* bsqonrecordtype: '{' "identifier" ":" error '}'  */
 #line 154 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                               { (yyval.bsqon_t) = BSQON_AST_RecordNodeCreate(BSQON_TYPE_AST_NamedListCons(BSQON_TYPE_AST_NamedListEntryCreate((yyvsp[-3].str), BSQON_TYPE_AST_ErrorNodeCreate(MK_SPOS_S((yylsp[-1])))), NULL)); yyerrok; }
-#line 1976 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 1974 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 26: /* bsqonrecordtype: '{' bsqonnametypel "identifier" ":" error '}'  */
 #line 155 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                                              { (yyval.bsqon_t) = BSQON_AST_RecordNodeCreate(BSQON_TYPE_AST_NamedListCompleteParse(BSQON_TYPE_AST_NamedListCons(BSQON_TYPE_AST_NamedListEntryCreate((yyvsp[-3].str), BSQON_TYPE_AST_ErrorNodeCreate(MK_SPOS_S((yylsp[-1])))), (yyvsp[-4].bsqon_t_namedlist)))); yyerrok; }
-#line 1982 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 1980 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 27: /* bsqontype: bsqonnominaltype  */
 #line 159 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                     { (yyval.bsqon_t) = (yyvsp[0].bsqon_t); }
-#line 1988 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 1986 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 28: /* bsqontype: bsqontupletype  */
 #line 160 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                     { (yyval.bsqon_t) = (yyvsp[0].bsqon_t); }
-#line 1994 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 1992 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 29: /* bsqontype: bsqonrecordtype  */
 #line 161 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                      { (yyval.bsqon_t) = (yyvsp[0].bsqon_t); }
-#line 2000 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 1998 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 30: /* bsqontype: bsqontype SYM_AMP bsqontype  */
 #line 162 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                  { (yyval.bsqon_t) = BSQON_AST_ConjunctionCreate((yyvsp[-2].bsqon_t), (yyvsp[0].bsqon_t)); }
-#line 2006 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2004 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 31: /* bsqontype: bsqontype SYM_BAR bsqontype  */
 #line 163 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                  { (yyval.bsqon_t) = BSQON_AST_UnionCreate((yyvsp[-2].bsqon_t), (yyvsp[0].bsqon_t)); }
-#line 2012 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2010 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 32: /* bsqontype: '(' bsqontype ')'  */
 #line 164 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                        { (yyval.bsqon_t) = (yyvsp[-1].bsqon_t); }
-#line 2018 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2016 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 33: /* bsqontype: '(' error ')'  */
 #line 165 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                    { (yyval.bsqon_t) = BSQON_TYPE_AST_ErrorNodeCreate(MK_SPOS_S((yylsp[-1]))); yyerrok; }
-#line 2024 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2022 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 34: /* bsqontspec: bsqonnominaltype  */
 #line 169 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                     { (yyval.bsqon_t) = (yyvsp[0].bsqon_t); }
-#line 2030 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2028 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 35: /* bsqontspec: bsqontupletype  */
 #line 170 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                     { (yyval.bsqon_t) = (yyvsp[0].bsqon_t); }
-#line 2036 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2034 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 36: /* bsqontspec: bsqonrecordtype  */
 #line 171 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                      { (yyval.bsqon_t) = (yyvsp[0].bsqon_t); }
-#line 2042 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2040 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 37: /* bsqonliteral: "none"  */
 #line 175 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                            { (yyval.bsqon) = BSQON_AST_LiteralSingletonNodeCreate(BSQON_AST_TAG_None, MK_SPOS_S((yylsp[0]))); }
-#line 2048 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2046 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 38: /* bsqonliteral: "nothing"  */
 #line 176 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                            { (yyval.bsqon) = BSQON_AST_LiteralSingletonNodeCreate(BSQON_AST_TAG_Nothing, MK_SPOS_S((yylsp[0]))); }
-#line 2054 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2052 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 39: /* bsqonliteral: "true"  */
 #line 177 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                            { (yyval.bsqon) = BSQON_AST_LiteralSingletonNodeCreate(BSQON_AST_TAG_True, MK_SPOS_S((yylsp[0]))); }
-#line 2060 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2058 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 40: /* bsqonliteral: "false"  */
 #line 178 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                            { (yyval.bsqon) = BSQON_AST_LiteralSingletonNodeCreate(BSQON_AST_TAG_False, MK_SPOS_S((yylsp[0]))); }
-#line 2066 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2064 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 41: /* bsqonliteral: TOKEN_NAT  */
 #line 179 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                            { (yyval.bsqon) = BSQON_AST_LiteralStandardNodeCreate(BSQON_AST_TAG_Nat, MK_SPOS_S((yylsp[0])), (yyvsp[0].str)); }
-#line 2072 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2070 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 42: /* bsqonliteral: TOKEN_INT  */
 #line 180 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                            { (yyval.bsqon) = BSQON_AST_LiteralStandardNodeCreate(BSQON_AST_TAG_Int, MK_SPOS_S((yylsp[0])), (yyvsp[0].str)); }
-#line 2078 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2076 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 43: /* bsqonliteral: TOKEN_BIG_NAT  */
 #line 181 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                            { (yyval.bsqon) = BSQON_AST_LiteralStandardNodeCreate(BSQON_AST_TAG_BigNat, MK_SPOS_S((yylsp[0])), (yyvsp[0].str)); }
-#line 2084 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2082 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 44: /* bsqonliteral: TOKEN_BIG_INT  */
 #line 182 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                            { (yyval.bsqon) = BSQON_AST_LiteralStandardNodeCreate(BSQON_AST_TAG_BigInt, MK_SPOS_S((yylsp[0])), (yyvsp[0].str)); }
-#line 2090 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2088 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 45: /* bsqonliteral: TOKEN_RATIONAL  */
 #line 183 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                            { (yyval.bsqon) = BSQON_AST_LiteralStandardNodeCreate(BSQON_AST_TAG_Rational, MK_SPOS_S((yylsp[0])), (yyvsp[0].str)); }
-#line 2096 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2094 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 46: /* bsqonliteral: TOKEN_FLOAT  */
 #line 184 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                            { (yyval.bsqon) = BSQON_AST_LiteralStandardNodeCreate(BSQON_AST_TAG_Float, MK_SPOS_S((yylsp[0])), (yyvsp[0].str)); }
-#line 2102 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2100 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
-  case 47: /* bsqonliteral: TOKEN_DOUBLE  */
+  case 47: /* bsqonliteral: TOKEN_DECIMAL  */
 #line 185 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                            { (yyval.bsqon) = BSQON_AST_LiteralStandardNodeCreate(BSQON_AST_TAG_Decimal, MK_SPOS_S((yylsp[0])), (yyvsp[0].str)); }
-#line 2108 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2106 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 48: /* bsqonliteral: TOKEN_BYTE_BUFFER  */
 #line 186 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                            { (yyval.bsqon) = BSQON_AST_LiteralStandardNodeCreate(BSQON_AST_TAG_ByteBuffer, MK_SPOS_S((yylsp[0])), (yyvsp[0].str)); }
-#line 2114 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2112 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 49: /* bsqonliteral: TOKEN_UUID_V4  */
 #line 187 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                            { (yyval.bsqon) = BSQON_AST_LiteralStandardNodeCreate(BSQON_AST_TAG_UUIDv4, MK_SPOS_S((yylsp[0])), (yyvsp[0].str)); }
-#line 2120 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2118 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 50: /* bsqonliteral: TOKEN_UUID_V7  */
 #line 188 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                            { (yyval.bsqon) = BSQON_AST_LiteralStandardNodeCreate(BSQON_AST_TAG_UUIDv7, MK_SPOS_S((yylsp[0])), (yyvsp[0].str)); }
-#line 2126 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2124 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 51: /* bsqonliteral: TOKEN_SHA_HASH  */
 #line 189 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                            { (yyval.bsqon) = BSQON_AST_LiteralStandardNodeCreate(BSQON_AST_TAG_SHAHashcode, MK_SPOS_S((yylsp[0])), (yyvsp[0].str)); }
-#line 2132 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2130 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 52: /* bsqonliteral: TOKEN_STRING  */
 #line 190 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                            { (yyval.bsqon) = BSQON_AST_LiteralStringNodeCreate(BSQON_AST_TAG_String, MK_SPOS_S((yylsp[0])), (yyvsp[0].bstr)); }
-#line 2138 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2136 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 53: /* bsqonliteral: TOKEN_ASCII_STRING  */
 #line 191 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                            { (yyval.bsqon) = BSQON_AST_LiteralStringNodeCreate(BSQON_AST_TAG_ASCIIString, MK_SPOS_S((yylsp[0])), (yyvsp[0].bstr)); }
-#line 2144 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2142 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 54: /* bsqonliteral: TOKEN_PATH_ITEM  */
 #line 192 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                            { (yyval.bsqon) = BSQON_AST_LiteralStringNodeCreate(BSQON_AST_TAG_NakedPath, MK_SPOS_S((yylsp[0])), (yyvsp[0].bstr)); }
-#line 2150 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2148 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 55: /* bsqonliteral: TOKEN_REGEX  */
 #line 193 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                            { (yyval.bsqon) = BSQON_AST_LiteralStringNodeCreate(BSQON_AST_TAG_Regex, MK_SPOS_S((yylsp[0])), (yyvsp[0].bstr)); }
-#line 2156 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2154 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 56: /* bsqonliteral: TOKEN_DATE_TIME  */
 #line 194 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                            { (yyval.bsqon) = BSQON_AST_LiteralStandardNodeCreate(BSQON_AST_TAG_DateTime, MK_SPOS_S((yylsp[0])), (yyvsp[0].str)); }
-#line 2162 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2160 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 57: /* bsqonliteral: TOKEN_UTC_DATE_TIME  */
 #line 195 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                            { (yyval.bsqon) = BSQON_AST_LiteralStandardNodeCreate(BSQON_AST_TAG_UTCDateTime, MK_SPOS_S((yylsp[0])), (yyvsp[0].str)); }
-#line 2168 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2166 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 58: /* bsqonliteral: TOKEN_PLAIN_DATE  */
 #line 196 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                            { (yyval.bsqon) = BSQON_AST_LiteralStandardNodeCreate(BSQON_AST_TAG_PlainDate, MK_SPOS_S((yylsp[0])), (yyvsp[0].str)); }
-#line 2174 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2172 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 59: /* bsqonliteral: TOKEN_PLAIN_TIME  */
 #line 197 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                            { (yyval.bsqon) = BSQON_AST_LiteralStandardNodeCreate(BSQON_AST_TAG_PlainTime, MK_SPOS_S((yylsp[0])), (yyvsp[0].str)); }
-#line 2180 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2178 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 60: /* bsqonliteral: TOKEN_LOGICAL_TIME  */
 #line 198 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                            { (yyval.bsqon) = BSQON_AST_LiteralStandardNodeCreate(BSQON_AST_TAG_LogicalTime, MK_SPOS_S((yylsp[0])), (yyvsp[0].str)); }
-#line 2186 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2184 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 61: /* bsqonliteral: TOKEN_TICK_TIME  */
 #line 199 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                            { (yyval.bsqon) = BSQON_AST_LiteralStandardNodeCreate(BSQON_AST_TAG_TickTime, MK_SPOS_S((yylsp[0])), (yyvsp[0].str)); }
-#line 2192 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2190 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 62: /* bsqonliteral: TOKEN_TIMESTAMP  */
 #line 200 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                            { (yyval.bsqon) = BSQON_AST_LiteralStandardNodeCreate(BSQON_AST_TAG_Timestamp, MK_SPOS_S((yylsp[0])), (yyvsp[0].str)); }
-#line 2198 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2196 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 63: /* bsqonunspecvar: "unspec identifier"  */
 #line 204 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                            { (yyval.bsqon) = BSQON_AST_NameNodeCreate(BSQON_AST_TAG_UnspecIdentifier, MK_SPOS_S((yylsp[0])), (yyvsp[0].str)); }
-#line 2204 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2202 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 64: /* bsqonidentifier: KW_SRC  */
 #line 208 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                 { (yyval.bsqon) = BSQON_AST_NameNodeCreate(BSQON_AST_TAG_Identifier, MK_SPOS_S((yylsp[0])), "$src"); }
-#line 2210 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2208 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 65: /* bsqonidentifier: "identifier"  */
 #line 209 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                       { (yyval.bsqon) = BSQON_AST_NameNodeCreate(BSQON_AST_TAG_Identifier, MK_SPOS_S((yylsp[0])), (yyvsp[0].str)); }
-#line 2216 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2214 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 66: /* bsqonscopedidentifier: bsqonnominaltype "::" "identifier"  */
 #line 213 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                                       { (yyval.bsqon) = BSQON_AST_ScopedNameNodeCreate(MK_SPOS_R((yylsp[-2]), (yylsp[0])), (yyvsp[-2].bsqon_t), (yyvsp[0].str)); }
-#line 2222 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2220 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 67: /* bsqonstringof: TOKEN_STRING bsqonnominaltype  */
 #line 217 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                  { (yyval.bsqon) = BSQON_AST_StringOfNodeCreate(BSQON_AST_TAG_StringOf, MK_SPOS_R((yylsp[-1]), (yylsp[0])), (yyvsp[-1].bstr), (yyvsp[0].bsqon_t)); }
-#line 2228 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2226 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 68: /* bsqonstringof: TOKEN_ASCII_STRING bsqonnominaltype  */
 #line 218 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                          { (yyval.bsqon) = BSQON_AST_StringOfNodeCreate(BSQON_AST_TAG_ASCIIStringOf, MK_SPOS_R((yylsp[-1]), (yylsp[0])), (yyvsp[-1].bstr), (yyvsp[0].bsqon_t)); }
-#line 2234 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2232 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 69: /* bsqonpath: TOKEN_PATH_ITEM bsqonnominaltype  */
 #line 222 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                     { (yyval.bsqon) = BSQON_AST_PathNodeCreate(MK_SPOS_R((yylsp[-1]), (yylsp[0])), BSQON_AST_asLiteralStringNode(BSQON_AST_LiteralStringNodeCreate(BSQON_AST_TAG_NakedPath, MK_SPOS_S((yylsp[-1])), (yyvsp[-1].bstr))), (yyvsp[0].bsqon_t)); }
-#line 2240 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2238 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 70: /* bsqontypeliteral: "numberino" SYM_UNDERSCORE bsqonnominaltype  */
@@ -2245,7 +2243,7 @@ yyreduce:
       yyerror("Missing numeric specifier");
       (yyval.bsqon) = BSQON_AST_ErrorNodeCreate(MK_SPOS_S((yylsp[-2])));
    }
-#line 2249 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2247 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 71: /* bsqontypeliteral: bsqonliteral SYM_UNDERSCORE bsqonnominaltype  */
@@ -2253,269 +2251,269 @@ yyreduce:
                                                   {
       (yyval.bsqon) = BSQON_AST_TypedLiteralNodeCreate(MK_SPOS_R((yylsp[-2]), (yylsp[0])), (yyvsp[-2].bsqon), (yyvsp[0].bsqon_t));
    }
-#line 2257 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2255 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 78: /* bsqonterminal: bsqontypeliteral  */
 #line 236 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                                                                                                           { (yyval.bsqon) = (yyvsp[0].bsqon); }
-#line 2263 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2261 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 79: /* bsqon_mapentry: bsqonval SYM_ENTRY bsqonval  */
 #line 240 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                { (yyval.bsqon) = BSQON_AST_MapEntryNodeCreate(MK_SPOS_R((yylsp[-2]), (yylsp[0])), (yyvsp[-2].bsqon), (yyvsp[0].bsqon)); }
-#line 2269 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2267 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 80: /* bsqon_mapentry: error SYM_ENTRY bsqonval  */
 #line 241 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                               { (yyval.bsqon) = BSQON_AST_MapEntryNodeCreate(MK_SPOS_R((yylsp[-2]), (yylsp[0])), BSQON_AST_ErrorNodeCreate(MK_SPOS_S((yylsp[-2]))), (yyvsp[0].bsqon)); yyerrok; }
-#line 2275 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2273 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 81: /* bsqon_mapentry: bsqonval SYM_ENTRY error  */
 #line 242 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                               { (yyval.bsqon) = BSQON_AST_MapEntryNodeCreate(MK_SPOS_R((yylsp[-2]), (yylsp[0])), (yyvsp[-2].bsqon), BSQON_AST_ErrorNodeCreate(MK_SPOS_S((yylsp[0])))); yyerrok; }
-#line 2281 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2279 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 82: /* bsqon_mapentry: error SYM_ENTRY error  */
 #line 243 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                            { (yyval.bsqon) = BSQON_AST_MapEntryNodeCreate(MK_SPOS_R((yylsp[-2]), (yylsp[0])), BSQON_AST_ErrorNodeCreate(MK_SPOS_S((yylsp[-2]))), BSQON_AST_ErrorNodeCreate(MK_SPOS_S((yylsp[0])))); yyerrok; }
-#line 2287 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2285 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 83: /* bsqonvall: bsqonvall bsqonl_entry  */
 #line 247 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                           { (yyval.bsqon_list) = BSQON_AST_ListCons((yyvsp[0].bsqon), (yyvsp[-1].bsqon_list)); }
-#line 2293 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2291 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 84: /* bsqonvall: bsqonl_entry  */
 #line 248 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                   { (yyval.bsqon_list) = BSQON_AST_ListCons((yyvsp[0].bsqon), NULL); }
-#line 2299 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2297 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 85: /* bsqonl_entry: bsqon_braceval ","  */
 #line 252 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                             { (yyval.bsqon) = (yyvsp[-1].bsqon); }
-#line 2305 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2303 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 86: /* bsqonl_entry: error ","  */
 #line 253 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                      { (yyval.bsqon) = BSQON_AST_ErrorNodeCreate(MK_SPOS_S((yylsp[-1]))); yyerrok; }
-#line 2311 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2309 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 87: /* bsqonbracketvalue: '[' ']'  */
 #line 257 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
            { (yyval.bsqon) = BSQON_AST_BracketValueNodeCreate(MK_SPOS_R((yylsp[-1]), (yylsp[0])), NULL); }
-#line 2317 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2315 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 88: /* bsqonbracketvalue: '[' bsqonval ']'  */
 #line 258 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                       { (yyval.bsqon) = BSQON_AST_BracketValueNodeCreate(MK_SPOS_R((yylsp[-2]), (yylsp[0])), BSQON_AST_ListCons((yyvsp[-1].bsqon), NULL)); }
-#line 2323 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2321 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 89: /* bsqonbracketvalue: '[' bsqonvall bsqonval ']'  */
 #line 259 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                 { (yyval.bsqon) = BSQON_AST_BracketValueNodeCreate(MK_SPOS_R((yylsp[-3]), (yylsp[0])), BSQON_AST_ListCompleteParse(BSQON_AST_ListCons((yyvsp[-1].bsqon), (yyvsp[-2].bsqon_list)))); }
-#line 2329 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2327 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 90: /* bsqonbracketvalue: '[' error ']'  */
 #line 260 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                    { (yyval.bsqon) = BSQON_AST_BracketValueNodeCreate(MK_SPOS_R((yylsp[-2]), (yylsp[0])), BSQON_AST_ListCons(BSQON_AST_ErrorNodeCreate(MK_SPOS_S((yylsp[-1]))), NULL)); yyerrok; }
-#line 2335 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2333 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 91: /* bsqonbracketvalue: '[' bsqonvall error ']'  */
 #line 261 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                              { (yyval.bsqon) = BSQON_AST_BracketValueNodeCreate(MK_SPOS_R((yylsp[-3]), (yylsp[0])), BSQON_AST_ListCompleteParse(BSQON_AST_ListCons(BSQON_AST_ErrorNodeCreate(MK_SPOS_S((yylsp[-1]))), (yyvsp[-2].bsqon_list)))); yyerrok; }
-#line 2341 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2339 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 92: /* bsqonnamevall: bsqonnamevall bsqonnameval_entry  */
 #line 265 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                     { (yyval.bsqon_namedlist) = BSQON_AST_NamedListCons((yyvsp[0].bsqon_nameval_entry), (yyvsp[-1].bsqon_namedlist)); }
-#line 2347 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2345 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 93: /* bsqonnamevall: bsqonnameval_entry  */
 #line 266 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                         { (yyval.bsqon_namedlist) = BSQON_AST_NamedListCons((yyvsp[0].bsqon_nameval_entry), NULL); }
-#line 2353 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2351 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 95: /* bsqon_braceval: bsqon_mapentry  */
 #line 270 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                              { (yyval.bsqon) = (yyvsp[0].bsqon); }
-#line 2359 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2357 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 96: /* bsqonnameval_entry: "identifier" SYM_EQUALS bsqonval ","  */
 #line 274 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                                   { (yyval.bsqon_nameval_entry) = BSQON_AST_NamedListEntryCreate((yyvsp[-3].str), (yyvsp[-1].bsqon)); }
-#line 2365 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2363 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 97: /* bsqonnameval_entry: "identifier" SYM_EQUALS error ","  */
 #line 275 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                                  { (yyval.bsqon_nameval_entry) = BSQON_AST_NamedListEntryCreate((yyvsp[-3].str), BSQON_AST_ErrorNodeCreate(MK_SPOS_S((yylsp[-1])))); yyerrok; }
-#line 2371 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2369 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 98: /* bsqonnameval_entry: bsqon_braceval ","  */
 #line 276 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                               { (yyval.bsqon_nameval_entry) = BSQON_AST_NamedListEntryCreate(NULL, (yyvsp[-1].bsqon)); }
-#line 2377 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2375 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 99: /* bsqonnameval_entry: error ","  */
 #line 277 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                      { (yyval.bsqon_nameval_entry) = BSQON_AST_NamedListEntryCreate(NULL, BSQON_AST_ErrorNodeCreate(MK_SPOS_S((yylsp[-1])))); yyerrok; }
-#line 2383 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2381 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 100: /* bsqonbracevalue: '{' '}'  */
 #line 281 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
            { (yyval.bsqon) = BSQON_AST_BraceValueNodeCreate(MK_SPOS_R((yylsp[-1]), (yylsp[0])), NULL); }
-#line 2389 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2387 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 101: /* bsqonbracevalue: '{' "identifier" SYM_EQUALS bsqonval '}'  */
 #line 282 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                                   { (yyval.bsqon) = BSQON_AST_BraceValueNodeCreate(MK_SPOS_R((yylsp[-4]), (yylsp[0])), BSQON_AST_NamedListCons(BSQON_AST_NamedListEntryCreate((yyvsp[-3].str), (yyvsp[-1].bsqon)), NULL)); }
-#line 2395 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2393 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 102: /* bsqonbracevalue: '{' bsqonnamevall "identifier" SYM_EQUALS bsqonval '}'  */
 #line 283 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                                                 { (yyval.bsqon) = BSQON_AST_BraceValueNodeCreate(MK_SPOS_R((yylsp[-5]), (yylsp[0])), BSQON_AST_NamedListCompleteParse(BSQON_AST_NamedListCons(BSQON_AST_NamedListEntryCreate((yyvsp[-3].str), (yyvsp[-1].bsqon)), (yyvsp[-4].bsqon_namedlist)))); }
-#line 2401 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2399 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 103: /* bsqonbracevalue: '{' "identifier" SYM_EQUALS error '}'  */
 #line 284 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                                { (yyval.bsqon) = BSQON_AST_BraceValueNodeCreate(MK_SPOS_R((yylsp[-4]), (yylsp[0])), BSQON_AST_NamedListCons(BSQON_AST_NamedListEntryCreate((yyvsp[-3].str), BSQON_AST_ErrorNodeCreate(MK_SPOS_S((yylsp[-1])))), NULL)); yyerrok; }
-#line 2407 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2405 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 104: /* bsqonbracevalue: '{' bsqonnamevall "identifier" SYM_EQUALS error '}'  */
 #line 285 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                                              { (yyval.bsqon) = BSQON_AST_BraceValueNodeCreate(MK_SPOS_R((yylsp[-5]), (yylsp[0])), BSQON_AST_NamedListCompleteParse(BSQON_AST_NamedListCons(BSQON_AST_NamedListEntryCreate((yyvsp[-3].str), BSQON_AST_ErrorNodeCreate(MK_SPOS_S((yylsp[-1])))), (yyvsp[-4].bsqon_namedlist)))); yyerrok; }
-#line 2413 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2411 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 105: /* bsqonbracevalue: '{' bsqon_braceval '}'  */
 #line 286 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                             { (yyval.bsqon) = BSQON_AST_BraceValueNodeCreate(MK_SPOS_R((yylsp[-2]), (yylsp[0])), BSQON_AST_NamedListCons(BSQON_AST_NamedListEntryCreate(NULL, (yyvsp[-1].bsqon)), NULL)); }
-#line 2419 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2417 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 106: /* bsqonbracevalue: '{' bsqonnamevall bsqon_braceval '}'  */
 #line 287 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                           { (yyval.bsqon) = BSQON_AST_BraceValueNodeCreate(MK_SPOS_R((yylsp[-3]), (yylsp[0])), BSQON_AST_NamedListCompleteParse(BSQON_AST_NamedListCons(BSQON_AST_NamedListEntryCreate(NULL, (yyvsp[-1].bsqon)), (yyvsp[-2].bsqon_namedlist)))); }
-#line 2425 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2423 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 107: /* bsqonbracevalue: '{' error '}'  */
 #line 288 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                    { (yyval.bsqon) = BSQON_AST_BraceValueNodeCreate(MK_SPOS_R((yylsp[-2]), (yylsp[0])), BSQON_AST_NamedListCons(BSQON_AST_NamedListEntryCreate(NULL, BSQON_AST_ErrorNodeCreate(MK_SPOS_S((yylsp[-1])))), NULL)); yyerrok; }
-#line 2431 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2429 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 108: /* bsqonbracevalue: '{' bsqonnamevall error '}'  */
 #line 289 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                  { (yyval.bsqon) = BSQON_AST_BraceValueNodeCreate(MK_SPOS_R((yylsp[-3]), (yylsp[0])), BSQON_AST_NamedListCompleteParse(BSQON_AST_NamedListCons(BSQON_AST_NamedListEntryCreate(NULL, BSQON_AST_ErrorNodeCreate(MK_SPOS_S((yylsp[-1])))), (yyvsp[-2].bsqon_namedlist)))); yyerrok; }
-#line 2437 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2435 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 110: /* bsqonbracketbracevalue: bsqonbracevalue  */
 #line 293 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                        { (yyval.bsqon) = (yyvsp[0].bsqon); }
-#line 2443 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2441 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 111: /* bsqontypedvalue: '<' bsqontspec '>' bsqonbracketbracevalue  */
 #line 297 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                              { (yyval.bsqon) = BSQON_AST_TypedValueNodeCreate(MK_SPOS_R((yylsp[-3]), (yylsp[0])), (yyvsp[0].bsqon), (yyvsp[-2].bsqon_t)); }
-#line 2449 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2447 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 112: /* bsqontypedvalue: bsqonnominaltype bsqonbracketbracevalue  */
 #line 298 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                              { (yyval.bsqon) = BSQON_AST_TypedValueNodeCreate(MK_SPOS_R((yylsp[-1]), (yylsp[0])), (yyvsp[0].bsqon), (yyvsp[-1].bsqon_t)); }
-#line 2455 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2453 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 113: /* bsqontypedvalue: '<' error '>' bsqonbracketbracevalue  */
 #line 299 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                           { (yyval.bsqon) = BSQON_AST_TypedValueNodeCreate(MK_SPOS_R((yylsp[-3]), (yylsp[0])), (yyvsp[0].bsqon), BSQON_TYPE_AST_ErrorNodeCreate(MK_SPOS_S((yylsp[-2])))); }
-#line 2461 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2459 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 114: /* bsqontypedvalue: error bsqonbracketbracevalue  */
 #line 300 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                   { (yyval.bsqon) = BSQON_AST_TypedValueNodeCreate(MK_SPOS_R((yylsp[-1]), (yylsp[0])), (yyvsp[0].bsqon), BSQON_TYPE_AST_ErrorNodeCreate(MK_SPOS_S((yylsp[-1])))); }
-#line 2467 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2465 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 116: /* bsqonstructvalue: bsqontypedvalue  */
 #line 304 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                             { (yyval.bsqon) = (yyvsp[0].bsqon); }
-#line 2473 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2471 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 117: /* bsqonspecialcons: "something" '(' bsqonval ')'  */
 #line 308 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                  { (yyval.bsqon) = BSQON_AST_SpecialConsNodeCreate(BSQON_AST_TAG_SomethingCons, MK_SPOS_R((yylsp[-3]), (yylsp[0])), (yyvsp[-1].bsqon), "some"); }
-#line 2479 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2477 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 118: /* bsqonspecialcons: "ok" '(' bsqonval ')'  */
 #line 309 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                             { (yyval.bsqon) = BSQON_AST_SpecialConsNodeCreate(BSQON_AST_TAG_OkCons, MK_SPOS_R((yylsp[-3]), (yylsp[0])), (yyvsp[-1].bsqon), "ok"); }
-#line 2485 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2483 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 119: /* bsqonspecialcons: "err" '(' bsqonval ')'  */
 #line 310 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                              { (yyval.bsqon) = BSQON_AST_SpecialConsNodeCreate(BSQON_AST_TAG_ErrCons, MK_SPOS_R((yylsp[-3]), (yylsp[0])), (yyvsp[-1].bsqon), "err"); }
-#line 2491 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2489 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 123: /* bsqonval: bsqonletexp  */
 #line 314 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                                                     { (yyval.bsqon) = (yyvsp[0].bsqon); }
-#line 2497 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2495 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 124: /* bsqonletexp: '(' KW_LET "identifier" ':' bsqontype SYM_EQUALS bsqonval KW_IN bsqonval ')'  */
 #line 318 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                                                                    { (yyval.bsqon) = BSQON_AST_LetInNodeCreate(MK_SPOS_R((yylsp[-9]), (yylsp[0])), (yyvsp[-7].str), (yyvsp[-5].bsqon_t), (yyvsp[-3].bsqon), (yyvsp[-1].bsqon)); }
-#line 2503 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2501 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 125: /* bsqonroot: bsqonval  */
 #line 322 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
             { yybsqonval = (yyvsp[0].bsqon); (yyval.bsqon) = (yyvsp[0].bsqon); }
-#line 2509 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2507 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 126: /* bsqonroot: error  */
 #line 323 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
            {yybsqonval = BSQON_AST_ErrorNodeCreate(MK_SPOS_S((yylsp[0]))); (yyval.bsqon) = BSQON_AST_ErrorNodeCreate(MK_SPOS_S((yylsp[0]))); }
-#line 2515 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2513 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
 
-#line 2519 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
+#line 2517 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
 
       default: break;
     }

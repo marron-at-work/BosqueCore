@@ -1,6 +1,7 @@
 #pragma once
 
 #include "bytestring.h"
+#include "bsqon_ast_common.h"
 
 #ifdef __cplusplus
 extern "C" 

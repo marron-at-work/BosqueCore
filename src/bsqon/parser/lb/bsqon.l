@@ -39,6 +39,7 @@ void yyerror(const char* s, ...);
 %x PATH_ITEM
 
 NON_ZERO_INTEGRAL ([1-9][0-9]*)
+NORMAL_FLOAT [+-]?(0|{NON_ZERO_INTEGRAL})"."[0-9]+
 EXP	([Ee][-+]?[0-9]+)
 
 DATE ([0-9]{4})-([0-9]{2})-([0-9]{2})
@@ -66,8 +67,6 @@ TYPE_IDENTIFIER ([A-Z][a-zA-Z0-9_]*)
 ">"         { return yytext[0]; }
 
  /* symbols */
-"..."       { return SYM_ELLIPSIS; }
-
 "::"        { return SYM_DOUBLE_COLON; }
 "=>"        { return SYM_ENTRY; }
 
@@ -100,6 +99,9 @@ TYPE_IDENTIFIER ([A-Z][a-zA-Z0-9_]*)
 "ok"        { return KW_OK; }
 
  /* numbers */
+[-]0[niNIR]                                      { yyerror("Zero cannot be negative"); return YYerror; }
+((0|[+-]?{NON_ZERO_INTEGRAL})\/0)R               { yyerror("Zero as divisor"); return YYerror; }
+
 (0|[+]?{NON_ZERO_INTEGRAL})n   { yylval.str = AST_STRDUP(yytext); return TOKEN_NAT; }
 (0|[+-]?{NON_ZERO_INTEGRAL})i  { yylval.str = AST_STRDUP(yytext); return TOKEN_INT; }
 (0|[+]?{NON_ZERO_INTEGRAL})N   { yylval.str = AST_STRDUP(yytext); return TOKEN_BIG_NAT; }
@@ -108,34 +110,30 @@ TYPE_IDENTIFIER ([A-Z][a-zA-Z0-9_]*)
 (0|[+-]?{NON_ZERO_INTEGRAL})R                        { yylval.str = AST_STRDUP(yytext); return TOKEN_RATIONAL; }
 ((0|[+-]?{NON_ZERO_INTEGRAL})\/{NON_ZERO_INTEGRAL})R { yylval.str = AST_STRDUP(yytext); return TOKEN_RATIONAL; }
 
-[-]0[niNIR]                                      { yyerror("Zero cannot be negative"); return YYerror; }
-[-]{NON_ZERO_INTEGRAL}[nN]                       { yyerror("Cannot have negative natural number"); return YYerror; }
-[+]?0+{NON_ZERO_INTEGRAL}[nN]                    { yyerror("Leading zero is not allowed"); return YYerror; }
-[+-]?0+{NON_ZERO_INTEGRAL}[iIR]                  { yyerror("Leading zero is not allowed"); return YYerror; }
-[+-]?0+{NON_ZERO_INTEGRAL}\/{NON_ZERO_INTEGRAL}R { yyerror("Leading zero is not allowed"); return YYerror; }
-[+]?00+[nN]                                      { yyerror("Leading zero is not allowed"); return YYerror; }
-[+-]?00+[iIR]                                    { yyerror("Leading zero is not allowed"); return YYerror; }
-((0|[+-]?{NON_ZERO_INTEGRAL})\/0)R               { yyerror("Zero as divisor"); return YYerror; }
+[-]"0.0"{EXP}?(f|d|dd)                            { yyerror("Zero cannot be negative"); return YYerror; }
 
-[+-]?"0."[0-9]+{EXP}?f                   { yylval.str = AST_STRDUP(yytext); return TOKEN_FLOAT; }
-[+-]?{NON_ZERO_INTEGRAL}"."[0-9]+{EXP}?f { yylval.str = AST_STRDUP(yytext); return TOKEN_FLOAT; }
+{NORMAL_FLOAT}{EXP}?f                   { yylval.str = AST_STRDUP(yytext); return TOKEN_FLOAT; }
+{NORMAL_FLOAT}{EXP}?d                   { yylval.str = AST_STRDUP(yytext); return TOKEN_DECIMAL; }
+{NORMAL_FLOAT}dd                        { yylval.str = AST_STRDUP(yytext); return TOKEN_DECIMAL_DEGREE; }
 
-[+-]?"0."[0-9]+{EXP}?d                   { yylval.str = AST_STRDUP(yytext); return TOKEN_DOUBLE; }
-[+-]?{NON_ZERO_INTEGRAL}"."[0-9]+{EXP}?d { yylval.str = AST_STRDUP(yytext); return TOKEN_DOUBLE; }
 
-[+-]?0+"0."[0-9]+{EXP}?[fd]                   { yyerror("Redundant leading zero is not allowed"); return YYerror; }
-[+-]?0+{NON_ZERO_INTEGRAL}"."[0-9]+{EXP}?[fd] { yyerror("Leading zero is not allowed"); return YYerror; }
-[+-]?"."[0-9]+{EXP}?[fd]                      { yyerror("Leading decimal is not allowed"); return YYerror; }
+{NORMAL_FLOAT}"lat-0.0long"       { yyerror("Zero cannot be negative"); return YYerror; }
+"-0.0lat"[+-]{NORMAL_FLOAT}long   { yyerror("Zero cannot be negative"); return YYerror; }
+
+{NORMAL_FLOAT}"lat"[+-]{NORMAL_FLOAT}"long" { yylval.str = AST_STRDUP(yytext); return TOKEN_LAT_LONG; }
+
+{NORMAL_FLOAT}{EXP}"-0.0"{EXP}?i { yyerror("Zero cannot be negative"); return YYerror; }
+"-0.0"[+-]{NORMAL_FLOAT}{EXP}?i   { yyerror("Zero cannot be negative"); return YYerror; }
+
+{NORMAL_FLOAT}{EXP}?[+-]{NORMAL_FLOAT}{EXP}?i { yylval.str = AST_STRDUP(yytext); return TOKEN_COMPLEX; }
 
  /* numberinos */
+[+-](0|{NON_ZERO_INTEGRAL}) { yyerror("Cannot have sign on indexer"); return YYerror; }
+
 0|{NON_ZERO_INTEGRAL}       { yylval.str = AST_STRDUP(yytext); return TOKEN_NUMBERINO; }
 
-[+-](0|{NON_ZERO_INTEGRAL}) { yyerror("Cannot have sign on indexer"); return YYerror; }
-0+{NON_ZERO_INTEGRAL}       { yyerror("Leading zero is not allowed"); return YYerror; }
-00+                         { yyerror("Leading zero is not allowed"); return YYerror; }
 
  /* strings */
-
 0x"["[a-fA-F0-9]*"]"    { yylval.str = AST_STRDUP(yytext); return TOKEN_BYTE_BUFFER; }
 uuid4"{"{UUID}"}"       { yylval.str = AST_STRDUP(yytext); return TOKEN_UUID_V4; }
 uuid7"{"{UUID}"}"       { yylval.str = AST_STRDUP(yytext); return TOKEN_UUID_V7; }
@@ -166,7 +164,8 @@ sha3"{"[a-zA-Z0-9]+        { yyerror("Missing close bracket"); return YYerror; }
 '             { BEGIN(INITIAL); ByteStringStoreChar('\''); yylval.bstr = bstrAlloc(string_buf_bs); return TOKEN_ASCII_STRING; }
 <<EOF>>       { BEGIN(INITIAL); yyerror("Unclosed ASCIIString"); return YYEOF; }
 \n[ \t\r]*\\  { ByteStringStoreChar('\n'); /*ignore whitespace till alignment on multi-line string*/ }
-[^']          { ByteStringStoreChar(yytext[0]); }
+[ \t!-~]      { ByteStringStoreChar(yytext[0]); }
+.|\n          { yyerror("Invalid character (ignoring)"); return YYerror;}
 }
 
 <INITIAL>{
@@ -181,10 +180,10 @@ sha3"{"[a-zA-Z0-9]+        { yyerror("Missing close bracket"); return YYerror; }
 }
 
 <INITIAL>{
-[gf]?`      { BEGIN(PATH_ITEM); string_buf_bs.len = 0; ByteStringStoreText(yytext, yyleng); }
+(glob|fragment)?\\     { BEGIN(PATH_ITEM); string_buf_bs.len = 0; ByteStringStoreText(yytext, yyleng); }
 }
 <PATH_ITEM>{
-`           { BEGIN(INITIAL); ByteStringStoreChar('`'); yylval.bstr = bstrAlloc(string_buf_bs); return TOKEN_PATH_ITEM; }
+\\          { BEGIN(INITIAL); ByteStringStoreChar('\\'); yylval.bstr = bstrAlloc(string_buf_bs); return TOKEN_PATH_ITEM; }
 <<EOF>>     { BEGIN(INITIAL); yyerror("Unclosed Path Item"); return YYEOF; }
 [ \t\n\r]   { yyerror("Whitespace in Path Item"); return YYerror; }
 [!-~]       { ByteStringStoreChar(yytext[0]); }

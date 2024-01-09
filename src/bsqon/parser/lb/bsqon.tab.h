@@ -66,43 +66,45 @@ extern int yydebug;
     KW_OK = 269,                   /* "ok"  */
     KW_ERR = 270,                  /* "err"  */
     SYM_DOUBLE_COLON = 271,        /* "::"  */
-    SYM_ELLIPSIS = 272,            /* SYM_ELLIPSIS  */
-    SYM_ENTRY = 273,               /* SYM_ENTRY  */
-    SYM_BANG = 274,                /* SYM_BANG  */
-    SYM_EQUALS = 275,              /* SYM_EQUALS  */
-    SYM_DOT = 276,                 /* SYM_DOT  */
-    SYM_AT = 277,                  /* SYM_AT  */
-    SYM_UNDERSCORE = 278,          /* SYM_UNDERSCORE  */
-    KW_SOME = 279,                 /* KW_SOME  */
-    KW_SRC = 280,                  /* KW_SRC  */
-    KW_LET = 281,                  /* KW_LET  */
-    KW_IN = 282,                   /* KW_IN  */
-    TOKEN_NAT = 283,               /* TOKEN_NAT  */
-    TOKEN_INT = 284,               /* TOKEN_INT  */
-    TOKEN_BIG_NAT = 285,           /* TOKEN_BIG_NAT  */
-    TOKEN_BIG_INT = 286,           /* TOKEN_BIG_INT  */
-    TOKEN_RATIONAL = 287,          /* TOKEN_RATIONAL  */
-    TOKEN_FLOAT = 288,             /* TOKEN_FLOAT  */
-    TOKEN_DOUBLE = 289,            /* TOKEN_DOUBLE  */
-    TOKEN_NUMBERINO = 290,         /* "numberino"  */
-    TOKEN_BYTE_BUFFER = 291,       /* TOKEN_BYTE_BUFFER  */
-    TOKEN_UUID_V4 = 292,           /* TOKEN_UUID_V4  */
-    TOKEN_UUID_V7 = 293,           /* TOKEN_UUID_V7  */
-    TOKEN_SHA_HASH = 294,          /* TOKEN_SHA_HASH  */
-    TOKEN_STRING = 295,            /* TOKEN_STRING  */
-    TOKEN_ASCII_STRING = 296,      /* TOKEN_ASCII_STRING  */
-    TOKEN_REGEX = 297,             /* TOKEN_REGEX  */
-    TOKEN_PATH_ITEM = 298,         /* TOKEN_PATH_ITEM  */
-    TOKEN_DATE_TIME = 299,         /* TOKEN_DATE_TIME  */
-    TOKEN_UTC_DATE_TIME = 300,     /* TOKEN_UTC_DATE_TIME  */
-    TOKEN_PLAIN_DATE = 301,        /* TOKEN_PLAIN_DATE  */
-    TOKEN_PLAIN_TIME = 302,        /* TOKEN_PLAIN_TIME  */
-    TOKEN_LOGICAL_TIME = 303,      /* TOKEN_LOGICAL_TIME  */
-    TOKEN_TICK_TIME = 304,         /* TOKEN_TICK_TIME  */
-    TOKEN_TIMESTAMP = 305,         /* TOKEN_TIMESTAMP  */
-    TOKEN_IDENTIFIER = 306,        /* "identifier"  */
-    TOKEN_TYPE_COMPONENT = 307,    /* "type name"  */
-    TOKEN_UNSPEC_IDENTIFIER = 308  /* "unspec identifier"  */
+    SYM_ENTRY = 272,               /* SYM_ENTRY  */
+    SYM_BANG = 273,                /* SYM_BANG  */
+    SYM_EQUALS = 274,              /* SYM_EQUALS  */
+    SYM_DOT = 275,                 /* SYM_DOT  */
+    SYM_AT = 276,                  /* SYM_AT  */
+    SYM_UNDERSCORE = 277,          /* SYM_UNDERSCORE  */
+    KW_SOME = 278,                 /* KW_SOME  */
+    KW_SRC = 279,                  /* KW_SRC  */
+    KW_LET = 280,                  /* KW_LET  */
+    KW_IN = 281,                   /* KW_IN  */
+    TOKEN_NAT = 282,               /* TOKEN_NAT  */
+    TOKEN_INT = 283,               /* TOKEN_INT  */
+    TOKEN_BIG_NAT = 284,           /* TOKEN_BIG_NAT  */
+    TOKEN_BIG_INT = 285,           /* TOKEN_BIG_INT  */
+    TOKEN_RATIONAL = 286,          /* TOKEN_RATIONAL  */
+    TOKEN_FLOAT = 287,             /* TOKEN_FLOAT  */
+    TOKEN_DECIMAL = 288,           /* TOKEN_DECIMAL  */
+    TOKEN_DECIMAL_DEGREE = 289,    /* TOKEN_DECIMAL_DEGREE  */
+    TOKEN_COMPLEX = 290,           /* TOKEN_COMPLEX  */
+    TOKEN_LAT_LONG = 291,          /* TOKEN_LAT_LONG  */
+    TOKEN_NUMBERINO = 292,         /* "numberino"  */
+    TOKEN_BYTE_BUFFER = 293,       /* TOKEN_BYTE_BUFFER  */
+    TOKEN_UUID_V4 = 294,           /* TOKEN_UUID_V4  */
+    TOKEN_UUID_V7 = 295,           /* TOKEN_UUID_V7  */
+    TOKEN_SHA_HASH = 296,          /* TOKEN_SHA_HASH  */
+    TOKEN_STRING = 297,            /* TOKEN_STRING  */
+    TOKEN_ASCII_STRING = 298,      /* TOKEN_ASCII_STRING  */
+    TOKEN_REGEX = 299,             /* TOKEN_REGEX  */
+    TOKEN_PATH_ITEM = 300,         /* TOKEN_PATH_ITEM  */
+    TOKEN_DATE_TIME = 301,         /* TOKEN_DATE_TIME  */
+    TOKEN_UTC_DATE_TIME = 302,     /* TOKEN_UTC_DATE_TIME  */
+    TOKEN_PLAIN_DATE = 303,        /* TOKEN_PLAIN_DATE  */
+    TOKEN_PLAIN_TIME = 304,        /* TOKEN_PLAIN_TIME  */
+    TOKEN_LOGICAL_TIME = 305,      /* TOKEN_LOGICAL_TIME  */
+    TOKEN_TICK_TIME = 306,         /* TOKEN_TICK_TIME  */
+    TOKEN_TIMESTAMP = 307,         /* TOKEN_TIMESTAMP  */
+    TOKEN_IDENTIFIER = 308,        /* "identifier"  */
+    TOKEN_TYPE_COMPONENT = 309,    /* "type name"  */
+    TOKEN_UNSPEC_IDENTIFIER = 310  /* "unspec identifier"  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -126,7 +128,7 @@ union YYSTYPE
    struct ByteString* bstr;
    char* str;
 
-#line 130 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.h"
+#line 132 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

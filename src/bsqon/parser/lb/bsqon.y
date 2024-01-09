@@ -63,11 +63,11 @@ int errorcount = 0;
 
 %token SYM_DOUBLE_COLON "::"
 
-%token SYM_ELLIPSIS SYM_ENTRY SYM_BANG SYM_EQUALS SYM_DOT SYM_AT SYM_UNDERSCORE
+%token SYM_ENTRY SYM_BANG SYM_EQUALS SYM_DOT SYM_AT SYM_UNDERSCORE
 %token KW_SOME KW_SRC KW_LET KW_IN
 
 %token <str> TOKEN_NAT TOKEN_INT TOKEN_BIG_NAT TOKEN_BIG_INT 
-%token <str> TOKEN_RATIONAL TOKEN_FLOAT TOKEN_DOUBLE
+%token <str> TOKEN_RATIONAL TOKEN_FLOAT TOKEN_DECIMAL TOKEN_DECIMAL_DEGREE TOKEN_COMPLEX TOKEN_LAT_LONG
 %token <str> TOKEN_NUMBERINO "numberino"
 
 %token <str> TOKEN_BYTE_BUFFER TOKEN_UUID_V4 TOKEN_UUID_V7 TOKEN_SHA_HASH
@@ -182,7 +182,7 @@ bsqonliteral:
    | TOKEN_BIG_INT         { $$ = BSQON_AST_LiteralStandardNodeCreate(BSQON_AST_TAG_BigInt, MK_SPOS_S(@1), $1); }
    | TOKEN_RATIONAL        { $$ = BSQON_AST_LiteralStandardNodeCreate(BSQON_AST_TAG_Rational, MK_SPOS_S(@1), $1); }
    | TOKEN_FLOAT           { $$ = BSQON_AST_LiteralStandardNodeCreate(BSQON_AST_TAG_Float, MK_SPOS_S(@1), $1); }
-   | TOKEN_DOUBLE          { $$ = BSQON_AST_LiteralStandardNodeCreate(BSQON_AST_TAG_Decimal, MK_SPOS_S(@1), $1); }
+   | TOKEN_DECIMAL         { $$ = BSQON_AST_LiteralStandardNodeCreate(BSQON_AST_TAG_Decimal, MK_SPOS_S(@1), $1); }
    | TOKEN_BYTE_BUFFER     { $$ = BSQON_AST_LiteralStandardNodeCreate(BSQON_AST_TAG_ByteBuffer, MK_SPOS_S(@1), $1); }
    | TOKEN_UUID_V4         { $$ = BSQON_AST_LiteralStandardNodeCreate(BSQON_AST_TAG_UUIDv4, MK_SPOS_S(@1), $1); }
    | TOKEN_UUID_V7         { $$ = BSQON_AST_LiteralStandardNodeCreate(BSQON_AST_TAG_UUIDv7, MK_SPOS_S(@1), $1); }

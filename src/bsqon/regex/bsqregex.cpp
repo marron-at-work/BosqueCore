@@ -124,7 +124,7 @@ namespace BSQON
 
     std::string BSQCharRangeRe::escapeCode(CharCode c)
     {
-        xxxx;
+        return "ignore me";
     }
 
     BSQCharRangeRe* BSQCharRangeRe::parse(json j)
