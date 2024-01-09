@@ -8,85 +8,13 @@ extern "C"
 {
 #endif
 
-enum BSQON_TYPE_AST_TAG
-{
-    BSQON_TYPE_AST_TAG_Error = 1,
-    BSQON_TYPE_AST_TAG_Nominal,
-    BSQON_TYPE_AST_TAG_NominalExt,
-    BSQON_TYPE_AST_TAG_Tuple,
-    BSQON_TYPE_AST_TAG_Record,
-    BSQON_TYPE_AST_TAG_Conjunction,
-    BSQON_TYPE_AST_TAG_Union
-};
+BSQON_AST_LIST_DECLARE(BSQON_TYPE_AST_Node)
 
-struct BSQON_TYPE_AST_Node
-{
-    enum BSQON_TYPE_AST_TAG tag;
-    struct AST_SourcePos pos;
-};
 
-struct BSQON_TYPE_AST_List
-{
-    struct BSQON_TYPE_AST_Node* value;
-    struct BSQON_TYPE_AST_List* next;
-};
 
-struct BSQON_TYPE_AST_NamedListEntry
-{
-    const char* name;
-    struct BSQON_TYPE_AST_Node* value;
-};
 
-struct BSQON_TYPE_AST_NamedList
-{
-    struct BSQON_TYPE_AST_NamedListEntry* value;
-    struct BSQON_TYPE_AST_NamedList* next;
-};
 
-struct BSQON_TYPE_AST_ErrorNode
-{
-    struct BSQON_TYPE_AST_Node base;
-};
 
-struct BSQON_TYPE_AST_NominalNode
-{
-    struct BSQON_TYPE_AST_Node base;
-    const char* name;
-    struct BSQON_TYPE_AST_List* terms;
-};
-
-struct BSQON_TYPE_AST_NominalExtNode
-{
-    struct BSQON_TYPE_AST_Node base;
-    struct BSQON_TYPE_AST_NominalNode* root;
-    const char* ext;
-};
-
-struct BSQON_TYPE_AST_TupleNode
-{
-    struct BSQON_TYPE_AST_Node base;
-    struct BSQON_TYPE_AST_List* types;
-};
-
-struct BSQON_TYPE_AST_RecordNode
-{
-    struct BSQON_TYPE_AST_Node base;
-    struct BSQON_TYPE_AST_NamedList* entries;
-};
-
-struct BSQON_TYPE_AST_Conjunction
-{
-    struct BSQON_TYPE_AST_Node base;
-    struct BSQON_TYPE_AST_Node* left;
-    struct BSQON_TYPE_AST_Node* right;
-};
-
-struct BSQON_TYPE_AST_Union
-{
-    struct BSQON_TYPE_AST_Node base;
-    struct BSQON_TYPE_AST_Node* left;
-    struct BSQON_TYPE_AST_Node* right;
-};
 
 struct BSQON_TYPE_AST_List* BSQON_TYPE_AST_ListCons(struct BSQON_TYPE_AST_Node* value, struct BSQON_TYPE_AST_List* next);
 struct BSQON_TYPE_AST_List* BSQON_TYPE_AST_ListCompleteParse(struct BSQON_TYPE_AST_List* ll);

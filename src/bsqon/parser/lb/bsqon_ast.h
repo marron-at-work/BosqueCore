@@ -8,9 +8,17 @@ extern "C"
 {
 #endif
 
-enum BSQON_AST_TAG
+typedef enum BSQON_AST_TAG
 {
     BSQON_AST_TAG_Error = 1,
+
+    BSQON_AST_TAG_Nominal,
+    BSQON_AST_TAG_NominalExt,
+    BSQON_AST_TAG_Tuple,
+    BSQON_AST_TAG_Record,
+    BSQON_AST_TAG_Conjunction,
+    BSQON_AST_TAG_Union,
+
     BSQON_AST_TAG_None,
     BSQON_AST_TAG_Nothing,
     BSQON_AST_TAG_True,
@@ -59,36 +67,67 @@ enum BSQON_AST_TAG
     BSQON_AST_TAG_LetIn,
 
     BSQON_AST_TAG_ScopedName
-};
+} BSQON_AST_TAG;
 
-struct BSQON_AST_Node
+typedef struct BSQON_AST_Node
 {
     enum BSQON_AST_TAG tag;
     struct AST_SourcePos pos;
-};
+} BSQON_AST_Node;
 
-struct BSQON_AST_List
-{
-    struct BSQON_AST_Node* value;
-    struct BSQON_AST_List* next;
-};
+BSQON_AST_NODE_DECLARE_0(ErrorNode)
 
-struct BSQON_AST_NamedListEntry
+////////
+//Type nodes
+BSQON_AST_LIST_DECLARE(BSQON_AST_Node)
+typedef BSQON_LIST(BSQON_AST_Node) BSQON_AST_LIST_OF_TYPES;
+
+BSQON_AST_NLIST_DECLARE(BSQON_AST_Node)
+typedef BSQON_NLIST(BSQON_AST_Node) BSQON_AST_NLIST_OF_TYPES;
+
+BSQON_AST_NODE_DECLARE_2(NominalNode, const char*, name, BSQON_AST_LIST_OF_TYPES*, terms)
+
+
+struct BSQON_TYPE_AST_NominalNode
 {
+    struct BSQON_TYPE_AST_Node base;
     const char* name;
-    struct BSQON_AST_Node* value;
+    struct BSQON_TYPE_AST_List* terms;
 };
 
-struct BSQON_AST_NamedList
+struct BSQON_TYPE_AST_NominalExtNode
 {
-    struct BSQON_AST_NamedListEntry* value;
-    struct BSQON_AST_NamedList* next;
+    struct BSQON_TYPE_AST_Node base;
+    struct BSQON_TYPE_AST_NominalNode* root;
+    const char* ext;
 };
 
-struct BSQON_AST_ErrorNode
+struct BSQON_TYPE_AST_TupleNode
 {
-    struct BSQON_AST_Node base;
+    struct BSQON_TYPE_AST_Node base;
+    struct BSQON_TYPE_AST_List* types;
 };
+
+struct BSQON_TYPE_AST_RecordNode
+{
+    struct BSQON_TYPE_AST_Node base;
+    struct BSQON_TYPE_AST_NamedList* entries;
+};
+
+struct BSQON_TYPE_AST_Conjunction
+{
+    struct BSQON_TYPE_AST_Node base;
+    struct BSQON_TYPE_AST_Node* left;
+    struct BSQON_TYPE_AST_Node* right;
+};
+
+struct BSQON_TYPE_AST_Union
+{
+    struct BSQON_TYPE_AST_Node base;
+    struct BSQON_TYPE_AST_Node* left;
+    struct BSQON_TYPE_AST_Node* right;
+};
+
 
 struct BSQON_AST_LiteralSingletonNode
 {
@@ -193,8 +232,6 @@ struct BSQON_AST_NamedList* BSQON_AST_NamedListCompleteParse(struct BSQON_AST_Na
 
 enum BSQON_AST_TAG BSQON_AST_getTag(const struct BSQON_AST_Node* node);
 void BSQON_AST_print(struct BSQON_AST_Node* node);
-
-struct BSQON_AST_Node* BSQON_AST_ErrorNodeCreate(struct AST_SourcePos pos);
 
 struct BSQON_AST_LiteralSingletonNode* BSQON_AST_asLiteralSingletonNode(const struct BSQON_AST_Node* node);
 struct BSQON_AST_Node* BSQON_AST_LiteralSingletonNodeCreate(enum BSQON_AST_TAG tag, struct AST_SourcePos pos);

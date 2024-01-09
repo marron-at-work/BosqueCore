@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <assert.h>
 
+/*
+
 struct BSQON_AST_List* BSQON_AST_ListCons(struct BSQON_AST_Node* value, struct BSQON_AST_List* next)
 {
     struct BSQON_AST_List* node = (struct BSQON_AST_List*)AST_ALLOC(sizeof(struct BSQON_AST_List));
@@ -469,3 +471,4 @@ void BSQON_AST_ScopedNameNode_print(struct BSQON_AST_ScopedNameNode* node)
     BSQON_TYPE_AST_print(node->root);
     printf("::%s", node->identifier);
 }
+*/
