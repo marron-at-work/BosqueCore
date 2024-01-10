@@ -16,8 +16,8 @@ CPPFLAGS=-g -ggdb -fno-omit-frame-pointer -Wall -Wextra -Wno-unused-parameter -W
 
 CFG_SOURCES=$(BSQON_CFG_DIR)bsqon.y $(BSQON_CFG_DIR)bsqon.l
 
-PARSER_HEADERS=$(BSQON_CFG_DIR)bytestring.h $(BSQON_CFG_DIR)bsqon_type_ast.h $(BSQON_CFG_DIR)bsqon_ast.h $(BSQON_CFG_DIR)bsqon.tab.h
-PARSER_SOURCES=$(BSQON_CFG_DIR)bytestring.c $(BSQON_CFG_DIR)bsqon_type_ast.c $(BSQON_CFG_DIR)bsqon_ast.c $(BSQON_CFG_DIR)bsqon.tab.c $(BSQON_CFG_DIR)lex.yy.c
+PARSER_HEADERS=$(BSQON_CFG_DIR)bytestring.h $(BSQON_CFG_DIR)bsqon_ast_common.h $(BSQON_CFG_DIR)bsqon_ast.h $(BSQON_CFG_DIR)bsqon.tab.h
+PARSER_SOURCES=$(BSQON_CFG_DIR)bytestring.c $(BSQON_CFG_DIR)bsqon_ast_common.c $(BSQON_CFG_DIR)bsqon_ast.c $(BSQON_CFG_DIR)bsqon.tab.c $(BSQON_CFG_DIR)lex.yy.c
 PARSER_OBJS=$(OUT_OBJ)bytestring.o $(OUT_OBJ)bsqon_type_ast.o $(OUT_OBJ)bsqon_ast.o $(OUT_OBJ)bsqon.tab.o $(OUT_OBJ)lex.yy.o
 
 BSQON_HEADERS=$(SRC_DIR)../common.h $(SRC_DIR)../regex/bsqregex.h $(SRC_DIR)../regex/bsqpath.h $(SRC_DIR)../info/type_info.h $(SRC_DIR)../info/bsqon.h $(SRC_DIR)bsqon_parse.h

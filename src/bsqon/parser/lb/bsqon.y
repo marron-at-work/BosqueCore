@@ -28,18 +28,21 @@ int errorcount = 0;
 %}
 
 %union {
-   struct BSQON_TYPE_AST_List* bsqon_t_list;
-   struct BSQON_TYPE_AST_NamedListEntry* bsqon_t_nametypel_entry;
-   struct BSQON_TYPE_AST_NamedList* bsqon_t_namedlist;
-   struct BSQON_TYPE_AST_Node* bsqon_t;
-
-   struct BSQON_AST_NamedListEntry* bsqon_nameval_entry;
-   struct BSQON_AST_List* bsqon_list;
-   struct BSQON_AST_NamedList* bsqon_namedlist;
-
-   struct BSQON_AST_Node* bsqon;
-   struct ByteString* bstr;
    char* str;
+   ByteString* bstr;
+
+   BSQON_AST_Node* bsqon_type_node;
+   BSQON_AST_Node* bsqon_value_node;
+
+   BSQON_AST_LIST_OF_TYPES* bsqon_type_list;
+
+   BSQON_AST_NLIST_OF_TYPES_ENTRY bsqon_named_type_list_entry;
+   BSQON_AST_NLIST_OF_TYPES* bsqon_named_type_list;
+
+   BSQON_AST_LIST_OF_VALUES* bsqon_value_list;
+
+   BSQON_AST_NLIST_OF_VALUES_ENTRY bsqon_named_value_list_entry;
+   BSQON_AST_NLIST_OF_VALUES* bsqon_named_value_list;
 }
 
 %define parse.error verbose
@@ -48,9 +51,6 @@ int errorcount = 0;
 /* declare tokens */
 %left SYM_BAR "|"
 %left SYM_AMP "&"
-
-%token SYM_COLON ":"
-%token SYM_COMMA ","
 
 %token KW_NONE "none"
 %token KW_NOTHING "nothing"
@@ -61,32 +61,71 @@ int errorcount = 0;
 %token KW_OK "ok"
 %token KW_ERR "err"
 
+%token KW_SRC "$src"
+%token KW_LET "let"
+%token KW_IN "in"
+
 %token SYM_DOUBLE_COLON "::"
+%token SYM_ENTRY "=>"
+%token SYM_COLON ":"
+%token SYM_COMMA ","
+%token SYM_EQUALS "="
+%token SYM_UNDERSCORE "_"
 
-%token SYM_ENTRY SYM_BANG SYM_EQUALS SYM_DOT SYM_AT SYM_UNDERSCORE
-%token KW_SOME KW_SRC KW_LET KW_IN
+%token <str> TOKEN_NAT "nat literal"
+%token <str> TOKEN_INT "int literal"
+%token <str> TOKEN_BIG_NAT "big nat literal" 
+%token <str> TOKEN_BIG_INT "big int literal"
 
-%token <str> TOKEN_NAT TOKEN_INT TOKEN_BIG_NAT TOKEN_BIG_INT 
-%token <str> TOKEN_RATIONAL TOKEN_FLOAT TOKEN_DECIMAL TOKEN_DECIMAL_DEGREE TOKEN_COMPLEX TOKEN_LAT_LONG
+%token <str> TOKEN_RATIONAL "rational literal"
+%token <str> TOKEN_FLOAT "float literal"
+%token <str> TOKEN_DECIMAL "decimal literal"
+%token <str> TOKEN_DECIMAL_DEGREE "decimal degree literal"
+%token <str> TOKEN_COMPLEX "complex literal"
+%token <str> TOKEN_LAT_LONG "geo coordinate literal"
+
 %token <str> TOKEN_NUMBERINO "numberino"
 
-%token <str> TOKEN_BYTE_BUFFER TOKEN_UUID_V4 TOKEN_UUID_V7 TOKEN_SHA_HASH
-%token <bstr> TOKEN_STRING TOKEN_ASCII_STRING TOKEN_REGEX TOKEN_PATH_ITEM
+%token <str> TOKEN_BYTE_BUFFER "byte buffer"
+%token <str> TOKEN_UUID_V4 "uuid (v4)"
+%token <str> TOKEN_UUID_V7 "uuid (v7)"
+%token <str> TOKEN_SHA_HASH "sha3 hashcode (512 bits)"
 
-%token <str> TOKEN_DATE_TIME TOKEN_UTC_DATE_TIME TOKEN_PLAIN_DATE TOKEN_PLAIN_TIME
-%token <str> TOKEN_LOGICAL_TIME TOKEN_TICK_TIME TOKEN_TIMESTAMP
+%token <bstr> TOKEN_STRING "string"
+%token <bstr> TOKEN_ASCII_STRING "ascii string"
+%token <bstr> TOKEN_REGEX "regular expression"
+%token <bstr> TOKEN_PATH_ITEM "path item"
+
+%token <str> TOKEN_DATE_TIME "date & time with timezone"
+%token <str> TOKEN_UTC_DATE_TIME "date & time in UTC"
+%token <str> TOKEN_PLAIN_DATE "plain date"
+%token <str> TOKEN_PLAIN_TIME "plain time"
+
+%token <str> TOKEN_LOGICAL_TIME "logical time"
+%token <str> TOKEN_TICK_TIME "tick time"
+%token <str> TOKEN_TIMESTAMP "ISO timestamp"
 
 %token <str> TOKEN_IDENTIFIER "identifier"
 %token <str> TOKEN_TYPE_COMPONENT "type name"
 %token <str> TOKEN_UNSPEC_IDENTIFIER "unspec identifier"
 
-  /* %type <a> exp stmt list explist */
-  /* %type <sl> symlist */
+%token SYM_BANG SYM_DOT SYM_AT KW_SOME
  
-%type <bsqon_t> bsqontypel_entry
-%type <bsqon_t_nametypel_entry> bsqonnametypel_entry
-%type <bsqon_t_list> bsqontypel bsqontermslist
-%type <bsqon_t_namedlist> bsqonnametypel
+%type <bsqon_type_node> bsqontypel_entry
+%type <bsqon_type_list> bsqontypel
+
+%type <bsqon_named_type_list_entry> bsqonnametypel_entry
+%type <bsqon_named_type_list> bsqonnametypel
+
+%type <bsqon_value_node> 
+%type <bsqon_value_list>
+
+%type <bsqon_named_value_list_entry>
+%type <bsqon_named_value_list>
+
+
+%type <bsqon_t_list>  bsqontermslist
+%type <bsqon_t_namedlist> 
 %type <bsqon_t> bsqontype bsqonnominaltype bsqontupletype bsqonrecordtype bsqontspec
 
 %type <bsqon> bsqonl_entry
@@ -107,23 +146,23 @@ int errorcount = 0;
 %%
 
 bsqontypel:
-   bsqontypel bsqontypel_entry { $$ = BSQON_TYPE_AST_ListCons($2, $1); }
-   | bsqontypel_entry { $$ = BSQON_TYPE_AST_ListCons($1, NULL); }
+   bsqontypel bsqontypel_entry { $$ = BSQON_AST_LIST_OF_TYPES_Push($2, $1); }
+   | bsqontypel_entry { $$ = BSQON_AST_LIST_OF_TYPES_Singleton($1); }
 ;
 
 bsqontypel_entry:
    bsqontype SYM_COMMA { $$ = $1; }
-   | error SYM_COMMA { $$ = BSQON_TYPE_AST_ErrorNodeCreate(MK_SPOS_S(@1)); yyerrok; }
+   | error SYM_COMMA { $$ = BSQON_AST_NODE_CONS(ErrorNode, MK_SPOS_S(@1)); yyerrok; }
 ;
 
 bsqonnametypel:
-   bsqonnametypel bsqonnametypel_entry { $$ = BSQON_TYPE_AST_NamedListCons($2, $1); }
-   | bsqonnametypel_entry { $$ = BSQON_TYPE_AST_NamedListCons($1, NULL); }
+   bsqonnametypel bsqonnametypel_entry { $$ = BSQON_AST_NLIST_OF_TYPES_Push($2, $1); }
+   | bsqonnametypel_entry { $$ = BSQON_AST_NLIST_OF_TYPES_Singleton($1); }
 ;
 
 bsqonnametypel_entry:
-   TOKEN_IDENTIFIER SYM_COLON bsqontype SYM_COMMA { $$ = BSQON_TYPE_AST_NamedListEntryCreate($1, $3); }
-   | TOKEN_IDENTIFIER SYM_COLON error SYM_COMMA { $$ = BSQON_TYPE_AST_NamedListEntryCreate($1, BSQON_TYPE_AST_ErrorNodeCreate(MK_SPOS_S(@3))); yyerrok; }
+   TOKEN_IDENTIFIER SYM_COLON bsqontype SYM_COMMA { $$ = BSQON_AST_NLIST_OF_TYPES_ENTRY_Create($1, $3); }
+   | TOKEN_IDENTIFIER SYM_COLON error SYM_COMMA { $$ = BSQON_AST_NLIST_OF_TYPES_ENTRY_Create($1, BSQON_AST_NODE_CONS(ErrorNode, MK_SPOS_S(@3))); yyerrok; }
 ;
 
 bsqonnominaltype:

@@ -28,6 +28,8 @@ AST_SourcePos createSourcePos(uint32_t first_line, uint32_t first_column, uint32
 //List Macros
 
 #define BSQON_LIST(T) BSQON_LIST_OF_##T
+
+#define BSQON_NLIST_ENTRY(T) BSQON_NLIST_ENTRY_OF_##T
 #define BSQON_NLIST(T) BSQON_NLIST_OF_##T
 
 #define BSQON_AST_LIST_DECLARE(T) \
@@ -46,18 +48,24 @@ void BSQON_LIST_##T##Print(BSQON_LIST(T)* ll);
 #define BSQON_LIST_Print(T, L) BSQON_LIST_##T##Print(L)
 
 #define BSQON_AST_NLIST_DECLARE(T) \
-typedef struct BSQON_NLIST(T) \
+typedef struct BSQON_NLIST_ENTRY(T) \
 { \
     const char* name; \
-    T* value; \
+    T value; \
+} BSQON_NLIST_ENTRY(T); \
+typedef struct BSQON_NLIST(T) \
+{ \
+    BSQON_NLIST_ENTRY(T) entry; \
     BSQON_NLIST(T)* next; \
 } BSQON_NLIST(T); \
 BSQON_NLIST(T)* BSQON_NLIST_##T##Reverse(BSQON_NLIST(T)* ll); \
 void BSQON_NLIST_##T##Print(BSQON_NLIST(T)* ll);
 
+#define BSQON_NLIST_ENTRY_Create(T, N, V) (BSQON_NLIST_ENTRY(T) { .name = N, .value = V })
+
 #define BSQON_NLIST_Empty(T) NULL
-#define BSQON_NLIST_Singleton(T, N, V) memcpy(AST_ALLOC(sizeof(BSQON_NLIST(T))), BSQON_NLIST(T) { .name = N, .value = V, .next = NULL }, sizeof(BSQON_NLIST(T)))
-#define BSQON_NLIST_Push(T, L, N, V) memcpy(AST_ALLOC(sizeof(BSQON_NLIST(T))), BSQON_NLIST(T) { .name = N, .value = V, .next = L }, sizeof(BSQON_NLIST(T)))
+#define BSQON_NLIST_Singleton(T, E) memcpy(AST_ALLOC(sizeof(BSQON_NLIST(T))), BSQON_NLIST(T) { .entry = E, .next = NULL }, sizeof(BSQON_NLIST(T)))
+#define BSQON_NLIST_Push(T, L, E) memcpy(AST_ALLOC(sizeof(BSQON_NLIST(T))), BSQON_NLIST(T) { .entry = E, .next = L }, sizeof(BSQON_NLIST(T)))
 #define BSQON_NLIST_Reverse(T, L) BSQON_NLIST_##T##Reverse(L)
 #define BSQON_NLIST_Print(T, L) BSQON_NLIST_##T##Print(L)
 
@@ -161,8 +169,8 @@ void BSQON_NLIST_##T##Print(BSQON_NLIST(T)* list) \
 { \
     for(BSQON_NLIST(T)* ll = list; ll != NULL; ll = ll->next) \
     { \
-        printf("%s: ", ll->name); \
-        BSQON_AST_print(ll->value); \
+        printf("%s: ", ll->entry.name); \
+        BSQON_AST_print(ll->entry.value); \
         if(ll->next != NULL) { \
             printf(", "); \
         } \
