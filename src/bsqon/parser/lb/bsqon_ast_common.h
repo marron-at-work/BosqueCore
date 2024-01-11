@@ -43,7 +43,7 @@ void BSQON_LIST_##T##Print(BSQON_LIST(T)* ll);
 
 #define BSQON_LIST_Empty(T) NULL
 #define BSQON_LIST_Singleton(T, V) memcpy(AST_ALLOC(sizeof(BSQON_LIST(T))), BSQON_LIST(T) { .value = V, .next = NULL }, sizeof(BSQON_LIST(T)))
-#define BSQON_LIST_Push(T, L, V) memcpy(AST_ALLOC(sizeof(BSQON_LIST(T))), BSQON_LIST(T) { .value = V, .next = L }, sizeof(BSQON_LIST(T)))
+#define BSQON_LIST_Push(T, V, L) memcpy(AST_ALLOC(sizeof(BSQON_LIST(T))), BSQON_LIST(T) { .value = V, .next = L }, sizeof(BSQON_LIST(T)))
 #define BSQON_LIST_Reverse(T, L) BSQON_LIST_##T##Reverse(L)
 #define BSQON_LIST_Print(T, L) BSQON_LIST_##T##Print(L)
 
@@ -51,7 +51,7 @@ void BSQON_LIST_##T##Print(BSQON_LIST(T)* ll);
 typedef struct BSQON_NLIST_ENTRY(T) \
 { \
     const char* name; \
-    T value; \
+    T* value; \
 } BSQON_NLIST_ENTRY(T); \
 typedef struct BSQON_NLIST(T) \
 { \
@@ -65,7 +65,7 @@ void BSQON_NLIST_##T##Print(BSQON_NLIST(T)* ll);
 
 #define BSQON_NLIST_Empty(T) NULL
 #define BSQON_NLIST_Singleton(T, E) memcpy(AST_ALLOC(sizeof(BSQON_NLIST(T))), BSQON_NLIST(T) { .entry = E, .next = NULL }, sizeof(BSQON_NLIST(T)))
-#define BSQON_NLIST_Push(T, L, E) memcpy(AST_ALLOC(sizeof(BSQON_NLIST(T))), BSQON_NLIST(T) { .entry = E, .next = L }, sizeof(BSQON_NLIST(T)))
+#define BSQON_NLIST_Push(T, E, L) memcpy(AST_ALLOC(sizeof(BSQON_NLIST(T))), BSQON_NLIST(T) { .entry = E, .next = L }, sizeof(BSQON_NLIST(T)))
 #define BSQON_NLIST_Reverse(T, L) BSQON_NLIST_##T##Reverse(L)
 #define BSQON_NLIST_Print(T, L) BSQON_NLIST_##T##Print(L)
 

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "bytestring.h"
-#include "bsqon_type_ast.h"
+#include "bsqon_ast_common.h"
 
 #ifdef __cplusplus
 extern "C" 
@@ -88,7 +88,7 @@ BSQON_AST_NLIST_DECLARE(BSQON_AST_Node)
 typedef BSQON_LIST(BSQON_AST_Node) BSQON_AST_LIST_OF_TYPES;
 #define BSQON_AST_LIST_OF_TYPES_Empty BSQON_LIST_Empty(BSQON_AST_Node)
 #define BSQON_AST_LIST_OF_TYPES_Singleton(V) BSQON_LIST_Singleton(BSQON_AST_Node, V)
-#define BSQON_AST_LIST_OF_TYPES_Push(L, V) BSQON_LIST_Push(BSQON_AST_Node, L, V)
+#define BSQON_AST_LIST_OF_TYPES_Push(V, L) BSQON_LIST_Push(BSQON_AST_Node, V, L)
 #define BSQON_AST_LIST_OF_TYPES_Reverse(L) BSQON_LIST_Reverse(BSQON_AST_Node, L)
 
 typedef BSQON_NLIST_ENTRY(BSQON_AST_Node) BSQON_AST_NLIST_OF_TYPES_ENTRY;
@@ -97,7 +97,7 @@ typedef BSQON_NLIST_ENTRY(BSQON_AST_Node) BSQON_AST_NLIST_OF_TYPES_ENTRY;
 typedef BSQON_NLIST(BSQON_AST_Node) BSQON_AST_NLIST_OF_TYPES;
 #define BSQON_AST_NLIST_OF_TYPES_Empty BSQON_NLIST_Empty(BSQON_AST_Node)
 #define BSQON_AST_NLIST_OF_TYPES_Singleton(V) BSQON_NLIST_Singleton(BSQON_AST_Node, V)
-#define BSQON_AST_NLIST_OF_TYPES_Push(L, V) BSQON_NLIST_Push(BSQON_AST_Node, L, V)
+#define BSQON_AST_NLIST_OF_TYPES_Push(V, L) BSQON_NLIST_Push(BSQON_AST_Node, V, L)
 #define BSQON_AST_NLIST_OF_TYPES_Reverse(L) BSQON_NLIST_Reverse(BSQON_AST_Node, L)
 
 BSQON_AST_NODE_DECLARE_2(NominalType, const char*, name, BSQON_AST_LIST_OF_TYPES*, terms)
@@ -111,7 +111,7 @@ BSQON_AST_NODE_DECLARE_2(UnionType, BSQON_AST_Node*, left, BSQON_AST_Node*, righ
 typedef BSQON_LIST(BSQON_AST_Node) BSQON_AST_LIST_OF_VALUES;
 #define BSQON_AST_LIST_OF_VALUES_Empty BSQON_LIST_Empty(BSQON_AST_Node)
 #define BSQON_AST_LIST_OF_VALUES_Singleton(V) BSQON_LIST_Singleton(BSQON_AST_Node, V)
-#define BSQON_AST_LIST_OF_VALUES_Push(L, V) BSQON_LIST_Push(BSQON_AST_Node, L, V)
+#define BSQON_AST_LIST_OF_VALUES_Push(V, L) BSQON_LIST_Push(BSQON_AST_Node, V, L)
 #define BSQON_AST_LIST_OF_VALUES_Reverse(L) BSQON_LIST_Reverse(BSQON_AST_Node, L)
 
 typedef BSQON_NLIST_ENTRY(BSQON_AST_Node) BSQON_AST_NLIST_OF_VALUES_ENTRY;
@@ -120,7 +120,7 @@ typedef BSQON_NLIST_ENTRY(BSQON_AST_Node) BSQON_AST_NLIST_OF_VALUES_ENTRY;
 typedef BSQON_NLIST(BSQON_AST_Node) BSQON_AST_NLIST_OF_VALUES;
 #define BSQON_AST_NLIST_OF_VALUES_Empty BSQON_NLIST_Empty(BSQON_AST_Node)
 #define BSQON_AST_NLIST_OF_VALUES_Singleton(V) BSQON_NLIST_Singleton(BSQON_AST_Node, V)
-#define BSQON_AST_NLIST_OF_VALUES_Push(L, V) BSQON_NLIST_Push(BSQON_AST_Node, L, V)
+#define BSQON_AST_NLIST_OF_VALUES_Push(V, L) BSQON_NLIST_Push(BSQON_AST_Node, V, L)
 #define BSQON_AST_NLIST_OF_VALUES_Reverse(L) BSQON_NLIST_Reverse(BSQON_AST_Node, L)
 
 BSQON_AST_NODE_DECLARE_0(SingletonValue)
@@ -129,7 +129,7 @@ BSQON_AST_NODE_DECLARE_1(LiteralStringValue, ByteString*, data)
 
 BSQON_AST_NODE_DECLARE_1(NameValue, const char*, data)
 BSQON_AST_NODE_DECLARE_2(StringOfValue, ByteString*, data, BSQON_AST_Node*, type)
-BSQON_AST_NODE_DECLARE_2(PathValue, BSQON_AST_NODE(LiteralStringValue)*, data, BSQON_AST_Node*, type)
+BSQON_AST_NODE_DECLARE_2(PathValue, BSQON_AST_Node*, data, BSQON_AST_Node*, type)
 BSQON_AST_NODE_DECLARE_2(TypedLiteralValue, BSQON_AST_Node*, data, BSQON_AST_Node*, type)
 BSQON_AST_NODE_DECLARE_2(MapEntryValue, BSQON_AST_Node*, key, BSQON_AST_Node*, value)
 BSQON_AST_NODE_DECLARE_1(BracketValue, BSQON_AST_LIST_OF_VALUES*, values)

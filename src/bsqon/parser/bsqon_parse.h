@@ -7,7 +7,6 @@
 #include "../info/type_info.h"
 #include "../info/bsqon.h"
 
-#include "lb/bsqon_type_ast.h"
 #include "lb/bsqon_ast.h"
 
 namespace BSQON
