@@ -1105,7 +1105,7 @@ std::cout << "XX" << std::endl;
 
         const BSQRegex* vre = this->assembly->revalidators.at(t->oftype);
 
-        ByteString* sstr;
+        struct ByteString* sstr;
         if(node->tag == BSQON_AST_TAG_String) {
             sstr = BSQON_AST_asLiteralStringNode(node)->data;
         }
@@ -1137,7 +1137,7 @@ std::cout << "XX" << std::endl;
 
         const BSQRegex* vre = this->assembly->revalidators.at(t->oftype);
 
-        ByteString* sstr;
+        struct ByteString* sstr;
         if(node->tag == BSQON_AST_TAG_ASCIIString) {
             sstr = BSQON_AST_asLiteralStringNode(node)->data;
         }

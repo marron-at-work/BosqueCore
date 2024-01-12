@@ -9,7 +9,7 @@ BSQON_AST_LIST_DEFINE(BSQON_AST_Node)
 BSQON_AST_NLIST_DEFINE(BSQON_AST_Node)
 
 BSQON_AST_NODE_DEFINE_2(NominalType, const char*, name, BSQON_AST_LIST_OF_TYPES*, terms)
-BSQON_AST_NODE_DEFINE_2(NominalScopedType, BSQON_AST_NODE(NominalType)*, root, const char*, ext)
+BSQON_AST_NODE_DEFINE_2(NominalScopedType, BSQON_AST_Node*, root, const char*, ext)
 BSQON_AST_NODE_DEFINE_1(TupleType, BSQON_AST_LIST_OF_TYPES*, types)
 BSQON_AST_NODE_DEFINE_1(RecordType, BSQON_AST_NLIST_OF_TYPES*, entries)
 BSQON_AST_NODE_DEFINE_2(ConjunctionType, BSQON_AST_Node*, left, BSQON_AST_Node*, right)
@@ -17,11 +17,11 @@ BSQON_AST_NODE_DEFINE_2(UnionType, BSQON_AST_Node*, left, BSQON_AST_Node*, right
 
 BSQON_AST_NODE_DEFINE_0(SingletonValue)
 BSQON_AST_NODE_DEFINE_1(LiteralStandardValue, const char*, data)
-BSQON_AST_NODE_DEFINE_1(LiteralStringValue, ByteString*, data)
+BSQON_AST_NODE_DEFINE_1(LiteralStringValue, struct ByteString*, data)
 
 BSQON_AST_NODE_DEFINE_1(NameValue, const char*, data)
-BSQON_AST_NODE_DEFINE_2(StringOfValue, ByteString*, data, BSQON_AST_Node*, type)
-BSQON_AST_NODE_DEFINE_2(PathValue, BSQON_AST_NODE(LiteralStringValue)*, data, BSQON_AST_Node*, type)
+BSQON_AST_NODE_DEFINE_2(StringOfValue, struct ByteString*, data, BSQON_AST_Node*, type)
+BSQON_AST_NODE_DEFINE_2(PathValue, BSQON_AST_Node*, data, BSQON_AST_Node*, type)
 BSQON_AST_NODE_DEFINE_2(TypedLiteralValue, BSQON_AST_Node*, data, BSQON_AST_Node*, type)
 BSQON_AST_NODE_DEFINE_2(MapEntryValue, BSQON_AST_Node*, key, BSQON_AST_Node*, value)
 BSQON_AST_NODE_DEFINE_1(BracketValue, BSQON_AST_LIST_OF_VALUES*, values)
@@ -32,7 +32,7 @@ BSQON_AST_NODE_DEFINE_2(SpecialConsValue, BSQON_AST_Node*, value, const char*, c
 BSQON_AST_NODE_DEFINE_2(ScopedNameValue, BSQON_AST_Node*, root, const char*, identifier)
 BSQON_AST_NODE_DEFINE_4(LetInValue, const char*, vname, BSQON_AST_Node*, vtype, BSQON_AST_Node*, value, BSQON_AST_Node*, exp)
 
-BSQON_AST_TAG BSQON_AST_getTag(const BSQON_AST_Node* node)
+enum BSQON_AST_TAG BSQON_AST_getTag(const BSQON_AST_Node* node)
 {
     return node->tag;
 }
@@ -98,7 +98,7 @@ const char* BSQON_AST_getTagName(const BSQON_AST_Node* node)
     }
 }
 
-void BSQON_AST_print(BSQON_AST_Node* node)
+void BSQON_AST_print(const BSQON_AST_Node* node)
 {
     switch (node->tag)
     {
@@ -107,40 +107,40 @@ void BSQON_AST_print(BSQON_AST_Node* node)
         break;
     }
     case BSQON_AST_TAG_NominalType: {
-        BSQON_AST_NODE(NominalType)* nn = BSQON_AST_NODE_AS(NominalType, node);
+        const BSQON_AST_NODE(NominalType)* nn = BSQON_AST_NODE_AS(NominalType, node);
         printf("%s", nn->name);
         if(nn->terms != NULL) {
             printf("<");
-            BSQON_LIST_Print(NominalType, nn->terms);
+            BSQON_AST_LIST_OF_TYPES_Print(nn->terms);
             printf(">");
         }
         break;
     }
     case BSQON_AST_TAG_NominalScopedType: {
-        BSQON_AST_NODE(NominalScopedType)* nn = BSQON_AST_NODE_AS(NominalScopedType, node);
+        const BSQON_AST_NODE(NominalScopedType)* nn = BSQON_AST_NODE_AS(NominalScopedType, node);
 
         BSQON_AST_print(nn->root);
         printf("::%s", nn->ext);
         break;
     }
     case BSQON_AST_TAG_TupleType: {
-        BSQON_AST_NODE(TupleType)* nn = BSQON_AST_NODE_AS(TupleType, node);
+        const BSQON_AST_NODE(TupleType)* nn = BSQON_AST_NODE_AS(TupleType, node);
 
         printf("[");
-        BSQON_LIST_Print(TupleType, nn->types);
+        BSQON_AST_LIST_OF_TYPES_Print(nn->types);
         printf("]");
         break;
     }
     case BSQON_AST_TAG_RecordType: {
-        BSQON_AST_NODE(RecordType)* nn = BSQON_AST_NODE_AS(RecordType, node);
+        const BSQON_AST_NODE(RecordType)* nn = BSQON_AST_NODE_AS(RecordType, node);
 
         printf("{");
-        BSQON_NLIST_Print(RecordType, nn->entries);
+        BSQON_AST_NLIST_OF_TYPES_Print(nn->entries);
         printf("}");
         break;
     }
     case BSQON_AST_TAG_ConjunctionType: {
-        BSQON_AST_NODE(ConjunctionType)* nn = BSQON_AST_NODE_AS(ConjunctionType, node);
+        const BSQON_AST_NODE(ConjunctionType)* nn = BSQON_AST_NODE_AS(ConjunctionType, node);
 
         BSQON_AST_print(nn->left);
         printf("&");
@@ -148,7 +148,7 @@ void BSQON_AST_print(BSQON_AST_Node* node)
         break;
     }
     case BSQON_AST_TAG_UnionType: {
-        BSQON_AST_NODE(UnionType)* nn = BSQON_AST_NODE_AS(UnionType, node);
+        const BSQON_AST_NODE(UnionType)* nn = BSQON_AST_NODE_AS(UnionType, node);
 
         if(BSQON_AST_getTag(nn->left) != BSQON_AST_TAG_ConjunctionType) {
             BSQON_AST_print(nn->left);
@@ -194,7 +194,7 @@ void BSQON_AST_print(BSQON_AST_Node* node)
     case BSQON_AST_TAG_UUIDv4Value:
     case BSQON_AST_TAG_UUIDv7Value:
     case BSQON_AST_TAG_SHAHashcodeValue: {
-        BSQON_AST_NODE(LiteralStandardValue)* nn = BSQON_AST_NODE_AS(LiteralStandardValue, node);
+        const BSQON_AST_NODE(LiteralStandardValue)* nn = BSQON_AST_NODE_AS(LiteralStandardValue, node);
         printf("%s", nn->data);
         break;
     }
@@ -202,7 +202,7 @@ void BSQON_AST_print(BSQON_AST_Node* node)
     case BSQON_AST_TAG_ASCIIStringValue:
     case BSQON_AST_TAG_NakedPathValue:
     case BSQON_AST_TAG_RegexValue: {
-        BSQON_AST_NODE(LiteralStringValue)* nn = BSQON_AST_NODE_AS(LiteralStringValue, node);
+        const BSQON_AST_NODE(LiteralStringValue)* nn = BSQON_AST_NODE_AS(LiteralStringValue, node);
         printf("%s", nn->data->bytes);
         break;
     }
@@ -213,64 +213,64 @@ void BSQON_AST_print(BSQON_AST_Node* node)
     case BSQON_AST_TAG_LogicalTimeValue:
     case BSQON_AST_TAG_TickTimeValue:
     case BSQON_AST_TAG_TimestampValue: {
-        BSQON_AST_NODE(LiteralStandardValue)* nn = BSQON_AST_NODE_AS(LiteralStandardValue, node);
+        const BSQON_AST_NODE(LiteralStandardValue)* nn = BSQON_AST_NODE_AS(LiteralStandardValue, node);
         printf("%s", nn->data);
         break;
     }
     case BSQON_AST_TAG_IdentifierValue:
     case BSQON_AST_TAG_UnspecIdentifierValue: {
-        BSQON_AST_NODE(NameValue)* nn = BSQON_AST_NODE_AS(NameValue, node);
+        const BSQON_AST_NODE(NameValue)* nn = BSQON_AST_NODE_AS(NameValue, node);
         printf("%s", nn->data);
         break;
     }
     case BSQON_AST_TAG_StringOfValue:
     case BSQON_AST_TAG_ASCIIStringOfValue: {
-        BSQON_AST_NODE(StringOfValue)* nn = BSQON_AST_NODE_AS(StringOfValue, node);
+        const BSQON_AST_NODE(StringOfValue)* nn = BSQON_AST_NODE_AS(StringOfValue, node);
         printf("%s", nn->data->bytes);
-        BSQON_TYPE_AST_print(nn->type);
+        BSQON_AST_print(nn->type);
         break;
     }
     case BSQON_AST_TAG_PathValue: {
-        BSQON_AST_NODE(PathValue)* nn = BSQON_AST_NODE_AS(PathValue, node);
-        printf("%s", (char*)nn->data->data->bytes);
-        BSQON_TYPE_AST_print(nn->type);
+        const BSQON_AST_NODE(PathValue)* nn = BSQON_AST_NODE_AS(PathValue, node);
+        printf("%s", (char*)(BSQON_AST_NODE_AS(LiteralStringValue, nn->data)->data->bytes));
+        BSQON_AST_print(nn->type);
         break;
     }
     case BSQON_AST_TAG_TypedLiteralValue: {
-        BSQON_AST_NODE(TypedLiteralValue)* nn = BSQON_AST_NODE_AS(TypedLiteralValue, node);
+        const BSQON_AST_NODE(TypedLiteralValue)* nn = BSQON_AST_NODE_AS(TypedLiteralValue, node);
         BSQON_AST_print(nn->data);
         printf("_");
-        BSQON_TYPE_AST_print(nn->type);
+        BSQON_AST_print(nn->type);
         break;
     }
     case BSQON_AST_TAG_MapEntryValue: {
-        BSQON_AST_NODE(MapEntryValue)* nn = BSQON_AST_NODE_AS(MapEntryValue, node);
+        const BSQON_AST_NODE(MapEntryValue)* nn = BSQON_AST_NODE_AS(MapEntryValue, node);
         BSQON_AST_print(nn->key);
         printf("=>");
         BSQON_AST_print(nn->value);
         break;
     }
     case BSQON_AST_TAG_BracketValue: {
-        BSQON_AST_NODE(BracketValue)* nn = BSQON_AST_NODE_AS(BracketValue, node);
+        const BSQON_AST_NODE(BracketValue)* nn = BSQON_AST_NODE_AS(BracketValue, node);
         printf("[");
-        BSQON_LIST_Print(BracketValue, nn->values);
+        BSQON_AST_LIST_OF_TYPES_Print(nn->values);
         printf("]");
         break;
     }
     case BSQON_AST_TAG_BraceValue: {
-        BSQON_AST_NODE(BraceValue)* nn = BSQON_AST_NODE_AS(BraceValue, node);
+        const BSQON_AST_NODE(BraceValue)* nn = BSQON_AST_NODE_AS(BraceValue, node);
         printf("{");
-        BSQON_NLIST_Print(BraceValue, nn->entries);
+        BSQON_AST_NLIST_OF_VALUES_Print(nn->entries);
         printf("}");
         break;
     }
     case BSQON_AST_TAG_TypedValue: {
-        BSQON_AST_NODE(TypedValue)* nn = BSQON_AST_NODE_AS(TypedValue, node);
+        const BSQON_AST_NODE(TypedValue)* nn = BSQON_AST_NODE_AS(TypedValue, node);
         if(nn->type->tag != BSQON_AST_TAG_NominalType && nn->type->tag != BSQON_AST_TAG_NominalScopedType) {
             printf("<");
         }
 
-        BSQON_TYPE_AST_print(nn->type);
+        BSQON_AST_print(nn->type);
     
         if(nn->type->tag != BSQON_AST_TAG_NominalType && nn->type->tag != BSQON_AST_TAG_NominalScopedType) {
             printf(">");
@@ -282,16 +282,16 @@ void BSQON_AST_print(BSQON_AST_Node* node)
     case BSQON_AST_TAG_SomethingConsValue:
     case BSQON_AST_TAG_OkConsValue:
     case BSQON_AST_TAG_ErrConsValue: {
-        BSQON_AST_NODE(SpecialConsValue)* nn = BSQON_AST_NODE_AS(SpecialConsValue, node);
+        const BSQON_AST_NODE(SpecialConsValue)* nn = BSQON_AST_NODE_AS(SpecialConsValue, node);
         printf("%s(", nn->consname);
         BSQON_AST_print(nn->value);
         printf(")");
         break;
     }
     case BSQON_AST_TAG_LetInValue: {
-        BSQON_AST_NODE(LetInValue)* nn = BSQON_AST_NODE_AS(LetInValue, node);
+        const BSQON_AST_NODE(LetInValue)* nn = BSQON_AST_NODE_AS(LetInValue, node);
         printf("(let %s: ", nn->vname);
-        BSQON_TYPE_AST_print(nn->vtype);
+        BSQON_AST_print(nn->vtype);
         printf(" = ");
         BSQON_AST_print(nn->value);
         printf(" in ");
@@ -300,8 +300,8 @@ void BSQON_AST_print(BSQON_AST_Node* node)
         break;
     }
     case BSQON_AST_TAG_ScopedNameValue: {
-        BSQON_AST_NODE(ScopedNameValue)* nn = BSQON_AST_NODE_AS(ScopedNameValue, node);
-        BSQON_TYPE_AST_print(nn->root);
+        const BSQON_AST_NODE(ScopedNameValue)* nn = BSQON_AST_NODE_AS(ScopedNameValue, node);
+        BSQON_AST_print(nn->root);
         printf("::%s", nn->identifier);
         break;
     }

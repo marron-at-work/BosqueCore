@@ -7,13 +7,13 @@ extern "C"
 {
 #endif
 
-typedef struct ByteString
+struct ByteString
 {
     uint8_t* bytes;
     uint64_t len;
-} ByteString;
+};
 
-ByteString* bstrAlloc(ByteString dst);
+struct ByteString* bstrAlloc(struct ByteString dst);
 
 #ifdef __cplusplus
 }

@@ -56,55 +56,55 @@ extern int yydebug;
     YYUNDEF = 257,                 /* "invalid token"  */
     SYM_BAR = 258,                 /* SYM_BAR  */
     SYM_AMP = 260,                 /* SYM_AMP  */
-    SYM_COLON = 262,               /* ":"  */
-    SYM_COMMA = 263,               /* ","  */
-    KW_NONE = 264,                 /* "none"  */
-    KW_NOTHING = 265,              /* "nothing"  */
-    KW_TRUE = 266,                 /* "true"  */
-    KW_FALSE = 267,                /* "false"  */
-    KW_SOMETHING = 268,            /* "something"  */
-    KW_OK = 269,                   /* "ok"  */
-    KW_ERR = 270,                  /* "err"  */
-    SYM_DOUBLE_COLON = 271,        /* "::"  */
-    SYM_ENTRY = 272,               /* SYM_ENTRY  */
-    SYM_BANG = 273,                /* SYM_BANG  */
-    SYM_EQUALS = 274,              /* SYM_EQUALS  */
-    SYM_DOT = 275,                 /* SYM_DOT  */
-    SYM_AT = 276,                  /* SYM_AT  */
-    SYM_UNDERSCORE = 277,          /* SYM_UNDERSCORE  */
-    KW_SOME = 278,                 /* KW_SOME  */
-    KW_SRC = 279,                  /* KW_SRC  */
-    KW_LET = 280,                  /* KW_LET  */
-    KW_IN = 281,                   /* KW_IN  */
-    TOKEN_NAT = 282,               /* TOKEN_NAT  */
-    TOKEN_INT = 283,               /* TOKEN_INT  */
-    TOKEN_BIG_NAT = 284,           /* TOKEN_BIG_NAT  */
-    TOKEN_BIG_INT = 285,           /* TOKEN_BIG_INT  */
-    TOKEN_RATIONAL = 286,          /* TOKEN_RATIONAL  */
-    TOKEN_FLOAT = 287,             /* TOKEN_FLOAT  */
-    TOKEN_DECIMAL = 288,           /* TOKEN_DECIMAL  */
-    TOKEN_DECIMAL_DEGREE = 289,    /* TOKEN_DECIMAL_DEGREE  */
-    TOKEN_COMPLEX = 290,           /* TOKEN_COMPLEX  */
-    TOKEN_LAT_LONG = 291,          /* TOKEN_LAT_LONG  */
-    TOKEN_NUMBERINO = 292,         /* "numberino"  */
-    TOKEN_BYTE_BUFFER = 293,       /* TOKEN_BYTE_BUFFER  */
-    TOKEN_UUID_V4 = 294,           /* TOKEN_UUID_V4  */
-    TOKEN_UUID_V7 = 295,           /* TOKEN_UUID_V7  */
-    TOKEN_SHA_HASH = 296,          /* TOKEN_SHA_HASH  */
-    TOKEN_STRING = 297,            /* TOKEN_STRING  */
-    TOKEN_ASCII_STRING = 298,      /* TOKEN_ASCII_STRING  */
-    TOKEN_REGEX = 299,             /* TOKEN_REGEX  */
-    TOKEN_PATH_ITEM = 300,         /* TOKEN_PATH_ITEM  */
-    TOKEN_DATE_TIME = 301,         /* TOKEN_DATE_TIME  */
-    TOKEN_UTC_DATE_TIME = 302,     /* TOKEN_UTC_DATE_TIME  */
-    TOKEN_PLAIN_DATE = 303,        /* TOKEN_PLAIN_DATE  */
-    TOKEN_PLAIN_TIME = 304,        /* TOKEN_PLAIN_TIME  */
-    TOKEN_LOGICAL_TIME = 305,      /* TOKEN_LOGICAL_TIME  */
-    TOKEN_TICK_TIME = 306,         /* TOKEN_TICK_TIME  */
-    TOKEN_TIMESTAMP = 307,         /* TOKEN_TIMESTAMP  */
-    TOKEN_IDENTIFIER = 308,        /* "identifier"  */
-    TOKEN_TYPE_COMPONENT = 309,    /* "type name"  */
-    TOKEN_UNSPEC_IDENTIFIER = 310  /* "unspec identifier"  */
+    KW_NONE = 262,                 /* "none"  */
+    KW_NOTHING = 263,              /* "nothing"  */
+    KW_TRUE = 264,                 /* "true"  */
+    KW_FALSE = 265,                /* "false"  */
+    KW_SOMETHING = 266,            /* "something"  */
+    KW_OK = 267,                   /* "ok"  */
+    KW_ERR = 268,                  /* "err"  */
+    KW_SRC = 269,                  /* "$src"  */
+    KW_LET = 270,                  /* "let"  */
+    KW_IN = 271,                   /* "in"  */
+    SYM_DOUBLE_COLON = 272,        /* "::"  */
+    SYM_ENTRY = 273,               /* "=>"  */
+    SYM_COLON = 274,               /* ":"  */
+    SYM_COMMA = 275,               /* ","  */
+    SYM_EQUALS = 276,              /* "="  */
+    SYM_UNDERSCORE = 277,          /* "_"  */
+    TOKEN_NAT = 278,               /* "nat literal"  */
+    TOKEN_INT = 279,               /* "int literal"  */
+    TOKEN_BIG_NAT = 280,           /* "big nat literal"  */
+    TOKEN_BIG_INT = 281,           /* "big int literal"  */
+    TOKEN_RATIONAL = 282,          /* "rational literal"  */
+    TOKEN_FLOAT = 283,             /* "float literal"  */
+    TOKEN_DECIMAL = 284,           /* "decimal literal"  */
+    TOKEN_DECIMAL_DEGREE = 285,    /* "decimal degree literal"  */
+    TOKEN_COMPLEX = 286,           /* "complex literal"  */
+    TOKEN_LAT_LONG = 287,          /* "geo coordinate literal"  */
+    TOKEN_NUMBERINO = 288,         /* "numberino"  */
+    TOKEN_BYTE_BUFFER = 289,       /* "byte buffer"  */
+    TOKEN_UUID_V4 = 290,           /* "uuid (v4)"  */
+    TOKEN_UUID_V7 = 291,           /* "uuid (v7)"  */
+    TOKEN_SHA_HASH = 292,          /* "sha3 hashcode (512 bits)"  */
+    TOKEN_STRING = 293,            /* "string"  */
+    TOKEN_ASCII_STRING = 294,      /* "ascii string"  */
+    TOKEN_REGEX = 295,             /* "regular expression"  */
+    TOKEN_PATH_ITEM = 296,         /* "path item"  */
+    TOKEN_DATE_TIME = 297,         /* "date & time with timezone"  */
+    TOKEN_UTC_DATE_TIME = 298,     /* "date & time in UTC"  */
+    TOKEN_PLAIN_DATE = 299,        /* "plain date"  */
+    TOKEN_PLAIN_TIME = 300,        /* "plain time"  */
+    TOKEN_LOGICAL_TIME = 301,      /* "logical time"  */
+    TOKEN_TICK_TIME = 302,         /* "tick time"  */
+    TOKEN_TIMESTAMP = 303,         /* "ISO timestamp"  */
+    TOKEN_IDENTIFIER = 304,        /* "identifier"  */
+    TOKEN_TYPE_COMPONENT = 305,    /* "type name"  */
+    TOKEN_UNSPEC_IDENTIFIER = 306, /* "unspec identifier"  */
+    SYM_BANG = 307,                /* SYM_BANG  */
+    SYM_DOT = 308,                 /* SYM_DOT  */
+    SYM_AT = 309,                  /* SYM_AT  */
+    KW_SOME = 310                  /* KW_SOME  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -113,22 +113,25 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 30 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 29 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
 
-   struct BSQON_TYPE_AST_List* bsqon_t_list;
-   struct BSQON_TYPE_AST_NamedListEntry* bsqon_t_nametypel_entry;
-   struct BSQON_TYPE_AST_NamedList* bsqon_t_namedlist;
-   struct BSQON_TYPE_AST_Node* bsqon_t;
-
-   struct BSQON_AST_NamedListEntry* bsqon_nameval_entry;
-   struct BSQON_AST_List* bsqon_list;
-   struct BSQON_AST_NamedList* bsqon_namedlist;
-
-   struct BSQON_AST_Node* bsqon;
-   struct ByteString* bstr;
    char* str;
+   ByteString* bstr;
 
-#line 132 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.h"
+   BSQON_AST_Node* bsqon_type_node;
+   BSQON_AST_Node* bsqon_value_node;
+
+   BSQON_AST_LIST_OF_TYPES* bsqon_type_list;
+
+   BSQON_AST_NLIST_OF_TYPES_ENTRY bsqon_named_type_list_entry;
+   BSQON_AST_NLIST_OF_TYPES* bsqon_named_type_list;
+
+   BSQON_AST_LIST_OF_VALUES* bsqon_value_list;
+
+   BSQON_AST_NLIST_OF_VALUES_ENTRY bsqon_named_value_list_entry;
+   BSQON_AST_NLIST_OF_VALUES* bsqon_named_value_list;
+
+#line 135 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

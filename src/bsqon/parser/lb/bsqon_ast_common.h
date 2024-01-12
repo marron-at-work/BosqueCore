@@ -14,15 +14,15 @@
 
 #define AST_STRDUP(str) strdup(str)
 
-typedef struct AST_SourcePos
+struct AST_SourcePos
 {
     uint32_t first_line;
     uint32_t first_column;
     uint32_t last_line;
     uint32_t last_column;
-} AST_SourcePos;
+};
 
-AST_SourcePos createSourcePos(uint32_t first_line, uint32_t first_column, uint32_t last_line, uint32_t last_column);
+struct AST_SourcePos createSourcePos(uint32_t first_line, uint32_t first_column, uint32_t last_line, uint32_t last_column);
 
 ////////////////////////////
 //List Macros
@@ -36,14 +36,16 @@ AST_SourcePos createSourcePos(uint32_t first_line, uint32_t first_column, uint32
 typedef struct BSQON_LIST(T) \
 { \
     T* value; \
-    BSQON_LIST(T)* next; \
+    struct BSQON_LIST(T)* next; \
 } BSQON_LIST(T); \
+BSQON_LIST(T)* BSQON_LIST_##T##Singleton(T* value); \
+BSQON_LIST(T)* BSQON_LIST_##T##Push(T* value, BSQON_LIST(T)* ll); \
 BSQON_LIST(T)* BSQON_LIST_##T##Reverse(BSQON_LIST(T)* ll); \
 void BSQON_LIST_##T##Print(BSQON_LIST(T)* ll);
 
 #define BSQON_LIST_Empty(T) NULL
-#define BSQON_LIST_Singleton(T, V) memcpy(AST_ALLOC(sizeof(BSQON_LIST(T))), BSQON_LIST(T) { .value = V, .next = NULL }, sizeof(BSQON_LIST(T)))
-#define BSQON_LIST_Push(T, V, L) memcpy(AST_ALLOC(sizeof(BSQON_LIST(T))), BSQON_LIST(T) { .value = V, .next = L }, sizeof(BSQON_LIST(T)))
+#define BSQON_LIST_Singleton(T, V) BSQON_LIST_##T##Singleton(V)
+#define BSQON_LIST_Push(T, V, L) BSQON_LIST_##T##Push(V, L)
 #define BSQON_LIST_Reverse(T, L) BSQON_LIST_##T##Reverse(L)
 #define BSQON_LIST_Print(T, L) BSQON_LIST_##T##Print(L)
 
@@ -53,19 +55,22 @@ typedef struct BSQON_NLIST_ENTRY(T) \
     const char* name; \
     T* value; \
 } BSQON_NLIST_ENTRY(T); \
+BSQON_NLIST_ENTRY(T) BSQON_NLIST_##T##Create(const char* name, T* value); \
 typedef struct BSQON_NLIST(T) \
 { \
     BSQON_NLIST_ENTRY(T) entry; \
-    BSQON_NLIST(T)* next; \
+    struct BSQON_NLIST(T)* next; \
 } BSQON_NLIST(T); \
+BSQON_NLIST(T)* BSQON_NLIST_##T##Singleton(BSQON_NLIST_ENTRY(T) entry); \
+BSQON_NLIST(T)* BSQON_NLIST_##T##Push(BSQON_NLIST_ENTRY(T) entry, BSQON_NLIST(T)* ll); \
 BSQON_NLIST(T)* BSQON_NLIST_##T##Reverse(BSQON_NLIST(T)* ll); \
 void BSQON_NLIST_##T##Print(BSQON_NLIST(T)* ll);
 
-#define BSQON_NLIST_ENTRY_Create(T, N, V) (BSQON_NLIST_ENTRY(T) { .name = N, .value = V })
+#define BSQON_NLIST_ENTRY_Create(T, N, V) BSQON_NLIST_##T##Create(N, V)
 
 #define BSQON_NLIST_Empty(T) NULL
-#define BSQON_NLIST_Singleton(T, E) memcpy(AST_ALLOC(sizeof(BSQON_NLIST(T))), BSQON_NLIST(T) { .entry = E, .next = NULL }, sizeof(BSQON_NLIST(T)))
-#define BSQON_NLIST_Push(T, E, L) memcpy(AST_ALLOC(sizeof(BSQON_NLIST(T))), BSQON_NLIST(T) { .entry = E, .next = L }, sizeof(BSQON_NLIST(T)))
+#define BSQON_NLIST_Singleton(T, E) BSQON_NLIST_##T##Singleton(E)
+#define BSQON_NLIST_Push(T, E, L) BSQON_NLIST_##T##Push(E, L)
 #define BSQON_NLIST_Reverse(T, L) BSQON_NLIST_##T##Reverse(L)
 #define BSQON_NLIST_Print(T, L) BSQON_NLIST_##T##Print(L)
 
@@ -79,7 +84,7 @@ typedef struct BSQON_AST_NODE(T) { \
     BSQON_AST_Node base; \
 } BSQON_AST_NODE(T); \
 const BSQON_AST_NODE(T)* BSQON_AST##T##As(const BSQON_AST_Node* node); \
-BSQON_AST_Node* BSQON_AST_##T##Create(BSQON_AST_TAG tag, AST_SourcePos sl);
+BSQON_AST_Node* BSQON_AST_##T##Create(enum BSQON_AST_TAG tag, struct AST_SourcePos sl);
 
 #define BSQON_AST_NODE_DECLARE_1(T, FTYPE1, FNAME1) \
 typedef struct BSQON_AST_NODE(T) { \
@@ -87,7 +92,7 @@ typedef struct BSQON_AST_NODE(T) { \
     FTYPE1 FNAME1; \
 } BSQON_AST_NODE(T); \
 const BSQON_AST_NODE(T)* BSQON_AST##T##As(const BSQON_AST_Node* node); \
-BSQON_AST_Node* BSQON_AST_##T##Create(BSQON_AST_TAG tag, AST_SourcePos sl, FTYPE1 FNAME1);
+BSQON_AST_Node* BSQON_AST_##T##Create(enum BSQON_AST_TAG tag, struct AST_SourcePos sl, FTYPE1 FNAME1);
 
 #define BSQON_AST_NODE_DECLARE_2(T, FTYPE1, FNAME1, FTYPE2, FNAME2) \
 typedef struct BSQON_AST_NODE(T) { \
@@ -96,7 +101,7 @@ typedef struct BSQON_AST_NODE(T) { \
     FTYPE2 FNAME2; \
 } BSQON_AST_NODE(T); \
 const BSQON_AST_NODE(T)* BSQON_AST##T##As(const BSQON_AST_Node* node); \
-BSQON_AST_Node* BSQON_AST_##T##Create(BSQON_AST_TAG tag, AST_SourcePos sl, FTYPE1 FNAME1, FTYPE2 FNAME2);
+BSQON_AST_Node* BSQON_AST_##T##Create(enum BSQON_AST_TAG tag, struct AST_SourcePos sl, FTYPE1 FNAME1, FTYPE2 FNAME2);
 
 #define BSQON_AST_NODE_DECLARE_3(T, FTYPE1, FNAME1, FTYPE2, FNAME2, FTYPE3, FNAME3) \
 typedef struct BSQON_AST_NODE(T) { \
@@ -106,7 +111,7 @@ typedef struct BSQON_AST_NODE(T) { \
     FTYPE3 FNAME3; \
 } BSQON_AST_NODE(T); \
 const BSQON_AST_NODE(T)* BSQON_AST##T##As(const BSQON_AST_Node* node); \
-BSQON_AST_Node* BSQON_AST_##T##Create(BSQON_AST_TAG tag, AST_SourcePos sl, FTYPE1 FNAME1, FTYPE2 FNAME2, FTYPE3 FNAME3);
+BSQON_AST_Node* BSQON_AST_##T##Create(enum BSQON_AST_TAG tag, struct AST_SourcePos sl, FTYPE1 FNAME1, FTYPE2 FNAME2, FTYPE3 FNAME3);
 
 #define BSQON_AST_NODE_DECLARE_4(T, FTYPE1, FNAME1, FTYPE2, FNAME2, FTYPE3, FNAME3, FTYPE4, FNAME4) \
 typedef struct BSQON_AST_NODE(T) { \
@@ -117,16 +122,30 @@ typedef struct BSQON_AST_NODE(T) { \
     FTYPE4 FNAME4; \
 } BSQON_AST_NODE(T); \
 const BSQON_AST_NODE(T)* BSQON_AST##T##As(const BSQON_AST_Node* node); \
-BSQON_AST_Node* BSQON_AST_##T##Create(BSQON_AST_TAG tag, AST_SourcePos sl, FTYPE1 FNAME1, FTYPE2 FNAME2, FTYPE3 FNAME3, FTYPE4 FNAME4);
+BSQON_AST_Node* BSQON_AST_##T##Create(enum BSQON_AST_TAG tag, struct AST_SourcePos sl, FTYPE1 FNAME1, FTYPE2 FNAME2, FTYPE3 FNAME3, FTYPE4 FNAME4);
 
 ////////////////////////////
 //AST Definition Macros
 
 #define BSQON_AST_NODE_AS(T, N) BSQON_AST##T##As(N)
-#define BSQON_AST_NODE_CONS(T, TAG, SL, ...) BSQON_AST_##T##Create(TAG, SL, __VA_ARGS__)
-#define BSQON_AST_NODE_PRINT(T, N) BSQON_AST_##T##Print(BSQON_AST_NODE_AS(T N))
+#define BSQON_AST_NODE_CONS(T, TAG, SL, ...) BSQON_AST_##T##Create(TAG, SL __VA_OPT__(,) __VA_ARGS__)
+#define BSQON_AST_NODE_PRINT(T, N) BSQON_AST_##T##Print(BSQON_AST_NODE_AS(T, N))
 
 #define BSQON_AST_LIST_DEFINE(T) \
+BSQON_LIST(T)* BSQON_LIST_##T##Singleton(T* value) \
+{ \
+    BSQON_LIST(T)* res = AST_ALLOC(sizeof(BSQON_LIST(T))); \
+    res->value = value; \
+    res->next = NULL; \
+    return res; \
+} \
+BSQON_LIST(T)* BSQON_LIST_##T##Push(T* value, BSQON_LIST(T)* ll) \
+{ \
+    BSQON_LIST(T)* res = AST_ALLOC(sizeof(BSQON_LIST(T))); \
+    res->value = value; \
+    res->next = ll; \
+    return res; \
+} \
 BSQON_LIST(T)* BSQON_LIST_##T##Reverse(BSQON_LIST(T)* ll) \
 { \
     BSQON_LIST(T)* lp = NULL; \
@@ -139,7 +158,7 @@ BSQON_LIST(T)* BSQON_LIST_##T##Reverse(BSQON_LIST(T)* ll) \
     } \
 \
     return lp; \
-}\
+} \
 void BSQON_LIST_##T##Print(BSQON_LIST(T)* list) \
 { \
     for(BSQON_LIST(T)* ll = list; ll != NULL; ll = ll->next) \
@@ -152,6 +171,27 @@ void BSQON_LIST_##T##Print(BSQON_LIST(T)* list) \
 }
 
 #define BSQON_AST_NLIST_DEFINE(T) \
+BSQON_NLIST_ENTRY(T) BSQON_NLIST_##T##Create(const char* name, T* value) \
+{\
+    BSQON_NLIST_ENTRY(T) res;\
+    res.name = name;\
+    res.value = value;\
+    return res;\
+}\
+BSQON_NLIST(T)* BSQON_NLIST_##T##Singleton(BSQON_NLIST_ENTRY(T) entry) \
+{ \
+    BSQON_NLIST(T)* res = AST_ALLOC(sizeof(BSQON_NLIST(T))); \
+    res->entry = entry; \
+    res->next = NULL; \
+    return res; \
+} \
+BSQON_NLIST(T)* BSQON_NLIST_##T##Push(BSQON_NLIST_ENTRY(T) entry, BSQON_NLIST(T)* ll) \
+{ \
+    BSQON_NLIST(T)* res = AST_ALLOC(sizeof(BSQON_NLIST(T))); \
+    res->entry = entry; \
+    res->next = ll; \
+    return res; \
+} \
 BSQON_NLIST(T)* BSQON_NLIST_##T##Reverse(BSQON_NLIST(T)* ll) \
 { \
     BSQON_NLIST(T)* lp = NULL; \
@@ -169,7 +209,7 @@ void BSQON_NLIST_##T##Print(BSQON_NLIST(T)* list) \
 { \
     for(BSQON_NLIST(T)* ll = list; ll != NULL; ll = ll->next) \
     { \
-        printf("%s: ", ll->entry.name); \
+        printf("%s: ", ll->entry.name != NULL ? ll->entry.name : "_"); \
         BSQON_AST_print(ll->entry.value); \
         if(ll->next != NULL) { \
             printf(", "); \
@@ -178,8 +218,8 @@ void BSQON_NLIST_##T##Print(BSQON_NLIST(T)* list) \
 }
 
 #define BSQON_AST_NODE_DEFINE_0(T) \
-const BSQON_AST_NODE(T)* BSQON_AST_##T##As(const BSQON_AST_Node* node) { return (BSQON_AST_NODE(T)*)node; } \
-BSQON_AST_Node* BSQON_AST_##T##Create(BSQON_AST_TAG tag, AST_SourcePos sl) \
+const BSQON_AST_NODE(T)* BSQON_AST_##T##As(const BSQON_AST_Node* node) { return (const BSQON_AST_NODE(T)*)node; } \
+BSQON_AST_Node* BSQON_AST_##T##Create(enum BSQON_AST_TAG tag, struct AST_SourcePos sl) \
 { \
     BSQON_AST_NODE(T)* node = (BSQON_AST_NODE(T)*)AST_ALLOC(sizeof(BSQON_AST_NODE(T))); \
     node->base.tag = tag; \
@@ -188,8 +228,8 @@ BSQON_AST_Node* BSQON_AST_##T##Create(BSQON_AST_TAG tag, AST_SourcePos sl) \
 }
 
 #define BSQON_AST_NODE_DEFINE_1(T, FTYPE1, FNAME1) \
-const BSQON_AST_NODE(T)* BSQON_AST_##T##As(const BSQON_AST_Node* node) { return (BSQON_AST_NODE(T)*)node; } \
-BSQON_AST_Node* BSQON_AST_##T##Create(BSQON_AST_TAG tag, AST_SourcePos sl, FTYPE1 FNAME1) \
+const BSQON_AST_NODE(T)* BSQON_AST_##T##As(const BSQON_AST_Node* node) { return (const BSQON_AST_NODE(T)*)node; } \
+BSQON_AST_Node* BSQON_AST_##T##Create(enum BSQON_AST_TAG tag, struct AST_SourcePos sl, FTYPE1 FNAME1) \
 { \
     BSQON_AST_NODE(T)* node = (BSQON_AST_NODE(T)*)AST_ALLOC(sizeof(BSQON_AST_NODE(T))); \
     node->base.tag = tag; \
@@ -199,8 +239,8 @@ BSQON_AST_Node* BSQON_AST_##T##Create(BSQON_AST_TAG tag, AST_SourcePos sl, FTYPE
 }
 
 #define BSQON_AST_NODE_DEFINE_2(T, FTYPE1, FNAME1, FTYPE2, FNAME2) \
-const BSQON_AST_NODE(T)* BSQON_AST_##T##As(const BSQON_AST_Node* node) { return (BSQON_AST_NODE(T)*)node; } \
-BSQON_AST_Node* BSQON_AST_##T##Create(BSQON_AST_TAG tag, AST_SourcePos sl, FTYPE1 FNAME1, FTYPE2 FNAME2) \
+const BSQON_AST_NODE(T)* BSQON_AST_##T##As(const BSQON_AST_Node* node) { return (const BSQON_AST_NODE(T)*)node; } \
+BSQON_AST_Node* BSQON_AST_##T##Create(enum BSQON_AST_TAG tag, struct AST_SourcePos sl, FTYPE1 FNAME1, FTYPE2 FNAME2) \
 { \
     BSQON_AST_NODE(T)* node = (BSQON_AST_NODE(T)*)AST_ALLOC(sizeof(BSQON_AST_NODE(T))); \
     node->base.tag = tag; \
@@ -211,8 +251,8 @@ BSQON_AST_Node* BSQON_AST_##T##Create(BSQON_AST_TAG tag, AST_SourcePos sl, FTYPE
 }
 
 #define BSQON_AST_NODE_DEFINE_3(T, FTYPE1, FNAME1, FTYPE2, FNAME2, FTYPE3, FNAME3) \
-const BSQON_AST_NODE(T)* BSQON_AST_##T##As(const BSQON_AST_Node* node) { return (BSQON_AST_NODE(T)*)node; } \
-BSQON_AST_Node* BSQON_AST_##T##Create(BSQON_AST_TAG tag, AST_SourcePos sl, FTYPE1 FNAME1, FTYPE2 FNAME2, FTYPE3 FNAME3) \
+const BSQON_AST_NODE(T)* BSQON_AST_##T##As(const BSQON_AST_Node* node) { return (const BSQON_AST_NODE(T)*)node; } \
+BSQON_AST_Node* BSQON_AST_##T##Create(enum BSQON_AST_TAG tag, struct AST_SourcePos sl, FTYPE1 FNAME1, FTYPE2 FNAME2, FTYPE3 FNAME3) \
 { \
     BSQON_AST_NODE(T)* node = (BSQON_AST_NODE(T)*)AST_ALLOC(sizeof(BSQON_AST_NODE(T))); \
     node->base.tag = tag; \
@@ -224,8 +264,8 @@ BSQON_AST_Node* BSQON_AST_##T##Create(BSQON_AST_TAG tag, AST_SourcePos sl, FTYPE
 }
 
 #define BSQON_AST_NODE_DEFINE_4(T, FTYPE1, FNAME1, FTYPE2, FNAME2, FTYPE3, FNAME3, FTYPE4, FNAME4) \
-const BSQON_AST_NODE(T)* BSQON_AST_##T##As(const BSQON_AST_Node* node) { return (BSQON_AST_NODE(T)*)node; } \
-BSQON_AST_Node* BSQON_AST_##T##Create(BSQON_AST_TAG tag, AST_SourcePos sl, FTYPE1 FNAME1, FTYPE2 FNAME2, FTYPE3 FNAME3, FTYPE4 FNAME4) \
+const BSQON_AST_NODE(T)* BSQON_AST_##T##As(const BSQON_AST_Node* node) { return (const BSQON_AST_NODE(T)*)node; } \
+BSQON_AST_Node* BSQON_AST_##T##Create(enum BSQON_AST_TAG tag, struct AST_SourcePos sl, FTYPE1 FNAME1, FTYPE2 FNAME2, FTYPE3 FNAME3, FTYPE4 FNAME4) \
 { \
     BSQON_AST_NODE(T)* node = (BSQON_AST_NODE(T)*)AST_ALLOC(sizeof(BSQON_AST_NODE(T))); \
     node->base.tag = tag; \

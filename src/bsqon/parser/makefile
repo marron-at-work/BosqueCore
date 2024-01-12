@@ -9,16 +9,16 @@ OUT_OBJ=$(BUILD_DIR)output/obj/
 JSON_INCLUDES=-I $(BUILD_DIR)include/headers/json/
 
 CC=gcc
-CFLAGS=-g -ggdb -DEXPORT
+CFLAGS=-g -ggdb -DEXPORT -std=gnu17
 
 CPP=g++
-CPPFLAGS=-g -ggdb -fno-omit-frame-pointer -Wall -Wextra -Wno-unused-parameter -Wuninitialized -Werror -std=c++20
+CPPFLAGS=-g -ggdb -fno-omit-frame-pointer -Wall -Wextra -Wno-unused-parameter -Wuninitialized -Werror -std=gnu++20
 
 CFG_SOURCES=$(BSQON_CFG_DIR)bsqon.y $(BSQON_CFG_DIR)bsqon.l
 
 PARSER_HEADERS=$(BSQON_CFG_DIR)bytestring.h $(BSQON_CFG_DIR)bsqon_ast_common.h $(BSQON_CFG_DIR)bsqon_ast.h $(BSQON_CFG_DIR)bsqon.tab.h
 PARSER_SOURCES=$(BSQON_CFG_DIR)bytestring.c $(BSQON_CFG_DIR)bsqon_ast_common.c $(BSQON_CFG_DIR)bsqon_ast.c $(BSQON_CFG_DIR)bsqon.tab.c $(BSQON_CFG_DIR)lex.yy.c
-PARSER_OBJS=$(OUT_OBJ)bytestring.o $(OUT_OBJ)bsqon_type_ast.o $(OUT_OBJ)bsqon_ast.o $(OUT_OBJ)bsqon.tab.o $(OUT_OBJ)lex.yy.o
+PARSER_OBJS=$(OUT_OBJ)bytestring.o $(OUT_OBJ)bsqon_ast_common.o $(OUT_OBJ)bsqon_ast.o $(OUT_OBJ)bsqon.tab.o $(OUT_OBJ)lex.yy.o
 
 BSQON_HEADERS=$(SRC_DIR)../common.h $(SRC_DIR)../regex/bsqregex.h $(SRC_DIR)../regex/bsqpath.h $(SRC_DIR)../info/type_info.h $(SRC_DIR)../info/bsqon.h $(SRC_DIR)bsqon_parse.h
 BSQON_SOURCES=$(SRC_DIR)../common.cpp $(SRC_DIR)../regex/bsqregex.cpp $(SRC_DIR)../info/type_info.cpp $(SRC_DIR)../info/bsqon.cpp $(SRC_DIR)bsqon_parse.cpp $(SRC_DIR)bsqon_main.cpp
@@ -43,9 +43,9 @@ $(OUT_OBJ)bytestring.o: $(PARSER_HEADERS) $(PARSER_SOURCES)
 	@mkdir -p $(OUT_OBJ)
 	$(CC) $(CFLAGS) -o $(OUT_OBJ)bytestring.o -c $(BSQON_CFG_DIR)bytestring.c
 
-$(OUT_OBJ)bsqon_type_ast.o: $(PARSER_HEADERS) $(PARSER_SOURCES)
+$(OUT_OBJ)bsqon_ast_common.o: $(PARSER_HEADERS) $(PARSER_SOURCES)
 	@mkdir -p $(OUT_OBJ)
-	$(CC) $(CFLAGS) -o $(OUT_OBJ)bsqon_type_ast.o -c $(BSQON_CFG_DIR)bsqon_type_ast.c
+	$(CC) $(CFLAGS) -o $(OUT_OBJ)bsqon_ast_common.o -c $(BSQON_CFG_DIR)bsqon_ast_common.c
 
 $(OUT_OBJ)bsqon_ast.o: $(PARSER_HEADERS) $(PARSER_SOURCES)
 	@mkdir -p $(OUT_OBJ)

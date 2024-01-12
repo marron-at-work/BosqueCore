@@ -117,16 +117,11 @@ int errorcount = 0;
 %type <bsqon_named_type_list> bsqonnametypel
 
 %type <bsqon_value_node> bsqonl_entry bsqon_braceval bsqonliteral bsqonunspecvar bsqonidentifier bsqonscopedidentifier bsqonstringof bsqonpath bsqontypeliteral bsqonterminal bsqon_mapentry
-%type <bsqon_value_node> bsqonbracketvalue bsqonbracevalue bsqonbracketbracevalue bsqontypedvalue bsqonstructvalue
+%type <bsqon_value_node> bsqonbracketvalue bsqonbracevalue bsqonbracketbracevalue bsqontypedvalue bsqonstructvalue bsqonspecialcons bsqonletexp bsqonval bsqonroot
 %type <bsqon_value_list> bsqonvall
 
 %type <bsqon_named_value_list_entry> bsqonnameval_entry
 %type <bsqon_named_value_list> bsqonnamevall
-
-%type <bsqon> bsqonval      
-%type <bsqon> bsqonspecialcons
-%type <bsqon> bsqonletexp
-%type <bsqon> bsqonroot
 
 %start bsqonroot
 
@@ -139,7 +134,7 @@ bsqontypel:
 
 bsqontypel_entry:
    bsqontype SYM_COMMA { $$ = $1; }
-   | error SYM_COMMA { $$ = BSQON_AST_NODE_CONS(ErrorNode, MK_SPOS_S(@1)); yyerrok; }
+   | error SYM_COMMA { $$ = BSQON_AST_ERROR(MK_SPOS_S(@1)); yyerrok; }
 ;
 
 bsqonnametypel:
@@ -149,36 +144,36 @@ bsqonnametypel:
 
 bsqonnametypel_entry:
    TOKEN_IDENTIFIER SYM_COLON bsqontype SYM_COMMA { $$ = BSQON_AST_NLIST_OF_TYPES_ENTRY_Create($1, $3); }
-   | TOKEN_IDENTIFIER SYM_COLON error SYM_COMMA { $$ = BSQON_AST_NLIST_OF_TYPES_ENTRY_Create($1, BSQON_AST_NODE_CONS(ErrorNode, MK_SPOS_S(@3))); yyerrok; }
+   | TOKEN_IDENTIFIER SYM_COLON error SYM_COMMA { $$ = BSQON_AST_NLIST_OF_TYPES_ENTRY_Create($1, BSQON_AST_ERROR(MK_SPOS_S(@3))); yyerrok; }
 ;
 
 bsqonnominaltype:
    TOKEN_TYPE_COMPONENT { $$ = BSQON_AST_NODE_CONS(NominalType, BSQON_AST_TAG_NominalType, MK_SPOS_S(@1), $1, NULL); }
    | TOKEN_TYPE_COMPONENT bsqontermslist { $$ = BSQON_AST_NODE_CONS(NominalType, BSQON_AST_TAG_NominalType, MK_SPOS_S(@1), $1, $2); }
-   | bsqonnominaltype SYM_DOUBLE_COLON TOKEN_TYPE_COMPONENT { $$ = BSQON_AST_NODE_CONS(NominalScopedType, BSQON_AST_TAG_NominalScopedType, MK_SPOS_R(@1, @3), BSQON_AST_NODE_AS(NominalType, $1), $3); }
+   | bsqonnominaltype SYM_DOUBLE_COLON TOKEN_TYPE_COMPONENT { $$ = BSQON_AST_NODE_CONS(NominalScopedType, BSQON_AST_TAG_NominalScopedType, MK_SPOS_R(@1, @3), $1, $3); }
 ;
 
 bsqontermslist:
    '<' bsqontype '>' { $$ = BSQON_AST_LIST_OF_TYPES_Singleton($2); }
    | '<' bsqontypel bsqontype '>' { $$ = BSQON_AST_LIST_OF_TYPES_Reverse(BSQON_AST_LIST_OF_TYPES_Push($3, $2)); }
-   | '<' error '>' { $$ = BSQON_AST_LIST_OF_TYPES_Singleton(BSQON_AST_NODE_CONS(ErrorNode, MK_SPOS_S(@2))); yyerrok; }
-   | '<' bsqontypel error '>' { $$ = BSQON_AST_LIST_OF_TYPES_Reverse(BSQON_AST_LIST_OF_TYPES_Push(BSQON_AST_NODE_CONS(ErrorNode, MK_SPOS_S(@3)), $2)); yyerrok; }
+   | '<' error '>' { $$ = BSQON_AST_LIST_OF_TYPES_Singleton(BSQON_AST_ERROR(MK_SPOS_S(@2))); yyerrok; }
+   | '<' bsqontypel error '>' { $$ = BSQON_AST_LIST_OF_TYPES_Reverse(BSQON_AST_LIST_OF_TYPES_Push(BSQON_AST_ERROR(MK_SPOS_S(@3)), $2)); yyerrok; }
 ;
 
 bsqontupletype:
    '[' ']' { $$ = BSQON_AST_NODE_CONS(TupleType, BSQON_AST_TAG_TupleType, MK_SPOS_R(@1, @2), NULL); }
    | '[' bsqontype ']' { $$ = BSQON_AST_NODE_CONS(TupleType, BSQON_AST_TAG_TupleType, MK_SPOS_R(@1, @3), BSQON_AST_LIST_OF_TYPES_Singleton($2)); }
-   | '[' bsqontypel bsqontype ']' { $$ = BSQON_AST_NODE_CONS(TupleType, BSQON_AST_TAG_TupleType, MK_SPOS_R(@1, @4), BSQON_AST_NLIST_OF_TYPES_Reverse(BSQON_AST_LIST_OF_TYPES_Push($3, $2))); }
-   | '[' error ']' { $$ = BSQON_AST_NODE_CONS(TupleType, BSQON_AST_TAG_TupleType, MK_SPOS_R(@1, @3), BSQON_AST_LIST_OF_TYPES_Singleton(BSQON_AST_NODE_CONS(ErrorNode, MK_SPOS_S(@1)))); yyerrok; }
-   | '[' bsqontypel error ']' { $$ = BSQON_AST_NODE_CONS(TupleType, BSQON_AST_TAG_TupleType, MK_SPOS_R(@1, @4), BSQON_AST_NLIST_OF_TYPES_Reverse(BSQON_AST_LIST_OF_TYPES_Push(BSQON_AST_NODE_CONS(ErrorNode, MK_SPOS_S(@3)), $2))); yyerrok; }
+   | '[' bsqontypel bsqontype ']' { $$ = BSQON_AST_NODE_CONS(TupleType, BSQON_AST_TAG_TupleType, MK_SPOS_R(@1, @4), BSQON_AST_LIST_OF_TYPES_Reverse(BSQON_AST_LIST_OF_TYPES_Push($3, $2))); }
+   | '[' error ']' { $$ = BSQON_AST_NODE_CONS(TupleType, BSQON_AST_TAG_TupleType, MK_SPOS_R(@1, @3), BSQON_AST_LIST_OF_TYPES_Singleton(BSQON_AST_ERROR(MK_SPOS_S(@1)))); yyerrok; }
+   | '[' bsqontypel error ']' { $$ = BSQON_AST_NODE_CONS(TupleType, BSQON_AST_TAG_TupleType, MK_SPOS_R(@1, @4), BSQON_AST_LIST_OF_TYPES_Reverse(BSQON_AST_LIST_OF_TYPES_Push(BSQON_AST_ERROR(MK_SPOS_S(@3)), $2))); yyerrok; }
 ;
 
 bsqonrecordtype:
    '{' '}' { $$ = BSQON_AST_NODE_CONS(RecordType, BSQON_AST_TAG_RecordType, MK_SPOS_R(@1, @2), NULL); }
-   | '{' TOKEN_IDENTIFIER SYM_COLON bsqontype '}' { $$ = BSQON_AST_NODE_CONS(RecordType, BSQON_AST_TAG_RecordType, MK_SPOS_R(@1, @5), BSQON_AST_NLIST_OF_TYPES_Singleton(BSQON_AST_NLIST_OF_TYPES_ENTRY_Create($2, $4))) }
-   | '{' bsqonnametypel TOKEN_IDENTIFIER SYM_COLON bsqontype '}' { $$ = BSQON_AST_NODE_CONS(RecordType, BSQON_AST_TAG_RecordType, MK_SPOS_R(@1, @6), BSQON_AST_NLIST_OF_TYPES_Reverse(BSQON_AST_LIST_OF_TYPES_Push(BSQON_AST_NLIST_OF_TYPES_ENTRY_Create($3, $2), $2))); }
-   | '{' TOKEN_IDENTIFIER SYM_COLON error '}' { $$ = BSQON_AST_NODE_CONS(RecordType, BSQON_AST_TAG_RecordType, MK_SPOS_R(@1, @5), BSQON_AST_NLIST_OF_TYPES_Singleton(BSQON_AST_NLIST_OF_TYPES_ENTRY_Create($2, BSQON_AST_NODE_CONS(ErrorNode, MK_SPOS_S(@4))))); yyerrok; }
-   | '{' bsqonnametypel TOKEN_IDENTIFIER SYM_COLON error '}' { $$ = BSQON_AST_NODE_CONS(RecordType, BSQON_AST_TAG_RecordType, MK_SPOS_R(@1, @6), BSQON_AST_NNLIST_OF_TYPES_Reverse(BSQON_AST_NLIST_OF_TYPES_Push(BSQON_AST_NLIST_OF_TYPES_ENTRY_Create($3, BSQON_AST_NODE_CONS(ErrorNode, MK_SPOS_S(@3))), $2))); yyerrok; }
+   | '{' TOKEN_IDENTIFIER SYM_COLON bsqontype '}' { $$ = BSQON_AST_NODE_CONS(RecordType, BSQON_AST_TAG_RecordType, MK_SPOS_R(@1, @5), BSQON_AST_NLIST_OF_TYPES_Singleton(BSQON_AST_NLIST_OF_TYPES_ENTRY_Create($2, $4))); }
+   | '{' bsqonnametypel TOKEN_IDENTIFIER SYM_COLON bsqontype '}' { $$ = BSQON_AST_NODE_CONS(RecordType, BSQON_AST_TAG_RecordType, MK_SPOS_R(@1, @6), BSQON_AST_NLIST_OF_TYPES_Reverse(BSQON_AST_NLIST_OF_TYPES_Push(BSQON_AST_NLIST_OF_TYPES_ENTRY_Create($3, $5), $2))); }
+   | '{' TOKEN_IDENTIFIER SYM_COLON error '}' { $$ = BSQON_AST_NODE_CONS(RecordType, BSQON_AST_TAG_RecordType, MK_SPOS_R(@1, @5), BSQON_AST_NLIST_OF_TYPES_Singleton(BSQON_AST_NLIST_OF_TYPES_ENTRY_Create($2, BSQON_AST_ERROR(MK_SPOS_S(@4))))); yyerrok; }
+   | '{' bsqonnametypel TOKEN_IDENTIFIER SYM_COLON error '}' { $$ = BSQON_AST_NODE_CONS(RecordType, BSQON_AST_TAG_RecordType, MK_SPOS_R(@1, @6), BSQON_AST_NLIST_OF_TYPES_Reverse(BSQON_AST_NLIST_OF_TYPES_Push(BSQON_AST_NLIST_OF_TYPES_ENTRY_Create($3, BSQON_AST_ERROR(MK_SPOS_S(@3))), $2))); yyerrok; }
 ;
 
 bsqontype:
@@ -188,7 +183,7 @@ bsqontype:
    | bsqontype SYM_AMP bsqontype { $$ = BSQON_AST_NODE_CONS(ConjunctionType, BSQON_AST_TAG_ConjunctionType, MK_SPOS_R(@1, @3), $1, $3); }
    | bsqontype SYM_BAR bsqontype { $$ = BSQON_AST_NODE_CONS(UnionType, BSQON_AST_TAG_UnionType, MK_SPOS_R(@1, @3), $1, $3); }
    | '(' bsqontype ')' { $$ = $2; }
-   | '(' error ')' { $$ = BSQON_AST_NODE_CONS(ErrorNode, MK_SPOS_S(@2)); yyerrok; }
+   | '(' error ')' { $$ = BSQON_AST_ERROR(MK_SPOS_S(@2)); yyerrok; }
 ;
 
 bsqontspec: 
@@ -252,7 +247,7 @@ bsqonpath:
 ;
 
 bsqontypeliteral:
-   TOKEN_NUMBERINO SYM_UNDERSCORE bsqonnominaltype { yyerror("Missing numeric specifier"); $$ = BSQON_AST_NODE_CONS(ErrorNode, MK_SPOS_S(@1)); }
+   TOKEN_NUMBERINO SYM_UNDERSCORE bsqonnominaltype { yyerror("Missing numeric specifier"); $$ = BSQON_AST_ERROR(MK_SPOS_S(@1)); }
    | bsqonliteral SYM_UNDERSCORE bsqonnominaltype { $$ = BSQON_AST_NODE_CONS(TypedLiteralValue, BSQON_AST_TAG_TypedLiteralValue, MK_SPOS_R(@1, @3), $1, $3); }
 ;
 
@@ -262,9 +257,9 @@ bsqonterminal:
 
 bsqon_mapentry:
    bsqonval SYM_ENTRY bsqonval { $$ = BSQON_AST_NODE_CONS(MapEntryValue, BSQON_AST_TAG_MapEntryValue, MK_SPOS_R(@1, @3), $1, $3); }
-   | error SYM_ENTRY bsqonval { $$ = BSQON_AST_NODE_CONS(MapEntryValue, BSQON_AST_TAG_MapEntryValue, MK_SPOS_R(@1, @3), BSQON_AST_NODE_CONS(ErrorNode, MK_SPOS_S(@1)), $3); yyerrok; }
-   | bsqonval SYM_ENTRY error { $$ = BSQON_AST_NODE_CONS(MapEntryValue, BSQON_AST_TAG_MapEntryValue, MK_SPOS_R(@1, @3), $1, BSQON_AST_NODE_CONS(ErrorNode, MK_SPOS_S(@3))); yyerrok; }
-   | error SYM_ENTRY error { $$ = BSQON_AST_NODE_CONS(MapEntryValue, BSQON_AST_TAG_MapEntryValue, MK_SPOS_R(@1, @3), BSQON_AST_NODE_CONS(ErrorNode, MK_SPOS_S(@1)), BSQON_AST_NODE_CONS(ErrorNode, MK_SPOS_S(@3))); yyerrok; }
+   | error SYM_ENTRY bsqonval { $$ = BSQON_AST_NODE_CONS(MapEntryValue, BSQON_AST_TAG_MapEntryValue, MK_SPOS_R(@1, @3), BSQON_AST_ERROR(MK_SPOS_S(@1)), $3); yyerrok; }
+   | bsqonval SYM_ENTRY error { $$ = BSQON_AST_NODE_CONS(MapEntryValue, BSQON_AST_TAG_MapEntryValue, MK_SPOS_R(@1, @3), $1, BSQON_AST_ERROR(MK_SPOS_S(@3))); yyerrok; }
+   | error SYM_ENTRY error { $$ = BSQON_AST_NODE_CONS(MapEntryValue, BSQON_AST_TAG_MapEntryValue, MK_SPOS_R(@1, @3), BSQON_AST_ERROR(MK_SPOS_S(@1)), BSQON_AST_ERROR(MK_SPOS_S(@3))); yyerrok; }
 ;
 
 bsqonvall:
@@ -274,15 +269,15 @@ bsqonvall:
 
 bsqonl_entry:
    bsqon_braceval SYM_COMMA { $$ = $1; }
-   | error SYM_COMMA { $$ = BSQON_AST_NODE_CONS(ErrorNode, MK_SPOS_S(@1)); yyerrok; }
+   | error SYM_COMMA { $$ = BSQON_AST_ERROR(MK_SPOS_S(@1)); yyerrok; }
 ;
 
 bsqonbracketvalue:
    '[' ']' { $$ = BSQON_AST_NODE_CONS(BracketValue, BSQON_AST_TAG_BracketValue, MK_SPOS_R(@1, @2), NULL); }
    | '[' bsqonval ']' { $$ = BSQON_AST_NODE_CONS(BracketValue, BSQON_AST_TAG_BracketValue, MK_SPOS_R(@1, @3), BSQON_AST_LIST_OF_VALUES_Singleton($2)); }
    | '[' bsqonvall bsqonval ']' { $$ = BSQON_AST_NODE_CONS(BracketValue, BSQON_AST_TAG_BracketValue, MK_SPOS_R(@1, @4), BSQON_AST_LIST_OF_VALUES_Reverse(BSQON_AST_LIST_OF_VALUES_Push($3, $2))); }
-   | '[' error ']' { $$ = BSQON_AST_NODE_CONS(BracketValue, BSQON_AST_TAG_BracketValue, MK_SPOS_R(@1, @3), BSQON_AST_LIST_OF_VALUES_Singleton(BSQON_AST_NODE_CONS(ErrorNode, MK_SPOS_S(@2)))); yyerrok; }
-   | '[' bsqonvall error ']' { $$ = BSQON_AST_NODE_CONS(BracketValue, BSQON_AST_TAG_BracketValue, MK_SPOS_R(@1, @4), BSQON_AST_LIST_OF_VALUES_Reverse(BSQON_AST_LIST_OF_VALUES_Push(BSQON_AST_NODE_CONS(ErrorNode, MK_SPOS_S(@3)), $2))); yyerrok; }
+   | '[' error ']' { $$ = BSQON_AST_NODE_CONS(BracketValue, BSQON_AST_TAG_BracketValue, MK_SPOS_R(@1, @3), BSQON_AST_LIST_OF_VALUES_Singleton(BSQON_AST_ERROR(MK_SPOS_S(@2)))); yyerrok; }
+   | '[' bsqonvall error ']' { $$ = BSQON_AST_NODE_CONS(BracketValue, BSQON_AST_TAG_BracketValue, MK_SPOS_R(@1, @4), BSQON_AST_LIST_OF_VALUES_Reverse(BSQON_AST_LIST_OF_VALUES_Push(BSQON_AST_ERROR(MK_SPOS_S(@3)), $2))); yyerrok; }
 ;
 
 bsqonnamevall:
@@ -296,37 +291,21 @@ bsqon_braceval:
 
 bsqonnameval_entry:
    TOKEN_IDENTIFIER SYM_EQUALS bsqonval SYM_COMMA { $$ = BSQON_AST_NLIST_OF_VALUES_ENTRY_Create($1, $3); }
-   | TOKEN_IDENTIFIER SYM_EQUALS error SYM_COMMA { $$ = BSQON_AST_NLIST_OF_VALUES_ENTRY_Create($1, BSQON_AST_NODE_CONS(ErrorNode, MK_SPOS_S(@3))); yyerrok; }
+   | TOKEN_IDENTIFIER SYM_EQUALS error SYM_COMMA { $$ = BSQON_AST_NLIST_OF_VALUES_ENTRY_Create($1, BSQON_AST_ERROR(MK_SPOS_S(@3))); yyerrok; }
    | bsqon_braceval SYM_COMMA { $$ = BSQON_AST_NLIST_OF_VALUES_ENTRY_Create(NULL, $1); }
-   | error SYM_COMMA { $$ = BSQON_AST_NLIST_OF_VALUES_ENTRY_Create(NULL, BSQON_AST_NODE_CONS(ErrorNode, MK_SPOS_S(@1))); yyerrok; }
+   | error SYM_COMMA { $$ = BSQON_AST_NLIST_OF_VALUES_ENTRY_Create(NULL, BSQON_AST_ERROR(MK_SPOS_S(@1))); yyerrok; }
 ;
 
 bsqonbracevalue:
    '{' '}' { $$ = BSQON_AST_NODE_CONS(BraceValue, BSQON_AST_TAG_BraceValue, MK_SPOS_R(@1, @2), NULL); }
-   | '{' TOKEN_IDENTIFIER SYM_EQUALS bsqonval '}' { 
-      $$ = BSQON_AST_BraceValueNodeCreate(MK_SPOS_R(@1, @5), BSQON_AST_NamedListCons(BSQON_AST_NamedListEntryCreate($2, $4), NULL)); 
-      }
-   | '{' bsqonnamevall TOKEN_IDENTIFIER SYM_EQUALS bsqonval '}' { 
-      $$ = BSQON_AST_BraceValueNodeCreate(MK_SPOS_R(@1, @6), BSQON_AST_NamedListCompleteParse(BSQON_AST_NamedListCons(BSQON_AST_NamedListEntryCreate($3, $5), $2))); 
-      }
-   | '{' TOKEN_IDENTIFIER SYM_EQUALS error '}' { 
-      $$ = BSQON_AST_BraceValueNodeCreate(MK_SPOS_R(@1, @5), BSQON_AST_NamedListCons(BSQON_AST_NamedListEntryCreate($2, BSQON_AST_ErrorNodeCreate(MK_SPOS_S(@4))), NULL)); 
-      yyerrok; }
-   | '{' bsqonnamevall TOKEN_IDENTIFIER SYM_EQUALS error '}' { 
-      $$ = BSQON_AST_BraceValueNodeCreate(MK_SPOS_R(@1, @6), BSQON_AST_NamedListCompleteParse(BSQON_AST_NamedListCons(BSQON_AST_NamedListEntryCreate($3, BSQON_AST_ErrorNodeCreate(MK_SPOS_S(@5))), $2))); 
-      yyerrok; }
-   | '{' bsqon_braceval '}' { 
-      $$ = BSQON_AST_BraceValueNodeCreate(MK_SPOS_R(@1, @3), BSQON_AST_NamedListCons(BSQON_AST_NamedListEntryCreate(NULL, $2), NULL)); 
-      }
-   | '{' bsqonnamevall bsqon_braceval '}' { 
-      $$ = BSQON_AST_BraceValueNodeCreate(MK_SPOS_R(@1, @4), BSQON_AST_NamedListCompleteParse(BSQON_AST_NamedListCons(BSQON_AST_NamedListEntryCreate(NULL, $3), $2))); 
-      }
-   | '{' error '}' { 
-      $$ = BSQON_AST_BraceValueNodeCreate(MK_SPOS_R(@1, @3), BSQON_AST_NamedListCons(BSQON_AST_NamedListEntryCreate(NULL, BSQON_AST_ErrorNodeCreate(MK_SPOS_S(@2))), NULL)); 
-      yyerrok; }
-   | '{' bsqonnamevall error '}' { 
-      $$ = BSQON_AST_BraceValueNodeCreate(MK_SPOS_R(@1, @4), BSQON_AST_NamedListCompleteParse(BSQON_AST_NamedListCons(BSQON_AST_NamedListEntryCreate(NULL, BSQON_AST_ErrorNodeCreate(MK_SPOS_S(@3))), $2))); 
-      yyerrok; }
+   | '{' TOKEN_IDENTIFIER SYM_EQUALS bsqonval '}' { $$ = BSQON_AST_NODE_CONS(BraceValue, BSQON_AST_TAG_BraceValue, MK_SPOS_R(@1, @5), BSQON_AST_NLIST_OF_VALUES_Singleton(BSQON_AST_NLIST_OF_VALUES_ENTRY_Create($2, $4))); }
+   | '{' bsqonnamevall TOKEN_IDENTIFIER SYM_EQUALS bsqonval '}' { $$ = BSQON_AST_NODE_CONS(BraceValue, BSQON_AST_TAG_BraceValue, MK_SPOS_R(@1, @6), BSQON_AST_NLIST_OF_VALUES_Reverse(BSQON_AST_NLIST_OF_VALUES_Push(BSQON_AST_NLIST_OF_VALUES_ENTRY_Create($3, $5), $2))); }
+   | '{' TOKEN_IDENTIFIER SYM_EQUALS error '}' { $$ = BSQON_AST_NODE_CONS(BraceValue, BSQON_AST_TAG_BraceValue, MK_SPOS_R(@1, @5), BSQON_AST_NLIST_OF_VALUES_Singleton(BSQON_AST_NLIST_OF_VALUES_ENTRY_Create($2, BSQON_AST_ERROR(MK_SPOS_S(@4))))); yyerrok; }
+   | '{' bsqonnamevall TOKEN_IDENTIFIER SYM_EQUALS error '}' { $$ = BSQON_AST_NODE_CONS(BraceValue, BSQON_AST_TAG_BraceValue, MK_SPOS_R(@1, @6), BSQON_AST_NLIST_OF_VALUES_Reverse(BSQON_AST_NLIST_OF_VALUES_Push(BSQON_AST_NLIST_OF_VALUES_ENTRY_Create($3, BSQON_AST_ERROR(MK_SPOS_S(@5))), $2))); yyerrok; }
+   | '{' bsqon_braceval '}' { $$ = BSQON_AST_NODE_CONS(BraceValue, BSQON_AST_TAG_BraceValue, MK_SPOS_R(@1, @3), BSQON_AST_NLIST_OF_VALUES_Singleton(BSQON_AST_NLIST_OF_VALUES_ENTRY_Create(NULL, $2))); }
+   | '{' bsqonnamevall bsqon_braceval '}' { $$ = BSQON_AST_NODE_CONS(BraceValue, BSQON_AST_TAG_BraceValue, MK_SPOS_R(@1, @4), BSQON_AST_NLIST_OF_VALUES_Reverse(BSQON_AST_NLIST_OF_VALUES_Push(BSQON_AST_NLIST_OF_VALUES_ENTRY_Create(NULL, $3), $2))); }
+   | '{' error '}' { $$ = BSQON_AST_NODE_CONS(BraceValue, BSQON_AST_TAG_BraceValue, MK_SPOS_R(@1, @3), BSQON_AST_NLIST_OF_VALUES_Singleton(BSQON_AST_NLIST_OF_VALUES_ENTRY_Create(NULL, BSQON_AST_ERROR(MK_SPOS_S(@2))))); yyerrok; }
+   | '{' bsqonnamevall error '}' { $$ = BSQON_AST_NODE_CONS(BraceValue, BSQON_AST_TAG_BraceValue, MK_SPOS_R(@1, @4), BSQON_AST_NLIST_OF_VALUES_Reverse(BSQON_AST_NLIST_OF_VALUES_Push(BSQON_AST_NLIST_OF_VALUES_ENTRY_Create(NULL, BSQON_AST_ERROR(MK_SPOS_S(@3))), $2))); yyerrok; }
 ;
 
 bsqonbracketbracevalue:
@@ -334,10 +313,10 @@ bsqonbracketbracevalue:
 ;
 
 bsqontypedvalue:
-   '<' bsqontspec '>' bsqonbracketbracevalue { $$ = BSQON_AST_TypedValueNodeCreate(MK_SPOS_R(@1, @4), $4, $2); }
-   | bsqonnominaltype bsqonbracketbracevalue { $$ = BSQON_AST_TypedValueNodeCreate(MK_SPOS_R(@1, @2), $2, $1); }
-   | '<' error '>' bsqonbracketbracevalue { $$ = BSQON_AST_TypedValueNodeCreate(MK_SPOS_R(@1, @4), $4, BSQON_TYPE_AST_ErrorNodeCreate(MK_SPOS_S(@2))); }
-   | error bsqonbracketbracevalue { $$ = BSQON_AST_TypedValueNodeCreate(MK_SPOS_R(@1, @2), $2, BSQON_TYPE_AST_ErrorNodeCreate(MK_SPOS_S(@1))); }
+   '<' bsqontspec '>' bsqonbracketbracevalue { $$ = BSQON_AST_NODE_CONS(TypedValue, BSQON_AST_TAG_TypedValue, MK_SPOS_R(@1, @4), $4, $2); }
+   | bsqonnominaltype bsqonbracketbracevalue { $$ = BSQON_AST_NODE_CONS(TypedValue, BSQON_AST_TAG_TypedValue, MK_SPOS_R(@1, @2), $2, $1); }
+   | '<' error '>' bsqonbracketbracevalue { $$ = BSQON_AST_NODE_CONS(TypedValue, BSQON_AST_TAG_TypedValue, MK_SPOS_R(@1, @4), $4, BSQON_AST_ERROR(MK_SPOS_S(@2))); }
+   | error bsqonbracketbracevalue { $$ = BSQON_AST_NODE_CONS(TypedValue, BSQON_AST_TAG_TypedValue, MK_SPOS_R(@1, @2), $2, BSQON_AST_ERROR(MK_SPOS_S(@1))); }
 ; 
 
 bsqonstructvalue:
@@ -345,9 +324,12 @@ bsqonstructvalue:
 ;
 
 bsqonspecialcons:
-   KW_SOMETHING '(' bsqonval ')' { $$ = BSQON_AST_SpecialConsNodeCreate(BSQON_AST_TAG_SomethingCons, MK_SPOS_R(@1, @4), $3, "some"); }
-   | KW_OK '(' bsqonval ')' { $$ = BSQON_AST_SpecialConsNodeCreate(BSQON_AST_TAG_OkCons, MK_SPOS_R(@1, @4), $3, "ok"); }
-   | KW_ERR '(' bsqonval ')' { $$ = BSQON_AST_SpecialConsNodeCreate(BSQON_AST_TAG_ErrCons, MK_SPOS_R(@1, @4), $3, "err"); }
+   KW_SOMETHING '(' bsqonval ')' { $$ = BSQON_AST_NODE_CONS(SpecialConsValue, BSQON_AST_TAG_SomethingConsValue, MK_SPOS_R(@1, @4), $3, "some"); }
+   | KW_SOMETHING '(' error ')' { $$ = BSQON_AST_NODE_CONS(SpecialConsValue, BSQON_AST_TAG_SomethingConsValue, MK_SPOS_R(@1, @4), BSQON_AST_ERROR(MK_SPOS_S(@3)), "some"); yyerrok; }
+   | KW_OK '(' bsqonval ')' { $$ = BSQON_AST_NODE_CONS(SpecialConsValue, BSQON_AST_TAG_OkConsValue, MK_SPOS_R(@1, @4), $3, "ok"); }
+   | KW_OK '(' error ')' { $$ = BSQON_AST_NODE_CONS(SpecialConsValue, BSQON_AST_TAG_OkConsValue, MK_SPOS_R(@1, @4), BSQON_AST_ERROR(MK_SPOS_S(@3)), "ok"); yyerrok; }
+   | KW_ERR '(' bsqonval ')' { $$ = BSQON_AST_NODE_CONS(SpecialConsValue, BSQON_AST_TAG_ErrConsValue, MK_SPOS_R(@1, @4), $3, "err"); }
+   | KW_ERR '(' error ')' { $$ = BSQON_AST_NODE_CONS(SpecialConsValue, BSQON_AST_TAG_ErrConsValue, MK_SPOS_R(@1, @4), BSQON_AST_ERROR(MK_SPOS_S(@3)), "err"); yyerrok; }
 ;
 
 bsqonval: 
@@ -355,12 +337,12 @@ bsqonval:
 ;
 
 bsqonletexp:
-  '(' KW_LET TOKEN_IDENTIFIER ':' bsqontype SYM_EQUALS bsqonval KW_IN bsqonval ')' { $$ = BSQON_AST_LetInNodeCreate(MK_SPOS_R(@1, @10), $3, $5, $7, $9); }
+  '(' KW_LET TOKEN_IDENTIFIER ':' bsqontype SYM_EQUALS bsqonval KW_IN bsqonval ')' { $$ = BSQON_AST_NODE_CONS(LetInValue, BSQON_AST_TAG_LetInValue, MK_SPOS_R(@1, @10), $3, $5, $7, $9); }
 ;
 
 bsqonroot: 
    bsqonval { yybsqonval = $1; $$ = $1; }
-   | error {yybsqonval = BSQON_AST_ErrorNodeCreate(MK_SPOS_S(@1)); $$ = BSQON_AST_ErrorNodeCreate(MK_SPOS_S(@1)); }
+   | error {yybsqonval = BSQON_AST_ERROR(MK_SPOS_S(@1)); $$ = BSQON_AST_ERROR(MK_SPOS_S(@1)); }
 %%
 
 extern FILE* yyin;
@@ -436,7 +418,7 @@ int main(int argc, char** argv)
    }
 }
 #else
-struct BSQON_AST_Node* parse_from_stdin()
+const BSQON_AST_Node* parse_from_stdin()
 {
    yyin = stdin;
    filename = "<stdin>";
@@ -449,7 +431,7 @@ struct BSQON_AST_Node* parse_from_stdin()
    }
 }
 
-struct BSQON_AST_Node* parse_from_file(const char* file)
+const BSQON_AST_Node* parse_from_file(const char* file)
 {
    if((yyin = fopen(file, "r")) == NULL) {
       perror(file);
