@@ -28,20 +28,20 @@ int errorcount = 0;
 
 %union {
    char* str;
-   ByteString* bstr;
+   struct ByteString* bstr;
 
-   BSQON_AST_Node* bsqon_type_node;
-   BSQON_AST_Node* bsqon_value_node;
+   struct BSQON_AST_Node* bsqon_type_node;
+   struct BSQON_AST_Node* bsqon_value_node;
 
-   BSQON_AST_LIST_OF_TYPES* bsqon_type_list;
+   struct BSQON_AST_LIST_OF_TYPES* bsqon_type_list;
 
-   BSQON_AST_NLIST_OF_TYPES_ENTRY bsqon_named_type_list_entry;
-   BSQON_AST_NLIST_OF_TYPES* bsqon_named_type_list;
+   struct BSQON_AST_NLIST_OF_TYPES_ENTRY bsqon_named_type_list_entry;
+   struct BSQON_AST_NLIST_OF_TYPES* bsqon_named_type_list;
 
-   BSQON_AST_LIST_OF_VALUES* bsqon_value_list;
+   struct BSQON_AST_LIST_OF_VALUES* bsqon_value_list;
 
-   BSQON_AST_NLIST_OF_VALUES_ENTRY bsqon_named_value_list_entry;
-   BSQON_AST_NLIST_OF_VALUES* bsqon_named_value_list;
+   struct BSQON_AST_NLIST_OF_VALUES_ENTRY bsqon_named_value_list_entry;
+   struct BSQON_AST_NLIST_OF_VALUES* bsqon_named_value_list;
 }
 
 %define parse.error verbose
