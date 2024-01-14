@@ -556,14 +556,16 @@ class AssemblyInfo {
     readonly recursiveSets: Set<BSQTypeKey>[];
 
     readonly ecmaRegexValidators: Map<BSQTypeKey, string>;
+    readonly bsqonRegexValidators: Map<BSQTypeKey, string>;
 
-    constructor(aliasmap: Map<string, BSQType>, namespaces: Map<string, NamespaceDecl>, typerefs: Map<string, BSQType>, recursiveSets: Set<BSQTypeKey>[], ecmaRegexValidators: Map<BSQTypeKey, string>) {
+    constructor(aliasmap: Map<string, BSQType>, namespaces: Map<string, NamespaceDecl>, typerefs: Map<string, BSQType>, recursiveSets: Set<BSQTypeKey>[], ecmaRegexValidators: Map<BSQTypeKey, string>, bsqonRegexValidators: Map<BSQTypeKey, string>) {
         this.aliasmap = aliasmap;
         this.namespaces = namespaces;
         this.typerefs = typerefs;
         this.recursiveSets = recursiveSets;
 
         this.ecmaRegexValidators = ecmaRegexValidators;
+        this.bsqonRegexValidators = bsqonRegexValidators;
     }
 
     emit(): any {
@@ -572,7 +574,8 @@ class AssemblyInfo {
             namespaces: [...this.namespaces.entries()].map((e) => e[1].emit()),
             typerefs: [...this.typerefs.entries()].map((e) => e[1].emit()),
             recursiveSets: this.recursiveSets.map((s) => [...s]),
-            ecmaRegexValidators: [...this.ecmaRegexValidators]
+            ecmaRegexValidators: [...this.ecmaRegexValidators],
+            bsqonRegexValidators: [...this.bsqonRegexValidators]
         };
     }
 
@@ -604,7 +607,12 @@ class AssemblyInfo {
             ecmaRegexValidators.set(ev[0], ev[1]);
         });
 
-        return new AssemblyInfo(aliasmap, namespaces, typerefs, recursiveSets, ecmaRegexValidators);
+        const bsqonRegexValidators = new Map<BSQTypeKey, string>();
+        jv.bsqonRegexValidators.forEach((ev: any) => {
+            bsqonRegexValidators.set(ev[0], ev[1]);
+        });
+
+        return new AssemblyInfo(aliasmap, namespaces, typerefs, recursiveSets, ecmaRegexValidators, bsqonRegexValidators);
     }
 
     checkConcreteSubtype(t: BSQType, oftype: BSQType): boolean {

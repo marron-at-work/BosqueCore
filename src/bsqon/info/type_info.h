@@ -17,7 +17,6 @@ namespace BSQON
         TYPE_UNRESOLVED = 0x0,
         TYPE_TUPLE,
         TYPE_RECORD,
-        TYPE_ELIST,
         TYPE_STD_ENTITY,
         TYPE_STD_CONCEPT,
         TYPE_PRIMITIVE,
@@ -54,8 +53,10 @@ namespace BSQON
         Type(TypeTag tag, TypeKey tkey) : tag(tag), tkey(tkey) { ; }
         virtual ~Type() = default;
 
-        static const int64_t MIN_SAFE_NUMBER = -9007199254740991;
-        static const int64_t MAX_SAFE_NUMBER = 9007199254740991;
+        static const int64_t MIN_SAFE_INT = -9223372036854775807;
+        static const int64_t MAX_SAFE_INT = 9223372036854775807;
+
+        static const int64_t MAX_SAFE_UNSIGNED = 18446744073709551615;
 
         virtual const std::vector<TypeKey>* getPossibleSubtypeKeys() const
         {
@@ -112,15 +113,6 @@ namespace BSQON
 
         RecordType(std::vector<RecordTypeEntry> entries) : Type(TypeTag::TYPE_RECORD, "{" + std::accumulate(entries.begin(), entries.end(), std::string(), [](std::string&& a, RecordTypeEntry& b) { return (a == "" ? "" : std::move(a) + ", ") + b.pname + ": " + b.ptype; }) + "}"), entries(entries) { ; }
         virtual ~RecordType() = default;
-    };
-
-    class EListType : public Type
-    {
-    public:
-        std::vector<TypeKey> entries;
-
-        EListType(std::vector<TypeKey> entries) : Type(TypeTag::TYPE_ELIST, "(|" + std::accumulate(entries.begin(), entries.end(), std::string(), [](std::string&& a, TypeKey& b) { return (a == "" ? "" : std::move(a) + ", ") + b; }) + "|)"), entries(entries) { ; }
-        virtual ~EListType() = default;
     };
 
     class EntityType : public Type
@@ -410,12 +402,10 @@ namespace BSQON
         std::map<TypeKey, Type*> aliasmap;
         std::map<std::string, NamespaceDecl*> namespaces;
         std::map<TypeKey, Type*> typerefs;
-        std::map<std::string, BSQRegex*> regexliterals;
-        std::map<TypeKey, BSQRegex*> revalidators;
-        std::map<TypeKey, BSQPath*> pthvalidators;
         std::vector<std::set<TypeKey>> recursiveSets;
+        std::map<TypeKey, std::string> bsqonRegexValidators;
 
-        AssemblyInfo() : aliasmap(), namespaces(), typerefs(), regexliterals(), revalidators(), pthvalidators(), recursiveSets()
+        AssemblyInfo() : aliasmap(), namespaces(), typerefs(), recursiveSets(), bsqonRegexValidators()
         { 
             ; 
         }

@@ -1954,13 +1954,19 @@ class TIRAssembly {
         });
 
         let ecmaRegexValidators = new Map<TypeInfo.BSQTypeKey, string>();
+        let bsqonRegexValidators = new Map<TypeInfo.BSQTypeKey, string>();
         this.literalRegexs.forEach((lre) => {
             if(lre.regexid !== undefined) {
                 ecmaRegexValidators.set(lre.regexid, "/" + lre.re.compileToECMA(this.literalRegexs) + "/");
+                bsqonRegexValidators.set(lre.regexid, "/" + lre.re.bsqon_literal_emit() + "/");
             }
-        })
+        });
 
-        return new TypeInfo.AssemblyInfo(aliasmap, namespaces, typerefs, rescursiveMap[1], ecmaRegexValidators);
+        //
+        //TODO: I believe we want to move path validators out here too!!!
+        //
+
+        return new TypeInfo.AssemblyInfo(aliasmap, namespaces, typerefs, rescursiveMap[1], ecmaRegexValidators, bsqonRegexValidators);
     }
 
     private bsqemitnamespacemap(ii: string): string {

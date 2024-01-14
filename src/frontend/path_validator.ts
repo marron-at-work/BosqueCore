@@ -49,6 +49,7 @@ class BSQPathValidator {
             fragment: this.fragment ? this.fragment.jemit() : null
         };
     }
+    
     static jparse(obj: any): BSQPathValidator {
         return new BSQPathValidator(
             obj.pathid || undefined,
