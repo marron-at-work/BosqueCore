@@ -44,6 +44,12 @@
 #if YYDEBUG
 extern int yydebug;
 #endif
+/* "%code requires" blocks.  */
+#line 29 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+
+#include "bsqon_ast.h"
+
+#line 53 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.h"
 
 /* Token kinds.  */
 #ifndef YYTOKENTYPE
@@ -113,7 +119,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 29 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 33 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
 
    char* str;
    struct ByteString* bstr;
@@ -131,7 +137,7 @@ union YYSTYPE
    struct BSQON_AST_NLIST_OF_VALUES_ENTRY bsqon_named_value_list_entry;
    struct BSQON_AST_NLIST_OF_VALUES* bsqon_named_value_list;
 
-#line 135 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.h"
+#line 141 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

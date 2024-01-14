@@ -1,4 +1,4 @@
-#include "./bsqon_ast.h"
+#include "bsqon_ast.h"
 
 #include <stdio.h>
 #include <assert.h>

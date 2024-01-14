@@ -83,7 +83,7 @@ void BSQON_NLIST_##T##Print(struct BSQON_NLIST(T)* ll);
 struct BSQON_AST_NODE(T) { \
     struct BSQON_AST_Node base; \
 }; \
-const struct BSQON_AST_NODE(T)* BSQON_AST##T##As(const struct BSQON_AST_Node* node); \
+const struct BSQON_AST_NODE(T)* BSQON_AST_##T##As(const struct BSQON_AST_Node* node); \
 struct BSQON_AST_Node* BSQON_AST_##T##Create(enum BSQON_AST_TAG tag, struct AST_SourcePos sl);
 
 #define BSQON_AST_NODE_DECLARE_1(T, FTYPE1, FNAME1) \
@@ -91,7 +91,7 @@ struct BSQON_AST_NODE(T) { \
     struct BSQON_AST_Node base; \
     FTYPE1 FNAME1; \
 }; \
-const struct BSQON_AST_NODE(T)* BSQON_AST##T##As(const struct BSQON_AST_Node* node); \
+const struct BSQON_AST_NODE(T)* BSQON_AST_##T##As(const struct BSQON_AST_Node* node); \
 struct BSQON_AST_Node* BSQON_AST_##T##Create(enum BSQON_AST_TAG tag, struct AST_SourcePos sl, FTYPE1 FNAME1);
 
 #define BSQON_AST_NODE_DECLARE_2(T, FTYPE1, FNAME1, FTYPE2, FNAME2) \
@@ -100,7 +100,7 @@ struct BSQON_AST_NODE(T) { \
     FTYPE1 FNAME1; \
     FTYPE2 FNAME2; \
 }; \
-const struct BSQON_AST_NODE(T)* BSQON_AST##T##As(const struct BSQON_AST_Node* node); \
+const struct BSQON_AST_NODE(T)* BSQON_AST_##T##As(const struct BSQON_AST_Node* node); \
 struct BSQON_AST_Node* BSQON_AST_##T##Create(enum BSQON_AST_TAG tag, struct AST_SourcePos sl, FTYPE1 FNAME1, FTYPE2 FNAME2);
 
 #define BSQON_AST_NODE_DECLARE_3(T, FTYPE1, FNAME1, FTYPE2, FNAME2, FTYPE3, FNAME3) \
@@ -110,7 +110,7 @@ struct BSQON_AST_NODE(T) { \
     FTYPE2 FNAME2; \
     FTYPE3 FNAME3; \
 }; \
-const struct BSQON_AST_NODE(T)* BSQON_AST##T##As(const struct BSQON_AST_Node* node); \
+const struct BSQON_AST_NODE(T)* BSQON_AST_##T##As(const struct BSQON_AST_Node* node); \
 struct BSQON_AST_Node* BSQON_AST_##T##Create(enum BSQON_AST_TAG tag, struct AST_SourcePos sl, FTYPE1 FNAME1, FTYPE2 FNAME2, FTYPE3 FNAME3);
 
 #define BSQON_AST_NODE_DECLARE_4(T, FTYPE1, FNAME1, FTYPE2, FNAME2, FTYPE3, FNAME3, FTYPE4, FNAME4) \
@@ -121,13 +121,13 @@ struct BSQON_AST_NODE(T) { \
     FTYPE3 FNAME3; \
     FTYPE4 FNAME4; \
 }; \
-const struct BSQON_AST_NODE(T)* BSQON_AST##T##As(const struct BSQON_AST_Node* node); \
+const struct BSQON_AST_NODE(T)* BSQON_AST_##T##As(const struct BSQON_AST_Node* node); \
 struct BSQON_AST_Node* BSQON_AST_##T##Create(enum BSQON_AST_TAG tag, struct AST_SourcePos sl, FTYPE1 FNAME1, FTYPE2 FNAME2, FTYPE3 FNAME3, FTYPE4 FNAME4);
 
 ////////////////////////////
 //AST Definition Macros
 
-#define BSQON_AST_NODE_AS(T, N) BSQON_AST##T##As(N)
+#define BSQON_AST_NODE_AS(T, N) BSQON_AST_##T##As(N)
 #define BSQON_AST_NODE_CONS(T, TAG, SL, ...) BSQON_AST_##T##Create(TAG, SL __VA_OPT__(,) __VA_ARGS__)
 #define BSQON_AST_NODE_PRINT(T, N) BSQON_AST_##T##Print(BSQON_AST_NODE_AS(T, N))
 

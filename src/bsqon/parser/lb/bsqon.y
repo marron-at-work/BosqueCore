@@ -26,6 +26,10 @@ int errorcount = 0;
 #define YYDEBUG 1
 %}
 
+%code requires {
+#include "bsqon_ast.h"
+}
+
 %union {
    char* str;
    struct ByteString* bstr;

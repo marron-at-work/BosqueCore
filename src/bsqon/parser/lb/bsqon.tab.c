@@ -616,20 +616,20 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
-       0,   131,   131,   132,   136,   137,   141,   142,   146,   147,
-     151,   152,   153,   157,   158,   159,   160,   164,   165,   166,
-     167,   168,   172,   173,   174,   175,   176,   180,   181,   182,
-     183,   184,   185,   186,   190,   191,   192,   196,   197,   198,
-     199,   200,   201,   202,   203,   204,   205,   206,   207,   208,
-     209,   210,   211,   212,   213,   214,   215,   216,   217,   218,
-     219,   220,   221,   222,   223,   224,   228,   232,   233,   237,
-     241,   242,   246,   250,   251,   255,   255,   255,   255,   255,
-     255,   255,   259,   260,   261,   262,   266,   267,   271,   272,
-     276,   277,   278,   279,   280,   284,   285,   289,   289,   293,
-     294,   295,   296,   300,   301,   302,   303,   304,   305,   306,
-     307,   308,   312,   312,   316,   317,   318,   319,   323,   323,
-     327,   328,   329,   330,   331,   332,   336,   336,   336,   336,
-     340,   344,   345
+       0,   135,   135,   136,   140,   141,   145,   146,   150,   151,
+     155,   156,   157,   161,   162,   163,   164,   168,   169,   170,
+     171,   172,   176,   177,   178,   179,   180,   184,   185,   186,
+     187,   188,   189,   190,   194,   195,   196,   200,   201,   202,
+     203,   204,   205,   206,   207,   208,   209,   210,   211,   212,
+     213,   214,   215,   216,   217,   218,   219,   220,   221,   222,
+     223,   224,   225,   226,   227,   228,   232,   236,   237,   241,
+     245,   246,   250,   254,   255,   259,   259,   259,   259,   259,
+     259,   259,   263,   264,   265,   266,   270,   271,   275,   276,
+     280,   281,   282,   283,   284,   288,   289,   293,   293,   297,
+     298,   299,   300,   304,   305,   306,   307,   308,   309,   310,
+     311,   312,   316,   316,   320,   321,   322,   323,   327,   327,
+     331,   332,   333,   334,   335,   336,   340,   340,   340,   340,
+     344,   348,   349
 };
 #endif
 
@@ -1877,715 +1877,715 @@ yyreduce:
   switch (yyn)
     {
   case 2: /* bsqontypel: bsqontypel bsqontypel_entry  */
-#line 131 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 135 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                { (yyval.bsqon_type_list) = BSQON_AST_LIST_OF_TYPES_Push((yyvsp[0].bsqon_type_node), (yyvsp[-1].bsqon_type_list)); }
 #line 1883 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 3: /* bsqontypel: bsqontypel_entry  */
-#line 132 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 136 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                       { (yyval.bsqon_type_list) = BSQON_AST_LIST_OF_TYPES_Singleton((yyvsp[0].bsqon_type_node)); }
 #line 1889 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 4: /* bsqontypel_entry: bsqontype ","  */
-#line 136 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 140 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                        { (yyval.bsqon_type_node) = (yyvsp[-1].bsqon_type_node); }
 #line 1895 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 5: /* bsqontypel_entry: error ","  */
-#line 137 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 141 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                      { (yyval.bsqon_type_node) = BSQON_AST_ERROR(MK_SPOS_S((yylsp[-1]))); yyerrok; }
 #line 1901 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 6: /* bsqonnametypel: bsqonnametypel bsqonnametypel_entry  */
-#line 141 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 145 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                        { (yyval.bsqon_named_type_list) = BSQON_AST_NLIST_OF_TYPES_Push((yyvsp[0].bsqon_named_type_list_entry), (yyvsp[-1].bsqon_named_type_list)); }
 #line 1907 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 7: /* bsqonnametypel: bsqonnametypel_entry  */
-#line 142 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 146 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                           { (yyval.bsqon_named_type_list) = BSQON_AST_NLIST_OF_TYPES_Singleton((yyvsp[0].bsqon_named_type_list_entry)); }
 #line 1913 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 8: /* bsqonnametypel_entry: "identifier" ":" bsqontype ","  */
-#line 146 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 150 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                                   { (yyval.bsqon_named_type_list_entry) = BSQON_AST_NLIST_OF_TYPES_ENTRY_Create((yyvsp[-3].str), (yyvsp[-1].bsqon_type_node)); }
 #line 1919 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 9: /* bsqonnametypel_entry: "identifier" ":" error ","  */
-#line 147 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 151 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                                 { (yyval.bsqon_named_type_list_entry) = BSQON_AST_NLIST_OF_TYPES_ENTRY_Create((yyvsp[-3].str), BSQON_AST_ERROR(MK_SPOS_S((yylsp[-1])))); yyerrok; }
 #line 1925 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 10: /* bsqonnominaltype: "type name"  */
-#line 151 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 155 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                         { (yyval.bsqon_type_node) = BSQON_AST_NODE_CONS(NominalType, BSQON_AST_TAG_NominalType, MK_SPOS_S((yylsp[0])), (yyvsp[0].str), NULL); }
 #line 1931 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 11: /* bsqonnominaltype: "type name" bsqontermslist  */
-#line 152 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 156 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                          { (yyval.bsqon_type_node) = BSQON_AST_NODE_CONS(NominalType, BSQON_AST_TAG_NominalType, MK_SPOS_S((yylsp[-1])), (yyvsp[-1].str), (yyvsp[0].bsqon_type_list)); }
 #line 1937 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 12: /* bsqonnominaltype: bsqonnominaltype "::" "type name"  */
-#line 153 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 157 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                                             { (yyval.bsqon_type_node) = BSQON_AST_NODE_CONS(NominalScopedType, BSQON_AST_TAG_NominalScopedType, MK_SPOS_R((yylsp[-2]), (yylsp[0])), (yyvsp[-2].bsqon_type_node), (yyvsp[0].str)); }
 #line 1943 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 13: /* bsqontermslist: '<' bsqontype '>'  */
-#line 157 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 161 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                      { (yyval.bsqon_type_list) = BSQON_AST_LIST_OF_TYPES_Singleton((yyvsp[-1].bsqon_type_node)); }
 #line 1949 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 14: /* bsqontermslist: '<' bsqontypel bsqontype '>'  */
-#line 158 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 162 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                   { (yyval.bsqon_type_list) = BSQON_AST_LIST_OF_TYPES_Reverse(BSQON_AST_LIST_OF_TYPES_Push((yyvsp[-1].bsqon_type_node), (yyvsp[-2].bsqon_type_list))); }
 #line 1955 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 15: /* bsqontermslist: '<' error '>'  */
-#line 159 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 163 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                    { (yyval.bsqon_type_list) = BSQON_AST_LIST_OF_TYPES_Singleton(BSQON_AST_ERROR(MK_SPOS_S((yylsp[-1])))); yyerrok; }
 #line 1961 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 16: /* bsqontermslist: '<' bsqontypel error '>'  */
-#line 160 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 164 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                               { (yyval.bsqon_type_list) = BSQON_AST_LIST_OF_TYPES_Reverse(BSQON_AST_LIST_OF_TYPES_Push(BSQON_AST_ERROR(MK_SPOS_S((yylsp[-1]))), (yyvsp[-2].bsqon_type_list))); yyerrok; }
 #line 1967 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 17: /* bsqontupletype: '[' ']'  */
-#line 164 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 168 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
            { (yyval.bsqon_type_node) = BSQON_AST_NODE_CONS(TupleType, BSQON_AST_TAG_TupleType, MK_SPOS_R((yylsp[-1]), (yylsp[0])), NULL); }
 #line 1973 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 18: /* bsqontupletype: '[' bsqontype ']'  */
-#line 165 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 169 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                        { (yyval.bsqon_type_node) = BSQON_AST_NODE_CONS(TupleType, BSQON_AST_TAG_TupleType, MK_SPOS_R((yylsp[-2]), (yylsp[0])), BSQON_AST_LIST_OF_TYPES_Singleton((yyvsp[-1].bsqon_type_node))); }
 #line 1979 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 19: /* bsqontupletype: '[' bsqontypel bsqontype ']'  */
-#line 166 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 170 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                   { (yyval.bsqon_type_node) = BSQON_AST_NODE_CONS(TupleType, BSQON_AST_TAG_TupleType, MK_SPOS_R((yylsp[-3]), (yylsp[0])), BSQON_AST_LIST_OF_TYPES_Reverse(BSQON_AST_LIST_OF_TYPES_Push((yyvsp[-1].bsqon_type_node), (yyvsp[-2].bsqon_type_list)))); }
 #line 1985 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 20: /* bsqontupletype: '[' error ']'  */
-#line 167 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 171 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                    { (yyval.bsqon_type_node) = BSQON_AST_NODE_CONS(TupleType, BSQON_AST_TAG_TupleType, MK_SPOS_R((yylsp[-2]), (yylsp[0])), BSQON_AST_LIST_OF_TYPES_Singleton(BSQON_AST_ERROR(MK_SPOS_S((yylsp[-2]))))); yyerrok; }
 #line 1991 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 21: /* bsqontupletype: '[' bsqontypel error ']'  */
-#line 168 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 172 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                               { (yyval.bsqon_type_node) = BSQON_AST_NODE_CONS(TupleType, BSQON_AST_TAG_TupleType, MK_SPOS_R((yylsp[-3]), (yylsp[0])), BSQON_AST_LIST_OF_TYPES_Reverse(BSQON_AST_LIST_OF_TYPES_Push(BSQON_AST_ERROR(MK_SPOS_S((yylsp[-1]))), (yyvsp[-2].bsqon_type_list)))); yyerrok; }
 #line 1997 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 22: /* bsqonrecordtype: '{' '}'  */
-#line 172 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 176 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
            { (yyval.bsqon_type_node) = BSQON_AST_NODE_CONS(RecordType, BSQON_AST_TAG_RecordType, MK_SPOS_R((yylsp[-1]), (yylsp[0])), NULL); }
 #line 2003 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 23: /* bsqonrecordtype: '{' "identifier" ":" bsqontype '}'  */
-#line 173 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 177 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                                   { (yyval.bsqon_type_node) = BSQON_AST_NODE_CONS(RecordType, BSQON_AST_TAG_RecordType, MK_SPOS_R((yylsp[-4]), (yylsp[0])), BSQON_AST_NLIST_OF_TYPES_Singleton(BSQON_AST_NLIST_OF_TYPES_ENTRY_Create((yyvsp[-3].str), (yyvsp[-1].bsqon_type_node)))); }
 #line 2009 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 24: /* bsqonrecordtype: '{' bsqonnametypel "identifier" ":" bsqontype '}'  */
-#line 174 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 178 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                                                  { (yyval.bsqon_type_node) = BSQON_AST_NODE_CONS(RecordType, BSQON_AST_TAG_RecordType, MK_SPOS_R((yylsp[-5]), (yylsp[0])), BSQON_AST_NLIST_OF_TYPES_Reverse(BSQON_AST_NLIST_OF_TYPES_Push(BSQON_AST_NLIST_OF_TYPES_ENTRY_Create((yyvsp[-3].str), (yyvsp[-1].bsqon_type_node)), (yyvsp[-4].bsqon_named_type_list)))); }
 #line 2015 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 25: /* bsqonrecordtype: '{' "identifier" ":" error '}'  */
-#line 175 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 179 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                               { (yyval.bsqon_type_node) = BSQON_AST_NODE_CONS(RecordType, BSQON_AST_TAG_RecordType, MK_SPOS_R((yylsp[-4]), (yylsp[0])), BSQON_AST_NLIST_OF_TYPES_Singleton(BSQON_AST_NLIST_OF_TYPES_ENTRY_Create((yyvsp[-3].str), BSQON_AST_ERROR(MK_SPOS_S((yylsp[-1])))))); yyerrok; }
 #line 2021 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 26: /* bsqonrecordtype: '{' bsqonnametypel "identifier" ":" error '}'  */
-#line 176 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 180 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                                              { (yyval.bsqon_type_node) = BSQON_AST_NODE_CONS(RecordType, BSQON_AST_TAG_RecordType, MK_SPOS_R((yylsp[-5]), (yylsp[0])), BSQON_AST_NLIST_OF_TYPES_Reverse(BSQON_AST_NLIST_OF_TYPES_Push(BSQON_AST_NLIST_OF_TYPES_ENTRY_Create((yyvsp[-3].str), BSQON_AST_ERROR(MK_SPOS_S((yylsp[-3])))), (yyvsp[-4].bsqon_named_type_list)))); yyerrok; }
 #line 2027 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 27: /* bsqontype: bsqonnominaltype  */
-#line 180 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 184 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                     { (yyval.bsqon_type_node) = (yyvsp[0].bsqon_type_node); }
 #line 2033 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 28: /* bsqontype: bsqontupletype  */
-#line 181 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 185 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                     { (yyval.bsqon_type_node) = (yyvsp[0].bsqon_type_node); }
 #line 2039 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 29: /* bsqontype: bsqonrecordtype  */
-#line 182 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 186 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                      { (yyval.bsqon_type_node) = (yyvsp[0].bsqon_type_node); }
 #line 2045 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 30: /* bsqontype: bsqontype SYM_AMP bsqontype  */
-#line 183 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 187 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                  { (yyval.bsqon_type_node) = BSQON_AST_NODE_CONS(ConjunctionType, BSQON_AST_TAG_ConjunctionType, MK_SPOS_R((yylsp[-2]), (yylsp[0])), (yyvsp[-2].bsqon_type_node), (yyvsp[0].bsqon_type_node)); }
 #line 2051 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 31: /* bsqontype: bsqontype SYM_BAR bsqontype  */
-#line 184 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 188 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                  { (yyval.bsqon_type_node) = BSQON_AST_NODE_CONS(UnionType, BSQON_AST_TAG_UnionType, MK_SPOS_R((yylsp[-2]), (yylsp[0])), (yyvsp[-2].bsqon_type_node), (yyvsp[0].bsqon_type_node)); }
 #line 2057 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 32: /* bsqontype: '(' bsqontype ')'  */
-#line 185 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 189 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                        { (yyval.bsqon_type_node) = (yyvsp[-1].bsqon_type_node); }
 #line 2063 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 33: /* bsqontype: '(' error ')'  */
-#line 186 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 190 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                    { (yyval.bsqon_type_node) = BSQON_AST_ERROR(MK_SPOS_S((yylsp[-1]))); yyerrok; }
 #line 2069 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 34: /* bsqontspec: bsqonnominaltype  */
-#line 190 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 194 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                     { (yyval.bsqon_type_node) = (yyvsp[0].bsqon_type_node); }
 #line 2075 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 35: /* bsqontspec: bsqontupletype  */
-#line 191 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 195 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                     { (yyval.bsqon_type_node) = (yyvsp[0].bsqon_type_node); }
 #line 2081 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 36: /* bsqontspec: bsqonrecordtype  */
-#line 192 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 196 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                      { (yyval.bsqon_type_node) = (yyvsp[0].bsqon_type_node); }
 #line 2087 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 37: /* bsqonliteral: "none"  */
-#line 196 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 200 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                            { (yyval.bsqon_value_node) = BSQON_AST_NODE_CONS(SingletonValue, BSQON_AST_TAG_NoneValue, MK_SPOS_S((yylsp[0]))); }
 #line 2093 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 38: /* bsqonliteral: "nothing"  */
-#line 197 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 201 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                            { (yyval.bsqon_value_node) = BSQON_AST_NODE_CONS(SingletonValue, BSQON_AST_TAG_NothingValue, MK_SPOS_S((yylsp[0]))); }
 #line 2099 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 39: /* bsqonliteral: "true"  */
-#line 198 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 202 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                            { (yyval.bsqon_value_node) = BSQON_AST_NODE_CONS(SingletonValue, BSQON_AST_TAG_TrueValue, MK_SPOS_S((yylsp[0]))); }
 #line 2105 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 40: /* bsqonliteral: "false"  */
-#line 199 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 203 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                            { (yyval.bsqon_value_node) = BSQON_AST_NODE_CONS(SingletonValue, BSQON_AST_TAG_FalseValue, MK_SPOS_S((yylsp[0]))); }
 #line 2111 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 41: /* bsqonliteral: "nat literal"  */
-#line 200 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 204 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                            { (yyval.bsqon_value_node) = BSQON_AST_NODE_CONS(LiteralStandardValue, BSQON_AST_TAG_NatValue, MK_SPOS_S((yylsp[0])), (yyvsp[0].str)); }
 #line 2117 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 42: /* bsqonliteral: "int literal"  */
-#line 201 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 205 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                            { (yyval.bsqon_value_node) = BSQON_AST_NODE_CONS(LiteralStandardValue, BSQON_AST_TAG_IntValue, MK_SPOS_S((yylsp[0])), (yyvsp[0].str)); }
 #line 2123 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 43: /* bsqonliteral: "big nat literal"  */
-#line 202 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 206 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                            { (yyval.bsqon_value_node) = BSQON_AST_NODE_CONS(LiteralStandardValue, BSQON_AST_TAG_BigNatValue, MK_SPOS_S((yylsp[0])), (yyvsp[0].str)); }
 #line 2129 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 44: /* bsqonliteral: "big int literal"  */
-#line 203 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 207 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                            { (yyval.bsqon_value_node) = BSQON_AST_NODE_CONS(LiteralStandardValue, BSQON_AST_TAG_BigIntValue, MK_SPOS_S((yylsp[0])), (yyvsp[0].str)); }
 #line 2135 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 45: /* bsqonliteral: "rational literal"  */
-#line 204 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 208 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                            { (yyval.bsqon_value_node) = BSQON_AST_NODE_CONS(LiteralStandardValue, BSQON_AST_TAG_RationalValue, MK_SPOS_S((yylsp[0])), (yyvsp[0].str)); }
 #line 2141 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 46: /* bsqonliteral: "float literal"  */
-#line 205 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 209 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                            { (yyval.bsqon_value_node) = BSQON_AST_NODE_CONS(LiteralStandardValue, BSQON_AST_TAG_FloatValue, MK_SPOS_S((yylsp[0])), (yyvsp[0].str)); }
 #line 2147 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 47: /* bsqonliteral: "decimal literal"  */
-#line 206 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 210 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                            { (yyval.bsqon_value_node) = BSQON_AST_NODE_CONS(LiteralStandardValue, BSQON_AST_TAG_DecimalValue, MK_SPOS_S((yylsp[0])), (yyvsp[0].str)); }
 #line 2153 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 48: /* bsqonliteral: "decimal degree literal"  */
-#line 207 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 211 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                            { (yyval.bsqon_value_node) = BSQON_AST_NODE_CONS(LiteralStandardValue, BSQON_AST_TAG_DecimalDegreeValue, MK_SPOS_S((yylsp[0])), (yyvsp[0].str)); }
 #line 2159 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 49: /* bsqonliteral: "complex literal"  */
-#line 208 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 212 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                            { (yyval.bsqon_value_node) = BSQON_AST_NODE_CONS(LiteralStandardValue, BSQON_AST_TAG_ComplexValue, MK_SPOS_S((yylsp[0])), (yyvsp[0].str)); }
 #line 2165 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 50: /* bsqonliteral: "geo coordinate literal"  */
-#line 209 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 213 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                            { (yyval.bsqon_value_node) = BSQON_AST_NODE_CONS(LiteralStandardValue, BSQON_AST_TAG_LatLongValue, MK_SPOS_S((yylsp[0])), (yyvsp[0].str)); }
 #line 2171 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 51: /* bsqonliteral: "byte buffer"  */
-#line 210 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 214 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                            { (yyval.bsqon_value_node) = BSQON_AST_NODE_CONS(LiteralStandardValue, BSQON_AST_TAG_ByteBufferValue, MK_SPOS_S((yylsp[0])), (yyvsp[0].str)); }
 #line 2177 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 52: /* bsqonliteral: "uuid (v4)"  */
-#line 211 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 215 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                            { (yyval.bsqon_value_node) = BSQON_AST_NODE_CONS(LiteralStandardValue, BSQON_AST_TAG_UUIDv4Value, MK_SPOS_S((yylsp[0])), (yyvsp[0].str)); }
 #line 2183 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 53: /* bsqonliteral: "uuid (v7)"  */
-#line 212 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 216 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                            { (yyval.bsqon_value_node) = BSQON_AST_NODE_CONS(LiteralStandardValue, BSQON_AST_TAG_UUIDv7Value, MK_SPOS_S((yylsp[0])), (yyvsp[0].str)); }
 #line 2189 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 54: /* bsqonliteral: "sha3 hashcode (512 bits)"  */
-#line 213 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 217 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                            { (yyval.bsqon_value_node) = BSQON_AST_NODE_CONS(LiteralStandardValue, BSQON_AST_TAG_SHAHashcodeValue, MK_SPOS_S((yylsp[0])), (yyvsp[0].str)); }
 #line 2195 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 55: /* bsqonliteral: "string"  */
-#line 214 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 218 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                            { (yyval.bsqon_value_node) = BSQON_AST_NODE_CONS(LiteralStringValue, BSQON_AST_TAG_StringValue, MK_SPOS_S((yylsp[0])), (yyvsp[0].bstr)); }
 #line 2201 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 56: /* bsqonliteral: "ascii string"  */
-#line 215 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 219 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                            { (yyval.bsqon_value_node) = BSQON_AST_NODE_CONS(LiteralStringValue, BSQON_AST_TAG_ASCIIStringValue, MK_SPOS_S((yylsp[0])), (yyvsp[0].bstr)); }
 #line 2207 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 57: /* bsqonliteral: "path item"  */
-#line 216 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 220 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                            { (yyval.bsqon_value_node) = BSQON_AST_NODE_CONS(LiteralStringValue, BSQON_AST_TAG_NakedPathValue, MK_SPOS_S((yylsp[0])), (yyvsp[0].bstr)); }
 #line 2213 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 58: /* bsqonliteral: "regular expression"  */
-#line 217 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 221 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                            { (yyval.bsqon_value_node) = BSQON_AST_NODE_CONS(LiteralStringValue, BSQON_AST_TAG_RegexValue, MK_SPOS_S((yylsp[0])), (yyvsp[0].bstr)); }
 #line 2219 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 59: /* bsqonliteral: "date & time with timezone"  */
-#line 218 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 222 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                            { (yyval.bsqon_value_node) = BSQON_AST_NODE_CONS(LiteralStandardValue, BSQON_AST_TAG_DateTimeValue, MK_SPOS_S((yylsp[0])), (yyvsp[0].str)); }
 #line 2225 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 60: /* bsqonliteral: "date & time in UTC"  */
-#line 219 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 223 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                            { (yyval.bsqon_value_node) = BSQON_AST_NODE_CONS(LiteralStandardValue, BSQON_AST_TAG_UTCDateTimeValue, MK_SPOS_S((yylsp[0])), (yyvsp[0].str)); }
 #line 2231 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 61: /* bsqonliteral: "plain date"  */
-#line 220 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 224 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                            { (yyval.bsqon_value_node) = BSQON_AST_NODE_CONS(LiteralStandardValue, BSQON_AST_TAG_PlainDateValue, MK_SPOS_S((yylsp[0])), (yyvsp[0].str)); }
 #line 2237 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 62: /* bsqonliteral: "plain time"  */
-#line 221 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 225 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                            { (yyval.bsqon_value_node) = BSQON_AST_NODE_CONS(LiteralStandardValue, BSQON_AST_TAG_PlainTimeValue, MK_SPOS_S((yylsp[0])), (yyvsp[0].str)); }
 #line 2243 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 63: /* bsqonliteral: "logical time"  */
-#line 222 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 226 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                            { (yyval.bsqon_value_node) = BSQON_AST_NODE_CONS(LiteralStandardValue, BSQON_AST_TAG_LogicalTimeValue, MK_SPOS_S((yylsp[0])), (yyvsp[0].str)); }
 #line 2249 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 64: /* bsqonliteral: "tick time"  */
-#line 223 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 227 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                            { (yyval.bsqon_value_node) = BSQON_AST_NODE_CONS(LiteralStandardValue, BSQON_AST_TAG_TickTimeValue, MK_SPOS_S((yylsp[0])), (yyvsp[0].str)); }
 #line 2255 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 65: /* bsqonliteral: "ISO timestamp"  */
-#line 224 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 228 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                            { (yyval.bsqon_value_node) = BSQON_AST_NODE_CONS(LiteralStandardValue, BSQON_AST_TAG_TimestampValue, MK_SPOS_S((yylsp[0])), (yyvsp[0].str)); }
 #line 2261 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 66: /* bsqonunspecvar: "unspec identifier"  */
-#line 228 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 232 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                            { (yyval.bsqon_value_node) = BSQON_AST_NODE_CONS(NameValue, BSQON_AST_TAG_UnspecIdentifierValue, MK_SPOS_S((yylsp[0])), (yyvsp[0].str)); }
 #line 2267 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 67: /* bsqonidentifier: "$src"  */
-#line 232 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 236 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                 { (yyval.bsqon_value_node) = BSQON_AST_NODE_CONS(NameValue, BSQON_AST_TAG_IdentifierValue, MK_SPOS_S((yylsp[0])), "$src"); }
 #line 2273 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 68: /* bsqonidentifier: "identifier"  */
-#line 233 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 237 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                       { (yyval.bsqon_value_node) = BSQON_AST_NODE_CONS(NameValue, BSQON_AST_TAG_IdentifierValue, MK_SPOS_S((yylsp[0])), (yyvsp[0].str)); }
 #line 2279 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 69: /* bsqonscopedidentifier: bsqonnominaltype "::" "identifier"  */
-#line 237 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 241 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                                       { (yyval.bsqon_value_node) = BSQON_AST_NODE_CONS(ScopedNameValue, BSQON_AST_TAG_ScopedNameValue, MK_SPOS_R((yylsp[-2]), (yylsp[0])), (yyvsp[-2].bsqon_type_node), (yyvsp[0].str)); }
 #line 2285 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 70: /* bsqonstringof: "string" bsqonnominaltype  */
-#line 241 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 245 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                  { (yyval.bsqon_value_node) = BSQON_AST_NODE_CONS(StringOfValue, BSQON_AST_TAG_StringOfValue, MK_SPOS_R((yylsp[-1]), (yylsp[0])), (yyvsp[-1].bstr), (yyvsp[0].bsqon_type_node)); }
 #line 2291 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 71: /* bsqonstringof: "ascii string" bsqonnominaltype  */
-#line 242 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 246 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                          { (yyval.bsqon_value_node) = BSQON_AST_NODE_CONS(StringOfValue, BSQON_AST_TAG_ASCIIStringOfValue, MK_SPOS_R((yylsp[-1]), (yylsp[0])), (yyvsp[-1].bstr), (yyvsp[0].bsqon_type_node)); }
 #line 2297 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 72: /* bsqonpath: "path item" bsqonnominaltype  */
-#line 246 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 250 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                     { (yyval.bsqon_value_node) = BSQON_AST_NODE_CONS(PathValue, BSQON_AST_TAG_PathValue, MK_SPOS_R((yylsp[-1]), (yylsp[0])), BSQON_AST_NODE_CONS(LiteralStringValue, BSQON_AST_TAG_NakedPathValue, MK_SPOS_S((yylsp[-1])), (yyvsp[-1].bstr)), (yyvsp[0].bsqon_type_node)); }
 #line 2303 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 73: /* bsqontypeliteral: "numberino" "_" bsqonnominaltype  */
-#line 250 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 254 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                                    { yyerror("Missing numeric specifier"); (yyval.bsqon_value_node) = BSQON_AST_ERROR(MK_SPOS_S((yylsp[-2]))); }
 #line 2309 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 74: /* bsqontypeliteral: bsqonliteral "_" bsqonnominaltype  */
-#line 251 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 255 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                                   { (yyval.bsqon_value_node) = BSQON_AST_NODE_CONS(TypedLiteralValue, BSQON_AST_TAG_TypedLiteralValue, MK_SPOS_R((yylsp[-2]), (yylsp[0])), (yyvsp[-2].bsqon_value_node), (yyvsp[0].bsqon_type_node)); }
 #line 2315 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 81: /* bsqonterminal: bsqontypeliteral  */
-#line 255 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 259 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                                                                                                           { (yyval.bsqon_value_node) = (yyvsp[0].bsqon_value_node); }
 #line 2321 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 82: /* bsqon_mapentry: bsqonval "=>" bsqonval  */
-#line 259 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 263 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                { (yyval.bsqon_value_node) = BSQON_AST_NODE_CONS(MapEntryValue, BSQON_AST_TAG_MapEntryValue, MK_SPOS_R((yylsp[-2]), (yylsp[0])), (yyvsp[-2].bsqon_value_node), (yyvsp[0].bsqon_value_node)); }
 #line 2327 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 83: /* bsqon_mapentry: error "=>" bsqonval  */
-#line 260 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 264 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                               { (yyval.bsqon_value_node) = BSQON_AST_NODE_CONS(MapEntryValue, BSQON_AST_TAG_MapEntryValue, MK_SPOS_R((yylsp[-2]), (yylsp[0])), BSQON_AST_ERROR(MK_SPOS_S((yylsp[-2]))), (yyvsp[0].bsqon_value_node)); yyerrok; }
 #line 2333 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 84: /* bsqon_mapentry: bsqonval "=>" error  */
-#line 261 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 265 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                               { (yyval.bsqon_value_node) = BSQON_AST_NODE_CONS(MapEntryValue, BSQON_AST_TAG_MapEntryValue, MK_SPOS_R((yylsp[-2]), (yylsp[0])), (yyvsp[-2].bsqon_value_node), BSQON_AST_ERROR(MK_SPOS_S((yylsp[0])))); yyerrok; }
 #line 2339 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 85: /* bsqon_mapentry: error "=>" error  */
-#line 262 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 266 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                            { (yyval.bsqon_value_node) = BSQON_AST_NODE_CONS(MapEntryValue, BSQON_AST_TAG_MapEntryValue, MK_SPOS_R((yylsp[-2]), (yylsp[0])), BSQON_AST_ERROR(MK_SPOS_S((yylsp[-2]))), BSQON_AST_ERROR(MK_SPOS_S((yylsp[0])))); yyerrok; }
 #line 2345 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 86: /* bsqonvall: bsqonvall bsqonl_entry  */
-#line 266 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 270 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                           { (yyval.bsqon_value_list) = BSQON_AST_LIST_OF_VALUES_Push((yyvsp[0].bsqon_value_node), (yyvsp[-1].bsqon_value_list)); }
 #line 2351 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 87: /* bsqonvall: bsqonl_entry  */
-#line 267 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 271 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                   { (yyval.bsqon_value_list) = BSQON_AST_LIST_OF_VALUES_Singleton((yyvsp[0].bsqon_value_node)); }
 #line 2357 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 88: /* bsqonl_entry: bsqon_braceval ","  */
-#line 271 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 275 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                             { (yyval.bsqon_value_node) = (yyvsp[-1].bsqon_value_node); }
 #line 2363 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 89: /* bsqonl_entry: error ","  */
-#line 272 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 276 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                      { (yyval.bsqon_value_node) = BSQON_AST_ERROR(MK_SPOS_S((yylsp[-1]))); yyerrok; }
 #line 2369 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 90: /* bsqonbracketvalue: '[' ']'  */
-#line 276 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 280 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
            { (yyval.bsqon_value_node) = BSQON_AST_NODE_CONS(BracketValue, BSQON_AST_TAG_BracketValue, MK_SPOS_R((yylsp[-1]), (yylsp[0])), NULL); }
 #line 2375 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 91: /* bsqonbracketvalue: '[' bsqonval ']'  */
-#line 277 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 281 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                       { (yyval.bsqon_value_node) = BSQON_AST_NODE_CONS(BracketValue, BSQON_AST_TAG_BracketValue, MK_SPOS_R((yylsp[-2]), (yylsp[0])), BSQON_AST_LIST_OF_VALUES_Singleton((yyvsp[-1].bsqon_value_node))); }
 #line 2381 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 92: /* bsqonbracketvalue: '[' bsqonvall bsqonval ']'  */
-#line 278 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 282 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                 { (yyval.bsqon_value_node) = BSQON_AST_NODE_CONS(BracketValue, BSQON_AST_TAG_BracketValue, MK_SPOS_R((yylsp[-3]), (yylsp[0])), BSQON_AST_LIST_OF_VALUES_Reverse(BSQON_AST_LIST_OF_VALUES_Push((yyvsp[-1].bsqon_value_node), (yyvsp[-2].bsqon_value_list)))); }
 #line 2387 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 93: /* bsqonbracketvalue: '[' error ']'  */
-#line 279 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 283 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                    { (yyval.bsqon_value_node) = BSQON_AST_NODE_CONS(BracketValue, BSQON_AST_TAG_BracketValue, MK_SPOS_R((yylsp[-2]), (yylsp[0])), BSQON_AST_LIST_OF_VALUES_Singleton(BSQON_AST_ERROR(MK_SPOS_S((yylsp[-1]))))); yyerrok; }
 #line 2393 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 94: /* bsqonbracketvalue: '[' bsqonvall error ']'  */
-#line 280 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 284 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                              { (yyval.bsqon_value_node) = BSQON_AST_NODE_CONS(BracketValue, BSQON_AST_TAG_BracketValue, MK_SPOS_R((yylsp[-3]), (yylsp[0])), BSQON_AST_LIST_OF_VALUES_Reverse(BSQON_AST_LIST_OF_VALUES_Push(BSQON_AST_ERROR(MK_SPOS_S((yylsp[-1]))), (yyvsp[-2].bsqon_value_list)))); yyerrok; }
 #line 2399 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 95: /* bsqonnamevall: bsqonnamevall bsqonnameval_entry  */
-#line 284 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 288 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                     { (yyval.bsqon_named_value_list) = BSQON_AST_NLIST_OF_VALUES_Push((yyvsp[0].bsqon_named_value_list_entry), (yyvsp[-1].bsqon_named_value_list)); }
 #line 2405 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 96: /* bsqonnamevall: bsqonnameval_entry  */
-#line 285 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 289 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                         { (yyval.bsqon_named_value_list) = BSQON_AST_NLIST_OF_VALUES_Singleton((yyvsp[0].bsqon_named_value_list_entry)); }
 #line 2411 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 98: /* bsqon_braceval: bsqon_mapentry  */
-#line 289 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 293 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                              { (yyval.bsqon_value_node) = (yyvsp[0].bsqon_value_node); }
 #line 2417 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 99: /* bsqonnameval_entry: "identifier" "=" bsqonval ","  */
-#line 293 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 297 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                                   { (yyval.bsqon_named_value_list_entry) = BSQON_AST_NLIST_OF_VALUES_ENTRY_Create((yyvsp[-3].str), (yyvsp[-1].bsqon_value_node)); }
 #line 2423 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 100: /* bsqonnameval_entry: "identifier" "=" error ","  */
-#line 294 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 298 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                                  { (yyval.bsqon_named_value_list_entry) = BSQON_AST_NLIST_OF_VALUES_ENTRY_Create((yyvsp[-3].str), BSQON_AST_ERROR(MK_SPOS_S((yylsp[-1])))); yyerrok; }
 #line 2429 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 101: /* bsqonnameval_entry: bsqon_braceval ","  */
-#line 295 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 299 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                               { (yyval.bsqon_named_value_list_entry) = BSQON_AST_NLIST_OF_VALUES_ENTRY_Create(NULL, (yyvsp[-1].bsqon_value_node)); }
 #line 2435 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 102: /* bsqonnameval_entry: error ","  */
-#line 296 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 300 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                      { (yyval.bsqon_named_value_list_entry) = BSQON_AST_NLIST_OF_VALUES_ENTRY_Create(NULL, BSQON_AST_ERROR(MK_SPOS_S((yylsp[-1])))); yyerrok; }
 #line 2441 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 103: /* bsqonbracevalue: '{' '}'  */
-#line 300 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 304 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
            { (yyval.bsqon_value_node) = BSQON_AST_NODE_CONS(BraceValue, BSQON_AST_TAG_BraceValue, MK_SPOS_R((yylsp[-1]), (yylsp[0])), NULL); }
 #line 2447 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 104: /* bsqonbracevalue: '{' "identifier" "=" bsqonval '}'  */
-#line 301 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 305 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                                   { (yyval.bsqon_value_node) = BSQON_AST_NODE_CONS(BraceValue, BSQON_AST_TAG_BraceValue, MK_SPOS_R((yylsp[-4]), (yylsp[0])), BSQON_AST_NLIST_OF_VALUES_Singleton(BSQON_AST_NLIST_OF_VALUES_ENTRY_Create((yyvsp[-3].str), (yyvsp[-1].bsqon_value_node)))); }
 #line 2453 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 105: /* bsqonbracevalue: '{' bsqonnamevall "identifier" "=" bsqonval '}'  */
-#line 302 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 306 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                                                 { (yyval.bsqon_value_node) = BSQON_AST_NODE_CONS(BraceValue, BSQON_AST_TAG_BraceValue, MK_SPOS_R((yylsp[-5]), (yylsp[0])), BSQON_AST_NLIST_OF_VALUES_Reverse(BSQON_AST_NLIST_OF_VALUES_Push(BSQON_AST_NLIST_OF_VALUES_ENTRY_Create((yyvsp[-3].str), (yyvsp[-1].bsqon_value_node)), (yyvsp[-4].bsqon_named_value_list)))); }
 #line 2459 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 106: /* bsqonbracevalue: '{' "identifier" "=" error '}'  */
-#line 303 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 307 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                                { (yyval.bsqon_value_node) = BSQON_AST_NODE_CONS(BraceValue, BSQON_AST_TAG_BraceValue, MK_SPOS_R((yylsp[-4]), (yylsp[0])), BSQON_AST_NLIST_OF_VALUES_Singleton(BSQON_AST_NLIST_OF_VALUES_ENTRY_Create((yyvsp[-3].str), BSQON_AST_ERROR(MK_SPOS_S((yylsp[-1])))))); yyerrok; }
 #line 2465 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 107: /* bsqonbracevalue: '{' bsqonnamevall "identifier" "=" error '}'  */
-#line 304 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 308 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                                              { (yyval.bsqon_value_node) = BSQON_AST_NODE_CONS(BraceValue, BSQON_AST_TAG_BraceValue, MK_SPOS_R((yylsp[-5]), (yylsp[0])), BSQON_AST_NLIST_OF_VALUES_Reverse(BSQON_AST_NLIST_OF_VALUES_Push(BSQON_AST_NLIST_OF_VALUES_ENTRY_Create((yyvsp[-3].str), BSQON_AST_ERROR(MK_SPOS_S((yylsp[-1])))), (yyvsp[-4].bsqon_named_value_list)))); yyerrok; }
 #line 2471 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 108: /* bsqonbracevalue: '{' bsqon_braceval '}'  */
-#line 305 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 309 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                             { (yyval.bsqon_value_node) = BSQON_AST_NODE_CONS(BraceValue, BSQON_AST_TAG_BraceValue, MK_SPOS_R((yylsp[-2]), (yylsp[0])), BSQON_AST_NLIST_OF_VALUES_Singleton(BSQON_AST_NLIST_OF_VALUES_ENTRY_Create(NULL, (yyvsp[-1].bsqon_value_node)))); }
 #line 2477 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 109: /* bsqonbracevalue: '{' bsqonnamevall bsqon_braceval '}'  */
-#line 306 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 310 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                           { (yyval.bsqon_value_node) = BSQON_AST_NODE_CONS(BraceValue, BSQON_AST_TAG_BraceValue, MK_SPOS_R((yylsp[-3]), (yylsp[0])), BSQON_AST_NLIST_OF_VALUES_Reverse(BSQON_AST_NLIST_OF_VALUES_Push(BSQON_AST_NLIST_OF_VALUES_ENTRY_Create(NULL, (yyvsp[-1].bsqon_value_node)), (yyvsp[-2].bsqon_named_value_list)))); }
 #line 2483 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 110: /* bsqonbracevalue: '{' error '}'  */
-#line 307 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 311 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                    { (yyval.bsqon_value_node) = BSQON_AST_NODE_CONS(BraceValue, BSQON_AST_TAG_BraceValue, MK_SPOS_R((yylsp[-2]), (yylsp[0])), BSQON_AST_NLIST_OF_VALUES_Singleton(BSQON_AST_NLIST_OF_VALUES_ENTRY_Create(NULL, BSQON_AST_ERROR(MK_SPOS_S((yylsp[-1])))))); yyerrok; }
 #line 2489 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 111: /* bsqonbracevalue: '{' bsqonnamevall error '}'  */
-#line 308 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 312 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                  { (yyval.bsqon_value_node) = BSQON_AST_NODE_CONS(BraceValue, BSQON_AST_TAG_BraceValue, MK_SPOS_R((yylsp[-3]), (yylsp[0])), BSQON_AST_NLIST_OF_VALUES_Reverse(BSQON_AST_NLIST_OF_VALUES_Push(BSQON_AST_NLIST_OF_VALUES_ENTRY_Create(NULL, BSQON_AST_ERROR(MK_SPOS_S((yylsp[-1])))), (yyvsp[-2].bsqon_named_value_list)))); yyerrok; }
 #line 2495 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 113: /* bsqonbracketbracevalue: bsqonbracevalue  */
-#line 312 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 316 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                        { (yyval.bsqon_value_node) = (yyvsp[0].bsqon_value_node); }
 #line 2501 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 114: /* bsqontypedvalue: '<' bsqontspec '>' bsqonbracketbracevalue  */
-#line 316 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 320 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                              { (yyval.bsqon_value_node) = BSQON_AST_NODE_CONS(TypedValue, BSQON_AST_TAG_TypedValue, MK_SPOS_R((yylsp[-3]), (yylsp[0])), (yyvsp[0].bsqon_value_node), (yyvsp[-2].bsqon_type_node)); }
 #line 2507 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 115: /* bsqontypedvalue: bsqonnominaltype bsqonbracketbracevalue  */
-#line 317 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 321 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                              { (yyval.bsqon_value_node) = BSQON_AST_NODE_CONS(TypedValue, BSQON_AST_TAG_TypedValue, MK_SPOS_R((yylsp[-1]), (yylsp[0])), (yyvsp[0].bsqon_value_node), (yyvsp[-1].bsqon_type_node)); }
 #line 2513 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 116: /* bsqontypedvalue: '<' error '>' bsqonbracketbracevalue  */
-#line 318 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 322 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                           { (yyval.bsqon_value_node) = BSQON_AST_NODE_CONS(TypedValue, BSQON_AST_TAG_TypedValue, MK_SPOS_R((yylsp[-3]), (yylsp[0])), (yyvsp[0].bsqon_value_node), BSQON_AST_ERROR(MK_SPOS_S((yylsp[-2])))); }
 #line 2519 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 117: /* bsqontypedvalue: error bsqonbracketbracevalue  */
-#line 319 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 323 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                   { (yyval.bsqon_value_node) = BSQON_AST_NODE_CONS(TypedValue, BSQON_AST_TAG_TypedValue, MK_SPOS_R((yylsp[-1]), (yylsp[0])), (yyvsp[0].bsqon_value_node), BSQON_AST_ERROR(MK_SPOS_S((yylsp[-1])))); }
 #line 2525 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 119: /* bsqonstructvalue: bsqontypedvalue  */
-#line 323 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 327 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                             { (yyval.bsqon_value_node) = (yyvsp[0].bsqon_value_node); }
 #line 2531 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 120: /* bsqonspecialcons: "something" '(' bsqonval ')'  */
-#line 327 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 331 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                  { (yyval.bsqon_value_node) = BSQON_AST_NODE_CONS(SpecialConsValue, BSQON_AST_TAG_SomethingConsValue, MK_SPOS_R((yylsp[-3]), (yylsp[0])), (yyvsp[-1].bsqon_value_node), "some"); }
 #line 2537 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 121: /* bsqonspecialcons: "something" '(' error ')'  */
-#line 328 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 332 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                 { (yyval.bsqon_value_node) = BSQON_AST_NODE_CONS(SpecialConsValue, BSQON_AST_TAG_SomethingConsValue, MK_SPOS_R((yylsp[-3]), (yylsp[0])), BSQON_AST_ERROR(MK_SPOS_S((yylsp[-1]))), "some"); yyerrok; }
 #line 2543 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 122: /* bsqonspecialcons: "ok" '(' bsqonval ')'  */
-#line 329 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 333 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                             { (yyval.bsqon_value_node) = BSQON_AST_NODE_CONS(SpecialConsValue, BSQON_AST_TAG_OkConsValue, MK_SPOS_R((yylsp[-3]), (yylsp[0])), (yyvsp[-1].bsqon_value_node), "ok"); }
 #line 2549 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 123: /* bsqonspecialcons: "ok" '(' error ')'  */
-#line 330 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 334 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                          { (yyval.bsqon_value_node) = BSQON_AST_NODE_CONS(SpecialConsValue, BSQON_AST_TAG_OkConsValue, MK_SPOS_R((yylsp[-3]), (yylsp[0])), BSQON_AST_ERROR(MK_SPOS_S((yylsp[-1]))), "ok"); yyerrok; }
 #line 2555 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 124: /* bsqonspecialcons: "err" '(' bsqonval ')'  */
-#line 331 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 335 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                              { (yyval.bsqon_value_node) = BSQON_AST_NODE_CONS(SpecialConsValue, BSQON_AST_TAG_ErrConsValue, MK_SPOS_R((yylsp[-3]), (yylsp[0])), (yyvsp[-1].bsqon_value_node), "err"); }
 #line 2561 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 125: /* bsqonspecialcons: "err" '(' error ')'  */
-#line 332 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 336 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                           { (yyval.bsqon_value_node) = BSQON_AST_NODE_CONS(SpecialConsValue, BSQON_AST_TAG_ErrConsValue, MK_SPOS_R((yylsp[-3]), (yylsp[0])), BSQON_AST_ERROR(MK_SPOS_S((yylsp[-1]))), "err"); yyerrok; }
 #line 2567 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 129: /* bsqonval: bsqonletexp  */
-#line 336 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 340 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                                                     { (yyval.bsqon_value_node) = (yyvsp[0].bsqon_value_node); }
 #line 2573 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 130: /* bsqonletexp: '(' "let" "identifier" ':' bsqontype "=" bsqonval "in" bsqonval ')'  */
-#line 340 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 344 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
                                                                                    { (yyval.bsqon_value_node) = BSQON_AST_NODE_CONS(LetInValue, BSQON_AST_TAG_LetInValue, MK_SPOS_R((yylsp[-9]), (yylsp[0])), (yyvsp[-7].str), (yyvsp[-5].bsqon_type_node), (yyvsp[-3].bsqon_value_node), (yyvsp[-1].bsqon_value_node)); }
 #line 2579 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 131: /* bsqonroot: bsqonval  */
-#line 344 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 348 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
             { yybsqonval = (yyvsp[0].bsqon_value_node); (yyval.bsqon_value_node) = (yyvsp[0].bsqon_value_node); }
 #line 2585 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
 
   case 132: /* bsqonroot: error  */
-#line 345 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 349 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
            {yybsqonval = BSQON_AST_ERROR(MK_SPOS_S((yylsp[0]))); (yyval.bsqon_value_node) = BSQON_AST_ERROR(MK_SPOS_S((yylsp[0]))); }
 #line 2591 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.tab.c"
     break;
@@ -2820,7 +2820,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 346 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
+#line 350 "/home/mark/Code/BosqueCore/src/bsqon/parser/lb/bsqon.y"
 
 
 extern FILE* yyin;
