@@ -1176,25 +1176,6 @@ namespace BSQON
         }
     };
 
-    class EListValue : public Value
-    {
-    public:
-        const std::vector<Value*> values;
-
-        EListValue(const Type* vtype, SourcePos spos, const std::vector<Value*>&& values) : Value(vtype, spos), values(std::move(values)) { ; }
-        virtual ~EListValue() = default;
-        
-        virtual std::string toString() const override
-        {
-            return "(|" + std::accumulate(this->values.begin(), this->values.end(), std::string(), [](std::string&& a, const Value* v) { return (a == "" ? "" : std::move(a) + ", ") + v->toString(); }) + "|)";
-        }
-
-        const EListType* getEListType() const
-        {
-            return (const EListType*)this->vtype;
-        }
-    };
-
     class IdentifierValue : public Value
     {
     public:
