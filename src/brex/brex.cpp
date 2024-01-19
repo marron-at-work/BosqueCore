@@ -1,4 +1,4 @@
-#include "bsqregex.h"
+#include "brex.h"
 
 namespace BSQON
 {
@@ -32,73 +32,6 @@ namespace BSQON
         }
         else {
             return BSQSequenceRe::parse(j);
-        }
-    }
-
-    std::string BSQLiteralRe::escapeCode(CharCode c)
-    {
-        auto pct = "%";
-        if(c == '/') {
-            return pct + std::string("slash;");
-        }
-        else if( c == '%') {
-            return pct + std::string("%;");
-        }
-        else if(c == '\n') {
-            return pct + std::string("n;");
-        }
-        else if(c == '\t') {
-            return pct + std::string("t;");
-        }
-        else if(c == '.') {
-            return pct + std::string("dot;");
-        }
-        else if(c == '$') {
-            return pct + std::string("dollar;");
-        }
-        else if(c == '^') {
-            return pct + std::string("carat;");
-        }
-        else if(c == '*') {
-            return pct + std::string("star;");
-        }
-        else if(c == '+') {
-            return pct + std::string("plus;");
-        }
-        else if(c == '?') {
-            return pct + std::string("question;");
-        }
-        else if(c == '|') {
-            return pct + std::string("pipe;");
-        }
-        else if(c == '(') {
-            return pct + std::string("lparen;");
-        }
-        else if(c == ')') {
-            return pct + std::string("rparen;");
-        }
-        else if(c == '[') {
-            return pct + std::string("lbracket;");
-        }
-        else if(c == ']') {
-            return pct + std::string("rbracket;");
-        }
-        else if(c == '{') {
-            return pct + std::string("lbrace;");
-        }
-        else if(c == '}') {
-            return pct + std::string("rbrace;");
-        }
-        else {
-            if(' ' <= c && c <= '~') {
-                return std::to_string(c);
-            }
-            else {
-                char buf[64];
-                sprintf(buf, "%x;", c);
-
-                return pct + std::string(std::string(buf) + ";");
-            }
         }
     }
 
