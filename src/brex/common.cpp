@@ -182,6 +182,8 @@ namespace BREX
         //assume string has "..." so we need to remove them
 
         std::stringstream acc;
+        auto cconv = std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t>{};
+
         for(size_t i = 1; i < length - 1; ++i) {
             uint8_t c = bytes[i];
 
@@ -195,14 +197,14 @@ namespace BREX
                     return std::nullopt;
                 }
 
-                if(std::isdigit(bytes[i])) {
+                if(std::isdigit(bytes[i + 1])) {
                     //it should be a hex number
                     auto esc = decodeHexEscape(bytes + i, sc + 1);
                     if(!esc.has_value()) {
                         return std::nullopt;
                     }
 
-                    acc << std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t>{}.to_bytes(esc.value());
+                    acc << cconv.to_bytes(esc.value());
                 }
                 else {
                     auto esc = resolveEscapeUnicodeFromName(bytes + i, sc + 1);
@@ -210,37 +212,40 @@ namespace BREX
                         return std::nullopt;
                     }
 
-                    acc = std::move(acc) + (char)esc.value();
+                    acc << (char)esc.value();
                 }
 
-                i += escc.size();
+                i += std::distance(bytes + i, sc) - 1;
             }
             else {
-                acc = std::move(acc) + (char)c;
+                acc << (char)c;
             }
         }
 
-        return std::make_optional(std::move(std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t>{}.from_bytes(acc.str())));
+        return std::make_optional(std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t>{}.from_bytes(acc.str()));
     }
 
     std::vector<uint8_t> escapeString(const UnicodeString& sv)
     {
-        UnicodeString acc = U"";
+        std::stringstream ss;
+        auto cconv = std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t>{};
+
+        ss << '"';
         for(auto ii = sv.cbegin(); ii != sv.cend(); ++ii) {
             char32_t c = *ii;
 
             if(c == U'%' || c == U'"' || (c <= 127 && !std::isprint(c))) {
-                acc = std::move(acc) + resolveEscapeUnicodeFromCode(c);
+                ss << cconv.to_bytes(resolveEscapeUnicodeFromCode(c));
             }
             else {
-                acc = std::move(acc) + c;
+                ss << cconv.to_bytes(c);
             }
         }
-        acc = std::move(acc) + U"";
+        ss << '"';
 
-        std::string utf8 = std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t>{}.to_bytes(acc);
-
+        std::string utf8 = ss.str();
         std::vector<uint8_t> res(utf8.size());
+
         std::transform(utf8.cbegin(), utf8.cend(), res.begin(), [](char c) { return (uint8_t)c; });
 
         return res;
@@ -250,7 +255,8 @@ namespace BREX
     {
         //assume string has '...' (or `...`, /.../) so we need to remove them
 
-        std::string acc;
+        std::stringstream acc;
+
         for(size_t i = 1; i < length - 1; ++i) {
             uint8_t c = bytes[i];
 
@@ -264,51 +270,52 @@ namespace BREX
                     return std::nullopt;
                 }
 
-                auto escc = std::string(bytes + i + 1, sc + 1);
-                if(std::isdigit(escc[0])) {
-                    //it should be a hex number of 1-4 digits
-                    auto esc = decodeHexEscape(escc);
+                if(std::isdigit(bytes[i + 1])) {
+                    auto esc = decodeHexEscape(bytes + i, sc);
                     if(!esc.has_value() || esc.value() > 127) {
                         return std::nullopt;
                     }
 
-                    acc = std::move(acc) + (char)esc.value();
+                    acc << (char)esc.value();
                 }
                 else {
-                    auto esc = resolveEscapeASCIIFromName(escc);
+                    auto esc = resolveEscapeASCIIFromName(bytes + i, sc);
                     if(!esc.has_value()) {
                         return std::nullopt;
                     }
 
-                    acc = std::move(acc) + (char)esc.value();
+                    acc << (char)esc.value();
                 }
 
-                i += escc.size();
+                i += std::distance(bytes + i, sc) - 1;
             }
             else {
-                acc = std::move(acc) + (char)c;
+                acc << (char)c;
             }
         }
 
-        return std::make_optional(std::move(acc));
+        return std::make_optional(acc.str());
     }
 
     std::vector<uint8_t> escapeASCIIString(const std::string& sv)
     {
-        std::string acc;
+        std::stringstream ss;
+
         for(auto ii = sv.cbegin(); ii != sv.cend(); ++ii) {
             char c = *ii;
 
             if(c == '%' || c == '\'' || !std::isprint(c)) {
-                acc = std::move(acc) + resolveEscapeASCIIFromCode(c);
+                ss << resolveEscapeASCIIFromCode(c);
             }
             else {
-                acc = std::move(acc) + c;
+                ss << c;
             }
         }
 
-        std::vector<uint8_t> res(acc.size());
-        std::transform(acc.cbegin(), acc.cend(), res.begin(), [](char c) { return (uint8_t)c; });
+        std::string ascii = ss.str();
+        std::vector<uint8_t> res(ascii.size());
+
+        std::transform(ascii.cbegin(), ascii.cend(), res.begin(), [](char c) { return (uint8_t)c; });
 
         return res;
     }
