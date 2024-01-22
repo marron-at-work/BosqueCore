@@ -1,8 +1,8 @@
 #include "brex.h"
 
-namespace BSQON
+namespace BREX
 {
-    BSQRegexOpt* BSQRegexOpt::parse(json j)
+    RegexOpt* RegexOpt::parse(json j)
     {
         auto tag = j["tag"].get<std::string>();
         
@@ -33,14 +33,6 @@ namespace BSQON
         else {
             return BSQSequenceRe::parse(j);
         }
-    }
-
-    BSQLiteralRe* BSQLiteralRe::parse(json j)
-    {
-        auto litstr = j[1]["escstr"].get<std::string>();
-        std::u32string utf32 = std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t>{}.from_bytes(litstr);
-
-        return new BSQLiteralRe(utf32);
     }
 
     StateID BSQLiteralRe::compile(StateID follows, std::vector<NFAOpt*>& states) const

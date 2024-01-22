@@ -3,6 +3,8 @@
 #include "common.h"
 #include "brex_engine.h"
 
+#include <sstream>
+
 namespace BREX
 {
     template <typename C>
@@ -12,7 +14,7 @@ namespace BREX
         C high;
     };
 
-    //TODO: ADD STATE template <typename C, typename S>
+    template <typename C, typename S>
     class RegexOpt
     {
     public:
@@ -26,48 +28,44 @@ namespace BREX
         virtual StateID compileReverse(StateID follows, std::vector<NFAOpt*>& states) const = 0;
     };
 
-    //TODO: ADD STATE template <typename C, typename S>
+    template <typename C, typename S>
     class LiteralOpt : public RegexOpt
     {
     public:
         S litstr;
 
         LiteralOpt(S litstr) : RegexOpt(), litstr(litstr) {;}
-        virtual ~LiteralOpt() {;}
-
-        static std::string escapeCode(CharCode c);
+        virtual ~LiteralOpt() = default;
 
         virtual std::string toString() const override
         {
-            return std::accumulate(this->litstr.cbegin(), this->litstr.cend(), std::string(), [](std::string&& acc, CharCode c) {
-                return std::move(acc) + escapeCode(c);
+           return escapeString(this->litstr);
+        }
+
+        static LiteralOpt* parse(json j)
+        {
+            std::vector<uint8_t> bytes;
+            auto jbytes = j[1]["bytes"];
+            std::transform(jbytes.cbegin(), jbytes.cend(), std::back_inserter(bytes), [](const json& rv) {
+                return rv.get<uint8_t>();
             });
+
+            return new LiteralOpt(xxxx);
         }
 
-        static BSQLiteralRe* parse(json j);
         virtual StateID compile(StateID follows, std::vector<NFAOpt*>& states) const override final;
-
-        virtual bool isLiteral() const override
-        {
-            return true;
-        }
-
-        static BSQLiteralRe* mergeLiterals(const BSQLiteralRe* l1, const BSQLiteralRe* l2)
-        {
-            return new BSQLiteralRe(l1->litstr + l2->litstr);
-        }
+        virtual StateID compilReverse(StateID follows, std::vector<NFAOpt*>& states) const override final;
     };
 
-    class BSQCharRangeRe : public BSQRegexOpt
+    //TODO: ADD STATE template <typename C, typename S>
+    class CharRangeOpt : public RegexOpt
     {
     public:
         const bool compliment;
-        const std::vector<SingleCharRange> ranges;
+        const std::vector<SingleCharRange<C>> ranges;
 
-        BSQCharRangeRe(bool compliment, std::vector<SingleCharRange> ranges) : BSQRegexOpt(), compliment(compliment), ranges(ranges) {;}
-        virtual ~BSQCharRangeRe() {;}
-
-        static std::string escapeCode(CharCode c);
+        CharRangeOpt(bool compliment, std::vector<SingleCharRange<C>> ranges) : RegexOpt(), compliment(compliment), ranges(ranges) {;}
+        virtual ~CharRangeOpt() = default;
 
         virtual std::string toString() const override
         {
@@ -81,23 +79,45 @@ namespace BREX
             }) + "]";
         }
 
-        static BSQCharRangeRe* parse(json j);
+        static CharRangeOpt* parse(json j);
         virtual StateID compile(StateID follows, std::vector<NFAOpt*>& states) const override final;
+        virtual StateID compileReverse(StateID follows, std::vector<NFAOpt*>& states) const override final;
     };
 
-    class BSQCharClassDotRe : public BSQRegexOpt
+    //TODO: ADD STATE template <typename C, typename S>
+    class CharClassDotOpt : public RegexOpt
     {
     public:
-        BSQCharClassDotRe() : BSQRegexOpt() {;}
-        virtual ~BSQCharClassDotRe() {;}
+        CharClassDotOpt() : RegexOpt() {;}
+        virtual ~CharClassDotOpt() = default;
 
         virtual std::string toString() const override
         {
             return ".";
         }
 
-        static BSQCharClassDotRe* parse(json j);
+        static CharClassDotOpt* parse(json j);
         virtual StateID compile(StateID follows, std::vector<NFAOpt*>& states) const override final;
+        virtual StateID compileReverse(StateID follows, std::vector<NFAOpt*>& states) const override final;
+    };
+
+    //TODO: ADD STATE template <typename C, typename S>
+    class NegateOpt : public RegexOpt
+    {
+    public:
+        const RegexOpt* opt;
+
+        NegateOpt(RegexOpt* opt) : RegexOpt() opt(opt) {;}
+        virtual ~NegateOpt() = default;
+
+        virtual std::string toString() const override
+        {
+            return ".";
+        }
+
+        static NegateOpt* parse(json j);
+        virtual StateID compile(StateID follows, std::vector<NFAOpt*>& states) const override final;
+        virtual StateID compileReverse(StateID follows, std::vector<NFAOpt*>& states) const override final;
     };
 
     class BSQStarRepeatRe : public BSQRegexOpt
@@ -192,7 +212,7 @@ namespace BREX
         virtual StateID compile(StateID follows, std::vector<NFAOpt*>& states) const override final;
     };
 
-    class BSQAlternationRe : public BSQRegexOpt
+    class AllOfOpt : public RegexOpt
     {
     public:
         const std::vector<const BSQRegexOpt*> opts;
@@ -217,7 +237,32 @@ namespace BREX
         virtual StateID compile(StateID follows, std::vector<NFAOpt*>& states) const override final;
     };
 
-    class BSQSequenceRe : public BSQRegexOpt
+    class AnyOfOpt : public BSQRegexOpt
+    {
+    public:
+        const std::vector<const BSQRegexOpt*> opts;
+
+        BSQAlternationRe(std::vector<const BSQRegexOpt*> opts) : BSQRegexOpt(), opts(opts) {;}
+
+        virtual ~BSQAlternationRe()
+        {
+            for(size_t i = 0; i < this->opts.size(); ++i) {
+                delete this->opts[i];
+            }
+        }
+
+        virtual std::string toString() const override
+        {
+            return "(" + std::accumulate(this->opts.cbegin(), this->opts.cend(), std::string(), [](std::string&& acc, const BSQRegexOpt* re) {
+                return std::move(acc) + re->toString() + "|";
+            }) + ")";
+        }
+
+        static BSQAlternationRe* parse(json j);
+        virtual StateID compile(StateID follows, std::vector<NFAOpt*>& states) const override final;
+    };
+
+    class SequenceOpt : public BSQRegexOpt
     {
     public:
         const std::vector<const BSQRegexOpt*> opts;

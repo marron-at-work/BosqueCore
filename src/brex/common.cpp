@@ -327,17 +327,77 @@ namespace BREX
 
     std::vector<uint8_t> escapeRegexLiteral(const UnicodeString& sv)
     {
-        return escapeString(sv);
+        std::stringstream ss;
+        auto cconv = std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t>{};
+
+        ss << '"';
+        for(auto ii = sv.cbegin(); ii != sv.cend(); ++ii) {
+            char32_t c = *ii;
+
+            if(c == U'%' || c == U'"' || c == U'/' || c == U'\\' || (c <= 127 && !std::isprint(c))) {
+                ss << cconv.to_bytes(resolveEscapeUnicodeFromCode(c));
+            }
+            else {
+                ss << cconv.to_bytes(c);
+            }
+        }
+        ss << '"';
+
+        std::string utf8 = ss.str();
+        std::vector<uint8_t> res(utf8.size());
+
+        std::transform(utf8.cbegin(), utf8.cend(), res.begin(), [](char c) { return (uint8_t)c; });
+
+        return res;
     }
 
     std::optional<UnicodeCharCode> unescapeRegexCharRangeValue(const const uint8_t* bytes, size_t length)
     {
-        xxxx;
+        if(*bytes != '%') {
+            auto bcount = charCodeByteCount(bytes);
+
+            if(bcount == 1) {
+                return std::make_optional<UnicodeCharCode>(*bytes);
+            }
+            else {
+                char bbuff[16] = {0};
+                std::copy(bytes, bytes + bcount, bbuff);
+
+                auto cconv = std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t>{};
+                return cconv.from_bytes(bbuff)[0];
+            }
+        }
+        else {
+            auto sc = std::find(bytes, bytes + length, ';');
+            if(sc == bytes + length) {
+                return std::nullopt;
+            }
+        
+            if(std::isdigit(bytes[1])) {
+                return decodeHexEscape(bytes, sc);
+            }
+            else {
+                return resolveEscapeUnicodeFromName(bytes, sc);
+            }
+        }
     }
 
-    std::vector<uint8_t> escapeRegexLiteral(UnicodeCharCode cc)
+    std::vector<uint8_t> escapeRegexCharRangeValue(UnicodeCharCode cc)
     {
-        xxxx;
+        auto cconv = std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t>{};
+
+        std::string ebytes;
+        if(cc == U'%' || cc == U'"' || cc == U'/' || cc == U'\\' || (cc <= 127 && !std::isprint(cc))) {
+            ebytes = cconv.to_bytes(resolveEscapeUnicodeFromCode(cc));
+        }
+        else {
+            ebytes = cconv.to_bytes(cc);
+        }
+
+        std::vector<uint8_t> res(ebytes.size());
+        std::transform(ebytes.cbegin(), ebytes.cend(), res.begin(), [](char c) { return (uint8_t)c; });
+
+        return res;
     }
 
     std::optional<ASCIIString> unescapeASCIIRegexLiteral(const const uint8_t* bytes, size_t length)
@@ -347,16 +407,66 @@ namespace BREX
 
     std::vector<uint8_t> escapeASCIIRegexLiteral(const ASCIIString& sv)
     {
-        return escapeASCIIString(sv);
+        std::stringstream ss;
+
+        for(auto ii = sv.cbegin(); ii != sv.cend(); ++ii) {
+            char c = *ii;
+
+            if(c == '%' || c == '\'' || c == U'/' || c == U'\\' || !std::isprint(c)) {
+                ss << resolveEscapeASCIIFromCode(c);
+            }
+            else {
+                ss << c;
+            }
+        }
+
+        std::string ascii = ss.str();
+        std::vector<uint8_t> res(ascii.size());
+
+        std::transform(ascii.cbegin(), ascii.cend(), res.begin(), [](char c) { return (uint8_t)c; });
+
+        return res;
     }
 
     std::optional<ASCIICharCode> unescapeASCIIRegexCharRangeValue(const const uint8_t* bytes, size_t length)
     {
-        xxxx;
+        if(*bytes != '%') {
+            return std::make_optional<ASCIICharCode>(*bytes);
+        }
+        else {
+            auto sc = std::find(bytes, bytes + length, ';');
+            if(sc == bytes + length) {
+                return std::nullopt;
+            }
+        
+            if(std::isdigit(bytes[1])) {
+                return decodeHexEscape(bytes, sc);
+            }
+            else {
+                return resolveEscapeASCIIFromName(bytes, sc);
+            }
+        }
     }
 
-    std::vector<uint8_t> escapeASCIIRegexLiteral(ASCIICharCode cc)
+    std::vector<uint8_t> escapeASCIIRegexCharRangeValue(ASCIICharCode cc)
     {
+        std::string ebytes;
+        if(cc == U'%' || cc == U'"' || cc == U'/' || cc == U'\\' || (cc <= 127 && !std::isprint(cc))) {
+            ebytes = resolveEscapeASCIIFromCode(cc);
+        }
+        else {
+            ebytes = {cc};
+        }
 
+        std::vector<uint8_t> res(ebytes.size());
+        std::transform(ebytes.cbegin(), ebytes.cend(), res.begin(), [](char c) { return (uint8_t)c; });
+
+        return res;
+    }
+
+    size_t charCodeByteCount(const uint8_t* utf8ptr)
+    {
+        auto const h0 = (*utf8ptr) & 0b11110000;
+        return h0 < 0b10000000 ? 1 : (h0 < 0b11100000 ? 2 : (h0 < 0b11110000 ? 3 : 4));
     }
 }

@@ -82,14 +82,14 @@ namespace BREX
     //Take a utf8 regex literal with escapes and convert to a UnicodeString
     std::optional<UnicodeString> unescapeRegexLiteral(const const uint8_t* bytes, size_t length);
 
-    //Convert a UnicodeString string to a utf8 string with escapes
+    //Convert a UnicodeString regex literal string into a utf8 string with escapes
     std::vector<uint8_t> escapeRegexLiteral(const UnicodeString& sv);
 
     //Take a utf8 regex CharRange value (possibly with escapes) and convert to a CharCode
     std::optional<UnicodeCharCode> unescapeRegexCharRangeValue(const const uint8_t* bytes, size_t length);
 
     //Convert a Unicode CharRange value to a utf8 string with escapes
-    std::vector<uint8_t> escapeRegexLiteral(UnicodeCharCode cc);
+    std::vector<uint8_t> escapeRegexCharRangeValue(UnicodeCharCode cc);
 
     //Convert an ascii regex string to a ascii regex string with escapes
     std::optional<ASCIIString> unescapeASCIIRegexLiteral(const const uint8_t* bytes, size_t length);
@@ -101,6 +101,9 @@ namespace BREX
     std::optional<ASCIICharCode> unescapeASCIIRegexCharRangeValue(const const uint8_t* bytes, size_t length);
 
     //Convert an ascii CharRange value to a ascii string with escapes
-    std::vector<uint8_t> escapeASCIIRegexLiteral(ASCIICharCode cc);
+    std::vector<uint8_t> escapeASCIIRegexCharRangeValue(ASCIICharCode cc);
+
+    //compute the number of bytes that the next codepoint in the utf8 string will take up
+    size_t charCodeByteCount(const uint8_t* utf8ptr);
 }
 
