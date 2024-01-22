@@ -2,83 +2,94 @@
 
 #include <codecvt>
 #include <locale>
-#include <sstream>
+
+#ifdef BREX_DEBUG
+    void processAssert(const char* file, int line, const char* msg)
+    {
+        fprintf(stderr, "Assertion failed: %s:%d -- %s\n", file, line, msg);
+        abort();
+    }
+#endif
+
+#define UTF8_ENCODING_BYTE_COUNT(B) utf8_encoding_sizes[((uint8_t)(B)) >> 4]
 
 namespace BREX
 {
-        std::vector<std::pair<uint8_t, UnicodeString>> s_escape_names_unicode = {
-        {0, U"%NUL;"},
-        {1, U"%SOH;"},
-        {2, U"%STX;"},
-        {3, U"%ETX;"},
-        {4, U"%EOT;"},
-        {5, U"%ENQ;"},
-        {6, U"%ACK;"},
-        {7, U"%a;"},
-        {8, U"%b;"},
-        {9, U"%t;"},
-        {10, U"%n;"},
-        {11, U"%v;"},
-        {12, U"%f;"},
-        {13, U"%r;"},
-        {14, U"%SO;"},
-        {15, U"%SI;"},
-        {16, U"%DLE;"},
-        {17, U"%DC1;"},
-        {18, U"%DC2;"},
-        {19, U"%DC3;"},
-        {20, U"%DC4;"},
-        {21, U"%NAK;"},
-        {22, U"%SYN;"},
-        {23, U"%ETB;"},
-        {24, U"%CAN;"},
-        {25, U"%EM;"},
-        {26, U"%SUB;"},
-        {27, U"%e;"},
-        {28, U"%FS;"},
-        {29, U"%GS;"},
-        {30, U"%RS;"},
-        {31, U"%US;"},
-        {127, U"%DEL;"},
+        size_t utf8_encoding_sizes[16] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 4};
 
-        {32, U"%space;"},
-        {33, U"%bang;"},
-        {34, U"%;"},
-        {34, U"%quote;"},
-        {35, U"%hash;"},
-        {36, U"%dollar;"},
-        {37, U"%%;"},
-        {37, U"%percent;"},
-        {38, U"%amp;"},
-        {39, U"%tick;"},
-        {40, U"%lparen;"},
-        {41, U"%rparen;"},
-        {42, U"%star;"},
-        {43, U"%plus;"},
-        {44, U"%comma;"},
-        {45, U"%dash;"},
-        {46, U"%dot;"},
-        {47, U"%slash;"},
-        {58, U"%colon;"},
-        {59, U"%semicolon;"},
-        {60, U"%langle;"},
-        {61, U"%equal;"},
-        {62, U"%rangle;"},
-        {63, U"%question;"},
-        {64, U"%at;"}, 
-        {91, U"%lbracket;"},
-        {92, U"%backslash;"},
-        {93, U"%rbracket;"},
-        {94, U"%caret;"},
-        {95, U"%underscore;"},
-        {96, U"%backtick;"},
-        {123, U"%lbrace;"},
-        {124, U"%pipe;"},
-        {125, U"%rbrace;"},
-        {126, U"%tilde;"}
+        std::vector<std::pair<uint8_t, const char*>> s_escape_names_unicode = {
+        {0, "%NUL;"},
+        {1, "%SOH;"},
+        {2, "%STX;"},
+        {3, "%ETX;"},
+        {4, "%EOT;"},
+        {5, "%ENQ;"},
+        {6, "%ACK;"},
+        {7, "%a;"},
+        {8, "%b;"},
+        {9, "%t;"},
+        {10, "%n;"},
+        {11, "%v;"},
+        {12, "%f;"},
+        {13, "%r;"},
+        {14, "%SO;"},
+        {15, "%SI;"},
+        {16, "%DLE;"},
+        {17, "%DC1;"},
+        {18, "%DC2;"},
+        {19, "%DC3;"},
+        {20, "%DC4;"},
+        {21, "%NAK;"},
+        {22, "%SYN;"},
+        {23, "%ETB;"},
+        {24, "%CAN;"},
+        {25, "%EM;"},
+        {26, "%SUB;"},
+        {27, "%e;"},
+        {28, "%FS;"},
+        {29, "%GS;"},
+        {30, "%RS;"},
+        {31, "%US;"},
+        {127, "%DEL;"},
+
+        {32, "%space;"},
+        {33, "%bang;"},
+        {34, "%;"},
+        {34, "%quote;"},
+        {35, "%hash;"},
+        {36, "%dollar;"},
+        {37, "%%;"},
+        {37, "%percent;"},
+        {38, "%amp;"},
+        {39, "%tick;"},
+        {40, "%lparen;"},
+        {41, "%rparen;"},
+        {42, "%star;"},
+        {43, "%plus;"},
+        {44, "%comma;"},
+        {45, "%dash;"},
+        {46, "%dot;"},
+        {47, "%slash;"},
+        {58, "%colon;"},
+        {59, "%semicolon;"},
+        {60, "%langle;"},
+        {61, "%equal;"},
+        {62, "%rangle;"},
+        {63, "%question;"},
+        {64, "%at;"}, 
+        {91, "%lbracket;"},
+        {92, "%backslash;"},
+        {93, "%rbracket;"},
+        {94, "%caret;"},
+        {95, "%underscore;"},
+        {96, "%backtick;"},
+        {123, "%lbrace;"},
+        {124, "%pipe;"},
+        {125, "%rbrace;"},
+        {126, "%tilde;"}
     };
 
-    std::vector<std::pair<uint8_t, ASCIIString>> s_escape_names_ascii = {
+    std::vector<std::pair<uint8_t, const char*>> s_escape_names_ascii = {
         {32, "%space;"},
         {33, "%bang;"},
         {34, "%quote;"},
@@ -116,6 +127,55 @@ namespace BREX
         {126, "%tilde;"}
     };
 
+    size_t charCodeByteCount(const uint8_t* byteptr)
+    {
+        return UTF8_ENCODING_BYTE_COUNT(*byteptr);
+    }
+
+    std::optional<UnicodeCharCode> toUnicodeCharCodeFromBytes(const uint8_t* byteptr, const uint8_t* endptr)
+    {
+        auto bytecount = UTF8_ENCODING_BYTE_COUNT(*byteptr);
+        if(byteptr + bytecount > endptr) {
+            return std::nullopt;
+        }
+
+        auto curr = byteptr + 1;
+        UnicodeCharCode cval = *byteptr;
+        while(--bytecount > 0)
+        {
+            cval = (cval << 8) | (((char32_t)(*curr++)) & 0xff);
+        }
+
+        return std::make_optional<UnicodeCharCode>(cval);
+    }
+
+    void toBytesFromUnicodeCharCode(UnicodeCharCode cc, std::vector<char8_t>& intochars)
+    {
+        //TODO: this is a bit inefficient -- we should be able to do this tithout codecvt
+
+        auto cconv = std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t>{}.to_bytes(cc);
+        std::copy(cconv.cbegin(), cconv.cend(), std::back_inserter(intochars));
+    }
+
+    size_t UnicodeIterator::charCodeByteCount() const
+    {
+        return UTF8_ENCODING_BYTE_COUNT(*this->curr);
+    }
+
+    UnicodeCharCode UnicodeIterator::toUnicodeCharCodeFromBytes() const
+    {
+        auto bytecount = UTF8_ENCODING_BYTE_COUNT(*this->curr);
+
+        auto curr = this->curr + 1;
+        UnicodeCharCode cval = *this->curr;
+        while(--bytecount > 0)
+        {
+            cval = (cval << 8) | (((char32_t)(*curr++)) & 0xff);
+        }
+
+        return cval;
+    } 
+
     std::optional<UnicodeCharCode> decodeHexEscape(const uint8_t* s, const uint8_t* e)
     {
         size_t ccount = std::distance(s, e);
@@ -135,7 +195,7 @@ namespace BREX
         }
     }
 
-    UnicodeString resolveEscapeUnicodeFromCode(uint8_t c)
+    const char* resolveEscapeUnicodeFromCode(char8_t c)
     {
         auto ii = std::find_if(s_escape_names_unicode.cbegin(), s_escape_names_unicode.cend(), [c](const std::pair<uint8_t, UnicodeString>& p) { 
             return p.first == c; 
@@ -156,7 +216,7 @@ namespace BREX
         }
     }
 
-    ASCIIString resolveEscapeASCIIFromCode(uint8_t c)
+    const char* resolveEscapeASCIIFromCode(char c)
     {
         auto ii = std::find_if(s_escape_names_ascii.cbegin(), s_escape_names_ascii.cend(), [c](const std::pair<uint8_t, std::string>& p) { 
             return p.first == c; 
@@ -181,9 +241,7 @@ namespace BREX
     {
         //assume string has "..." so we need to remove them
 
-        std::stringstream acc;
-        auto cconv = std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t>{};
-
+        std::vector<char8_t> acc;
         for(size_t i = 1; i < length - 1; ++i) {
             uint8_t c = bytes[i];
 
@@ -204,7 +262,7 @@ namespace BREX
                         return std::nullopt;
                     }
 
-                    acc << cconv.to_bytes(esc.value());
+                    toBytesFromUnicodeCharCode(esc.value(), acc);
                 }
                 else {
                     auto esc = resolveEscapeUnicodeFromName(bytes + i, sc + 1);
@@ -212,51 +270,45 @@ namespace BREX
                         return std::nullopt;
                     }
 
-                    acc << (char)esc.value();
+                    acc.push_back(esc.value());
                 }
 
                 i += std::distance(bytes + i, sc) - 1;
             }
             else {
-                acc << (char)c;
+                acc.push_back(c);
             }
         }
 
-        return std::make_optional(std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t>{}.from_bytes(acc.str()));
+        return std::make_optional<UnicodeString>(acc.cbegin(), acc.cend());
     }
 
     std::vector<uint8_t> escapeString(const UnicodeString& sv)
     {
-        std::stringstream ss;
-        auto cconv = std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t>{};
-
-        ss << '"';
+        std::vector<uint8_t> acc = {'"'};
         for(auto ii = sv.cbegin(); ii != sv.cend(); ++ii) {
-            char32_t c = *ii;
+            char8_t c = *ii;
 
             if(c == U'%' || c == U'"' || (c <= 127 && !std::isprint(c))) {
-                ss << cconv.to_bytes(resolveEscapeUnicodeFromCode(c));
+                auto escc = resolveEscapeUnicodeFromCode(c);
+                while(*escc != '\0') {
+                    acc.push_back(*escc++);
+                }
             }
             else {
-                ss << cconv.to_bytes(c);
+                acc.push_back(c);
             }
         }
-        ss << '"';
+        acc.push_back('"');
 
-        std::string utf8 = ss.str();
-        std::vector<uint8_t> res(utf8.size());
-
-        std::transform(utf8.cbegin(), utf8.cend(), res.begin(), [](char c) { return (uint8_t)c; });
-
-        return res;
+        return std::move(acc);
     }
 
     std::optional<std::string> unescapeASCIIString(const uint8_t* bytes, size_t length)
     {
         //assume string has '...' (or `...`, /.../) so we need to remove them
 
-        std::stringstream acc;
-
+        std::vector<char> acc;
         for(size_t i = 1; i < length - 1; ++i) {
             uint8_t c = bytes[i];
 
@@ -276,7 +328,7 @@ namespace BREX
                         return std::nullopt;
                     }
 
-                    acc << (char)esc.value();
+                    acc.push_back(esc.value());
                 }
                 else {
                     auto esc = resolveEscapeASCIIFromName(bytes + i, sc);
@@ -284,40 +336,38 @@ namespace BREX
                         return std::nullopt;
                     }
 
-                    acc << (char)esc.value();
+                    acc.push_back(esc.value());
                 }
 
                 i += std::distance(bytes + i, sc) - 1;
             }
             else {
-                acc << (char)c;
+                acc.push_back(c);
             }
         }
 
-        return std::make_optional(acc.str());
+        return std::make_optional(ASCIIString(acc.cbegin(), acc.cend()));
     }
 
     std::vector<uint8_t> escapeASCIIString(const std::string& sv)
     {
-        std::stringstream ss;
-
+        std::vector<uint8_t> acc = {'\''};
         for(auto ii = sv.cbegin(); ii != sv.cend(); ++ii) {
             char c = *ii;
 
             if(c == '%' || c == '\'' || !std::isprint(c)) {
-                ss << resolveEscapeASCIIFromCode(c);
+                auto escc = resolveEscapeASCIIFromCode(c);
+                while(*escc != '\0') {
+                    acc.push_back(*escc++);
+                }
             }
             else {
-                ss << c;
+                acc.push_back(c);
             }
         }
+        acc.push_back('\'');
 
-        std::string ascii = ss.str();
-        std::vector<uint8_t> res(ascii.size());
-
-        std::transform(ascii.cbegin(), ascii.cend(), res.begin(), [](char c) { return (uint8_t)c; });
-
-        return res;
+        return std::move(acc);
     }
 
     std::optional<UnicodeString> unescapeRegexLiteral(const const uint8_t* bytes, size_t length)
@@ -327,28 +377,23 @@ namespace BREX
 
     std::vector<uint8_t> escapeRegexLiteral(const UnicodeString& sv)
     {
-        std::stringstream ss;
-        auto cconv = std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t>{};
-
-        ss << '"';
+        std::vector<uint8_t> acc = {'"'};
         for(auto ii = sv.cbegin(); ii != sv.cend(); ++ii) {
-            char32_t c = *ii;
+            char8_t c = *ii;
 
             if(c == U'%' || c == U'"' || c == U'/' || c == U'\\' || (c <= 127 && !std::isprint(c))) {
-                ss << cconv.to_bytes(resolveEscapeUnicodeFromCode(c));
+                auto escc = resolveEscapeUnicodeFromCode(c);
+                while(*escc != '\0') {
+                    acc.push_back(*escc++);
+                }
             }
             else {
-                ss << cconv.to_bytes(c);
+                acc.push_back(c);
             }
         }
-        ss << '"';
+        acc.push_back('"');
 
-        std::string utf8 = ss.str();
-        std::vector<uint8_t> res(utf8.size());
-
-        std::transform(utf8.cbegin(), utf8.cend(), res.begin(), [](char c) { return (uint8_t)c; });
-
-        return res;
+        return std::move(acc);
     }
 
     std::optional<UnicodeCharCode> unescapeRegexCharRangeValue(const const uint8_t* bytes, size_t length)
@@ -360,11 +405,7 @@ namespace BREX
                 return std::make_optional<UnicodeCharCode>(*bytes);
             }
             else {
-                char bbuff[16] = {0};
-                std::copy(bytes, bytes + bcount, bbuff);
-
-                auto cconv = std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t>{};
-                return cconv.from_bytes(bbuff)[0];
+                return toUnicodeCharCodeFromBytes(bytes, bytes + bcount);
             }
         }
         else {
@@ -384,9 +425,7 @@ namespace BREX
 
     std::vector<uint8_t> escapeRegexCharRangeValue(UnicodeCharCode cc)
     {
-        auto cconv = std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t>{};
-
-        std::string ebytes;
+        std::vector<uint8_t> acc;
         if(cc == U'%' || cc == U'"' || cc == U'/' || cc == U'\\' || (cc <= 127 && !std::isprint(cc))) {
             ebytes = cconv.to_bytes(resolveEscapeUnicodeFromCode(cc));
         }
@@ -394,10 +433,7 @@ namespace BREX
             ebytes = cconv.to_bytes(cc);
         }
 
-        std::vector<uint8_t> res(ebytes.size());
-        std::transform(ebytes.cbegin(), ebytes.cend(), res.begin(), [](char c) { return (uint8_t)c; });
-
-        return res;
+        return std::move(acc);
     }
 
     std::optional<ASCIIString> unescapeASCIIRegexLiteral(const const uint8_t* bytes, size_t length)
@@ -407,25 +443,23 @@ namespace BREX
 
     std::vector<uint8_t> escapeASCIIRegexLiteral(const ASCIIString& sv)
     {
-        std::stringstream ss;
-
+        std::vector<uint8_t> acc = {'\''};
         for(auto ii = sv.cbegin(); ii != sv.cend(); ++ii) {
             char c = *ii;
 
             if(c == '%' || c == '\'' || c == U'/' || c == U'\\' || !std::isprint(c)) {
-                ss << resolveEscapeASCIIFromCode(c);
+                auto escc = resolveEscapeASCIIFromCode(c);
+                while(*escc != '\0') {
+                    acc.push_back(*escc++);
+                }
             }
             else {
-                ss << c;
+                acc.push_back(c);
             }
         }
+        acc.push_back('\'');
 
-        std::string ascii = ss.str();
-        std::vector<uint8_t> res(ascii.size());
-
-        std::transform(ascii.cbegin(), ascii.cend(), res.begin(), [](char c) { return (uint8_t)c; });
-
-        return res;
+        return std::move(acc);
     }
 
     std::optional<ASCIICharCode> unescapeASCIIRegexCharRangeValue(const const uint8_t* bytes, size_t length)
@@ -450,7 +484,7 @@ namespace BREX
 
     std::vector<uint8_t> escapeASCIIRegexCharRangeValue(ASCIICharCode cc)
     {
-        std::string ebytes;
+        std::vector<uint8_t> acc;
         if(cc == U'%' || cc == U'"' || cc == U'/' || cc == U'\\' || (cc <= 127 && !std::isprint(cc))) {
             ebytes = resolveEscapeASCIIFromCode(cc);
         }
@@ -458,15 +492,6 @@ namespace BREX
             ebytes = {cc};
         }
 
-        std::vector<uint8_t> res(ebytes.size());
-        std::transform(ebytes.cbegin(), ebytes.cend(), res.begin(), [](char c) { return (uint8_t)c; });
-
-        return res;
-    }
-
-    size_t charCodeByteCount(const uint8_t* utf8ptr)
-    {
-        auto const h0 = (*utf8ptr) & 0b11110000;
-        return h0 < 0b10000000 ? 1 : (h0 < 0b11100000 ? 2 : (h0 < 0b11110000 ? 3 : 4));
+       return std::move(acc);
     }
 }

@@ -29,6 +29,17 @@ namespace BREX
     };
 
     template <typename C, typename S>
+    S convertJSONBytesToRegexLiteral(const std::vector<uint8_t>& bytes)
+    {
+        std::vector<uint8_t> bytes;
+        std::transform(jbytes.cbegin(), jbytes.cend(), std::back_inserter(bytes), [](const json& rv) {
+            return rv.get<uint8_t>();
+        });
+
+        return ;
+    }
+
+    template <typename C, typename S>
     class LiteralOpt : public RegexOpt
     {
     public:
@@ -50,7 +61,7 @@ namespace BREX
                 return rv.get<uint8_t>();
             });
 
-            return new LiteralOpt(xxxx);
+            return new LiteralOpt(convertJSONBytesToRegexLiteral<C, S>(bytes));
         }
 
         virtual StateID compile(StateID follows, std::vector<NFAOpt*>& states) const override final;
