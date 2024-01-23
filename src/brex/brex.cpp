@@ -77,13 +77,6 @@ namespace BREX
         return altstate;
     }
 
-    BSQPlusRepeatRe* BSQPlusRepeatRe::parse(json j)
-    {
-        auto repeat = BSQRegexOpt::parse(j[1]["repeat"]);
-
-        return new BSQPlusRepeatRe(repeat);
-    }
-
     StateID BSQPlusRepeatRe::compile(StateID follows, std::vector<NFAOpt*>& states) const
     {
         auto thisstate = (StateID)states.size();
@@ -93,15 +86,6 @@ namespace BREX
         states[thisstate] = new NFAOptStar(thisstate, optfollows, follows);
 
         return thisstate;
-    }
-
-    BSQRangeRepeatRe* BSQRangeRepeatRe::parse(json j)
-    {
-        auto min = j[1]["min"].get<uint8_t>();
-        auto max = j[1]["max"].get<uint8_t>();
-        auto repeat = BSQRegexOpt::parse(j[1]["repeat"]);
-
-        return new BSQRangeRepeatRe(min, max, repeat);
     }
 
     StateID BSQRangeRepeatRe::compile(StateID follows, std::vector<NFAOpt*>& states) const
@@ -123,13 +107,6 @@ namespace BREX
         return follows;
     }
 
-    BSQOptionalRe* BSQOptionalRe::parse(json j)
-    {
-        auto opt = BSQRegexOpt::parse(j[1]["opt"]);
-
-        return new BSQOptionalRe(opt);
-    }
-
     StateID BSQOptionalRe::compile(StateID follows, std::vector<NFAOpt*>& states) const
     {
         auto followopt = this->opt->compile(follows, states);
@@ -138,17 +115,6 @@ namespace BREX
         states.push_back(new NFAOptAlternate(thisstate, { followopt, follows }));
 
         return thisstate;
-    }
-
-    BSQAlternationRe* BSQAlternationRe::parse(json j)
-    {
-        std::vector<const BSQRegexOpt*> opts;
-        auto jopts = j[1]["opts"];
-        std::transform(jopts.cbegin(), jopts.cend(), std::back_inserter(opts), [](json arg) {
-            return BSQRegexOpt::parse(arg);
-        });
-
-        return new BSQAlternationRe(opts);
     }
 
     StateID BSQAlternationRe::compile(StateID follows, std::vector<NFAOpt*>& states) const

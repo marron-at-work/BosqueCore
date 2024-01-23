@@ -14,7 +14,7 @@ namespace BREX
         NFAOpt(StateID stateid) : stateid(stateid) {;}
         virtual ~NFAOpt() {;}
 
-        virtual void advanceChar(CharCode c, const std::vector<NFAOpt*>& nfaopts, std::vector<StateID>& nstates) const
+        virtual void advanceChar(RegexChar c, const std::vector<NFAOpt*>& nfaopts, std::vector<StateID>& nstates) const
         {
             return;
         }
@@ -35,13 +35,13 @@ namespace BREX
     class NFAOptCharCode : public NFAOpt
     {
     public:
-        const CharCode c;
+        const RegexChar c;
         const StateID follow;
 
-        NFAOptCharCode(StateID stateid, CharCode c, StateID follow) : NFAOpt(stateid), c(c), follow(follow) {;}
+        NFAOptCharCode(StateID stateid, RegexChar c, StateID follow) : NFAOpt(stateid), c(c), follow(follow) {;}
         virtual ~NFAOptCharCode() {;}
 
-        virtual void advanceChar(CharCode c, const std::vector<NFAOpt*>& nfaopts, std::vector<StateID>& nstates) const override final
+        virtual void advanceChar(RegexChar c, const std::vector<NFAOpt*>& nfaopts, std::vector<StateID>& nstates) const override final
         {
             if(this->c == c) {
                 nstates.push_back(this->follow);
@@ -59,7 +59,7 @@ namespace BREX
         NFAOptRange(StateID stateid, bool compliment, std::vector<SingleCharRange> ranges, StateID follow) : NFAOpt(stateid), compliment(compliment), ranges(ranges), follow(follow) {;}
         virtual ~NFAOptRange() {;}
 
-        virtual void advanceChar(CharCode c, const std::vector<NFAOpt*>& nfaopts, std::vector<StateID>& nstates) const override final
+        virtual void advanceChar(RegexChar c, const std::vector<NFAOpt*>& nfaopts, std::vector<StateID>& nstates) const override final
         {
             auto chkrng = std::find_if(this->ranges.cbegin(), this->ranges.cend(), [c](const SingleCharRange& rr) {
                 return (rr.low <= c && c <= rr.high);
@@ -86,13 +86,29 @@ namespace BREX
         NFAOptDot(StateID stateid, StateID follow) : NFAOpt(stateid), follow(follow) {;}
         virtual ~NFAOptDot() {;}
 
-        virtual void advanceChar(CharCode c, const std::vector<NFAOpt*>& nfaopts, std::vector<StateID>& nstates) const override final
+        virtual void advanceChar(RegexChar c, const std::vector<NFAOpt*>& nfaopts, std::vector<StateID>& nstates) const override final
         {
             nstates.push_back(this->follow);
         }
     };
 
-    class NFAOptAlternate : public NFAOpt
+    class NFAOptAllOf : public NFAOpt
+    {
+    public:
+        const std::vector<StateID> follows;
+
+        NFAOptAlternate(StateID stateid, std::vector<StateID> follows) : NFAOpt(stateid), follows(follows) {;}
+        virtual ~NFAOptAlternate() {;}
+
+        virtual void advanceEpsilon(const std::vector<NFAOpt*>& nfaopts, std::vector<StateID>& nstates) const override final
+        {
+            for(size_t i = 0; i < this->follows.size(); ++i) {
+                nfaopts[this->follows[i]]->advanceEpsilon(nfaopts, nstates);
+            }
+        }
+    };
+
+    class NFAOptAnyOf : public NFAOpt
     {
     public:
         const std::vector<StateID> follows;
@@ -109,6 +125,38 @@ namespace BREX
     };
 
     class NFAOptStar : public NFAOpt
+    {
+    public:
+        const StateID matchfollow;
+        const StateID skipfollow;
+
+        NFAOptStar(StateID stateid, StateID matchfollow, StateID skipfollow) : NFAOpt(stateid), matchfollow(matchfollow), skipfollow(skipfollow) {;}
+        virtual ~NFAOptStar() {;}
+
+        virtual void advanceEpsilon(const std::vector<NFAOpt*>& nfaopts, std::vector<StateID>& nstates) const override final
+        {
+            nfaopts[this->matchfollow]->advanceEpsilon(nfaopts, nstates);
+            nfaopts[this->skipfollow]->advanceEpsilon(nfaopts, nstates);
+        }
+    };
+
+    class NFAOptMinK : public NFAOpt
+    {
+    public:
+        const StateID matchfollow;
+        const StateID skipfollow;
+
+        NFAOptStar(StateID stateid, StateID matchfollow, StateID skipfollow) : NFAOpt(stateid), matchfollow(matchfollow), skipfollow(skipfollow) {;}
+        virtual ~NFAOptStar() {;}
+
+        virtual void advanceEpsilon(const std::vector<NFAOpt*>& nfaopts, std::vector<StateID>& nstates) const override final
+        {
+            nfaopts[this->matchfollow]->advanceEpsilon(nfaopts, nstates);
+            nfaopts[this->skipfollow]->advanceEpsilon(nfaopts, nstates);
+        }
+    };
+
+    class NFAOptMaxK : public NFAOpt
     {
     public:
         const StateID matchfollow;

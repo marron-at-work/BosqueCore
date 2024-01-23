@@ -24,10 +24,10 @@ typedef nlohmann::json json;
 namespace BREX
 {
     typedef std::u8string UnicodeString;
-    typedef std::string ASCIIString;
+    typedef char8_t UnicodeStringChar;
 
-    typedef uint32_t UnicodeCharCode;
-    typedef char ASCIICharCode;
+    typedef std::string ASCIIString;
+    typedef char ASCIIStringChar;
 
     typedef uint32_t RegexChar;
 
@@ -35,26 +35,17 @@ namespace BREX
     void processAssert(const char* file, int line, const char* msg) __attribute__ ((noreturn));
 #endif
 
-    //compute the number of bytes that the next codepoint in the utf8 string uses
-    size_t charCodeByteCount(const uint8_t* byteptr);
-
-    //convert to a UnicodeCharCode from bytes
-    std::optional<UnicodeCharCode> toUnicodeCharCodeFromBytes(const uint8_t* byteptr, const uint8_t* endptr);
-
-    //convert from a UnicodeCharCode to bytes
-    void toBytesFromUnicodeCharCode(UnicodeCharCode cc, std::vector<char8_t>& intochars);
-
-    class UnicodeIterator
+    class UnicodeRegexIterator
     {
     public:
         const UnicodeString* sstr;
         UnicodeString::const_iterator curr;
 
-        UnicodeIterator(const UnicodeString* sstr) : sstr(sstr), curr(sstr->cbegin()) {;}
-        ~UnicodeIterator() = default;
+        UnicodeRegexIterator(const UnicodeString* sstr) : sstr(sstr), curr(sstr->cbegin()) {;}
+        ~UnicodeRegexIterator() = default;
         
         size_t charCodeByteCount() const;
-        UnicodeCharCode toUnicodeCharCodeFromBytes() const;
+        RegexChar toRegexCharCodeFromBytes() const;
 
         inline bool valid() const
         {
@@ -79,19 +70,19 @@ namespace BREX
                 return *this->curr;
             }
             else {
-                return this->toUnicodeCharCodeFromBytes();
+                return this->toRegexCharCodeFromBytes();
             }
         }
     };
 
-    class ASCIIIterator
+    class ASCIIRegexIterator
     {
     public:
         const ASCIIString* sstr;
         ASCIIString::const_iterator curr;
 
-        ASCIIIterator(const ASCIIString* sstr) : sstr(sstr), curr(sstr->cbegin()) {;}
-        ~ASCIIIterator() = default;
+        ASCIIRegexIterator(const ASCIIString* sstr) : sstr(sstr), curr(sstr->cbegin()) {;}
+        ~ASCIIRegexIterator() = default;
         
         bool valid() const
         {
@@ -109,42 +100,27 @@ namespace BREX
         }
     };
 
-    //Take a bytebuffer (of utf8 bytes) with escapes and convert to a UnicodeString
-    std::optional<UnicodeString> unescapeString(const uint8_t* bytes, size_t length);
-    std::optional<std::vector<UnicodeCharCode>> unescapeStringCodes(const uint8_t* bytes, size_t length);
+    size_t charCodeByteCount(const uint8_t* buff);
+    RegexChar toRegexCharCodeFromBytes(const uint8_t* buff, size_t length);
 
-    //Convert a UnicodeString string to a bytebuffer (of utf8 bytes) with escapes
+    std::optional<RegexChar> decodeHexEscapeAsRegex(const uint8_t* s, const uint8_t* e);
+    std::optional<UnicodeString> decodeHexEscapeAsUnicode(const uint8_t* s, const uint8_t* e);
+    std::optional<ASCIIString> decodeHexEscapeAsASCII(const uint8_t* s, const uint8_t* e);
+    std::vector<uint8_t> extractRegexCharToBytes(RegexChar rc); //utf8 encoded but no escaping
+
+    //Take a bytebuffer (of utf8 bytes) with escapes and convert to/from a UnicodeString
+    std::optional<UnicodeString> unescapeString(const uint8_t* bytes, size_t length);
     std::vector<uint8_t> escapeString(const UnicodeString& sv);
 
-    //Take an ascii string with escapes and convert to a true string
+    //Take a bytebuffer (of ascii bytes) with escapes and convert to/from an ASCIIString
     std::optional<ASCIIString> unescapeASCIIString(const uint8_t* bytes, size_t length);
-    std::optional<std::vector<ASCIICharCode>> unescapeASCIIStringCodes(const uint8_t* bytes, size_t length);
-
-    //Convert an ascii string to an ascii string with escapes
     std::vector<uint8_t> escapeASCIIString(const ASCIIString& sv);
 
-    //Take a utf8 regex literal with escapes and convert to a UnicodeString
-    std::optional<UnicodeString> unescapeRegexLiteral(const const uint8_t* bytes, size_t length);
+    //Take a bytebuffer regex literal (of utf8 bytes or ascii bytes) with escapes and convert to/from a vector of RegexChars
+    std::optional<std::vector<RegexChar>> unescapeRegexLiteral(const const uint8_t* bytes, size_t length);
+    std::optional<std::vector<RegexChar>> unescapeASCIIRegexLiteral(const const uint8_t* bytes, size_t length);
 
-    //Convert a UnicodeString regex literal string into a utf8 string with escapes
-    std::vector<uint8_t> escapeRegexLiteral(const UnicodeString& sv);
-
-    //Take a utf8 regex CharRange value (possibly with escapes) and convert to a CharCode
-    std::optional<UnicodeCharCode> unescapeRegexCharRangeValue(const const uint8_t* bytes, size_t length);
-
-    //Convert a Unicode CharRange value to a utf8 string with escapes
-    std::vector<uint8_t> escapeRegexCharRangeValue(UnicodeCharCode cc);
-
-    //Convert an ascii regex string to a ascii regex string with escapes
-    std::optional<ASCIIString> unescapeASCIIRegexLiteral(const const uint8_t* bytes, size_t length);
-
-    //Convert an ascii regex string to a ascii regex string with escapes
-    std::vector<uint8_t> escapeASCIIRegexLiteral(const ASCIIString& sv);
-
-    //Take a ascii regex CharRange value (possibly with escapes) and convert to a CharCode
-    std::optional<ASCIICharCode> unescapeASCIIRegexCharRangeValue(const const uint8_t* bytes, size_t length);
-
-    //Convert an ascii CharRange value to a ascii string with escapes
-    std::vector<uint8_t> escapeASCIIRegexCharRangeValue(ASCIICharCode cc);
+    std::vector<uint8_t> escapeSingleRegexChar(RegexChar c);
+    std::vector<uint8_t> escapeRegexLiteralCharBuffer(const std::vector<RegexChar>& sv);
 }
 
