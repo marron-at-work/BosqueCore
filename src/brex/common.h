@@ -29,6 +29,8 @@ namespace BREX
     typedef uint32_t UnicodeCharCode;
     typedef char ASCIICharCode;
 
+    typedef uint32_t RegexChar;
+
 #ifdef BREX_DEBUG
     void processAssert(const char* file, int line, const char* msg) __attribute__ ((noreturn));
 #endif
@@ -49,7 +51,7 @@ namespace BREX
         UnicodeString::const_iterator curr;
 
         UnicodeIterator(const UnicodeString* sstr) : sstr(sstr), curr(sstr->cbegin()) {;}
-        ~UnicodeIterator() {;}
+        ~UnicodeIterator() = default;
         
         size_t charCodeByteCount() const;
         UnicodeCharCode toUnicodeCharCodeFromBytes() const;
@@ -70,7 +72,7 @@ namespace BREX
             }
         }
 
-        inline UnicodeCharCode get() const
+        inline RegexChar get() const
         {
             //if this is a multibyte char then decode the number of bytes -- fast path on single byte
             if(UTF8_CHARCODE_USES_SINGLEBYTE_ENCODING(*this->curr)) {
@@ -89,7 +91,7 @@ namespace BREX
         ASCIIString::const_iterator curr;
 
         ASCIIIterator(const ASCIIString* sstr) : sstr(sstr), curr(sstr->cbegin()) {;}
-        ~ASCIIIterator() {;}
+        ~ASCIIIterator() = default;
         
         bool valid() const
         {
@@ -101,7 +103,7 @@ namespace BREX
             this->curr++;
         }
 
-        ASCIICharCode get() const
+        RegexChar get() const
         {
             return *this->curr;
         }
@@ -109,12 +111,14 @@ namespace BREX
 
     //Take a bytebuffer (of utf8 bytes) with escapes and convert to a UnicodeString
     std::optional<UnicodeString> unescapeString(const uint8_t* bytes, size_t length);
+    std::optional<std::vector<UnicodeCharCode>> unescapeStringCodes(const uint8_t* bytes, size_t length);
 
     //Convert a UnicodeString string to a bytebuffer (of utf8 bytes) with escapes
     std::vector<uint8_t> escapeString(const UnicodeString& sv);
 
     //Take an ascii string with escapes and convert to a true string
     std::optional<ASCIIString> unescapeASCIIString(const uint8_t* bytes, size_t length);
+    std::optional<std::vector<ASCIICharCode>> unescapeASCIIStringCodes(const uint8_t* bytes, size_t length);
 
     //Convert an ascii string to an ascii string with escapes
     std::vector<uint8_t> escapeASCIIString(const ASCIIString& sv);

@@ -21,9 +21,9 @@ namespace BREX
         RegexOpt() {;}
         virtual ~RegexOpt() {;}
 
-        virtual std::string toString() const = 0;
+        virtual std::u8string toString() const = 0;
 
-        static RegexOpt* parse(json j);
+        static RegexOpt<C, S>* parse(json j);
         virtual StateID compile(StateID follows, std::vector<NFAOpt*>& states) const = 0;
         virtual StateID compileReverse(StateID follows, std::vector<NFAOpt*>& states) const = 0;
     };
@@ -46,41 +46,41 @@ namespace BREX
         return escapeASCIIString(str);
     }
 
-    template <typename S>
-    S convertJSONBytesToRegexLiteral(const std::vector<uint8_t>& bytes)
+    template <typename C, typename S>
+    std::pair<S, std::vector<C>> convertJSONBytesToRegexLiteral(const std::vector<uint8_t>& bytes)
     {
-        S s;
-        return s;
+        return std::make_pair<S, std::vector<C>>({}, {});
     }
 
     template <>
-    UnicodeString convertJSONBytesToRegexLiteral<UnicodeString>(const std::vector<uint8_t>& bytes)
+    std::pair<UnicodeString, std::vector<UnicodeCharCode>> convertJSONBytesToRegexLiteral<UnicodeCharCode, UnicodeString>(const std::vector<uint8_t>& bytes)
     {
-        return unescapeString(bytes.data(), bytes.size()).value();
+        return std::make_pair(unescapeString(bytes.data(), bytes.size()).value(), unescapeStringCodes(bytes.data(), bytes.size()).value());
     }
 
     template <>
-    ASCIIString convertJSONBytesToRegexLiteral<ASCIIString>(const std::vector<uint8_t>& bytes)
+    std::pair<ASCIIString, std::vector<ASCIICharCode>> convertJSONBytesToRegexLiteral<ASCIICharCode, ASCIIString>(const std::vector<uint8_t>& bytes)
     {
-        return unescapeASCIIString(bytes.data(), bytes.size()).value();
+        return std::make_pair(unescapeASCIIString(bytes.data(), bytes.size()).value(), unescapeASCIIStringCodes(bytes.data(), bytes.size()).value());
     }
 
     template <typename C, typename S>
-    class LiteralOpt : public RegexOpt
+    class LiteralOpt : public RegexOpt<C, S>
     {
     public:
         S litstr;
+        std::vector<C> codes;
 
-        LiteralOpt(S litstr) : RegexOpt(), litstr(litstr) {;}
+        LiteralOpt(S litstr, std::vector<C> codes) : RegexOpt<C, S>(), litstr(litstr), codes(codes) {;}
         virtual ~LiteralOpt() = default;
 
         virtual std::u8string toString() const override
         {
             auto bytes = convertToRegexLiteralBytes<S>(this->litstr);
-            return "\"" + std::u8string(bytes.begin(), bytes.end()) + "\"";
+            return std::u8string{'"'} + std::u8string(bytes.begin(), bytes.end()) + std::u8string{'"'};
         }
 
-        static LiteralOpt* parse(json j)
+        static LiteralOpt<C, S>* parse(json j)
         {
             std::vector<uint8_t> bytes;
             auto jbytes = j[1]["bytes"];
@@ -88,7 +88,8 @@ namespace BREX
                 return rv.get<uint8_t>();
             });
 
-            return new LiteralOpt(convertJSONBytesToRegexLiteral<S>(bytes));
+            auto litinfo = convertJSONBytesToRegexLiteral<C, S>(bytes);
+            return new LiteralOpt<C, S>(litinfo.first, litinfo.second);
         }
 
         virtual StateID compile(StateID follows, std::vector<NFAOpt*>& states) const override final;
@@ -131,109 +132,154 @@ namespace BREX
         return unescapeASCIIRegexCharRangeValue(bytes.data(), bytes.size()).value();
     }
 
-    //TODO: ADD STATE template <typename C, typename S>
-    class CharRangeOpt : public RegexOpt
+    template <typename C, typename S>
+    class CharRangeOpt : public RegexOpt<C, S>
     {
     public:
         const bool compliment;
         const std::vector<SingleCharRange<C>> ranges;
 
-        CharRangeOpt(bool compliment, std::vector<SingleCharRange<C>> ranges) : RegexOpt(), compliment(compliment), ranges(ranges) {;}
+        CharRangeOpt(bool compliment, std::vector<SingleCharRange<C>> ranges) : RegexOpt<C, S>(), compliment(compliment), ranges(ranges) {;}
         virtual ~CharRangeOpt() = default;
 
-        virtual std::string toString() const override
+        virtual std::u8string toString() const override
         {
-            return "[" + std::accumulate(this->ranges.cbegin(), this->ranges.cend(), std::string(this->compliment ? "^" : ""), [](std::string acc, SingleCharRange<C> cr) {
+            std::vector<char8_t> bytes = {'['};
+            if(this->compliment) {
+                bytes.push_back('^');
+            }
+
+            for(auto ii = this->ranges.cbegin(); ii != this->ranges.cend(); ++ii) {
+                auto cr = *ii;
+
                 if(cr.low == cr.high) {
-                    return acc + convertToRegexRangeCharBytes<C>(cr.low);
+                    auto sr = convertToRegexRangeCharBytes<C>(cr.low);
+                    std::copy(sr.begin(), sr.end(), std::back_inserter(bytes));
                 }
                 else {
-                    return acc + convertToRegexRangeCharBytes<C>(cr.low) + "-" + convertToRegexRangeCharBytes<C>(cr.high);
+                    auto lr = convertToRegexRangeCharBytes<C>(cr.low);
+                    std::copy(lr.begin(), lr.end(), std::back_inserter(bytes));
+                    lr.push_back('-');
+                    std::copy(lr.begin(), lr.end(), std::back_inserter(bytes));
+                    auto hr = convertToRegexRangeCharBytes<C>(cr.high);
                 }
-            }) + "]";
+            }
+            bytes.push_back(']');
+
+            return std::u8string(bytes.begin(), bytes.end());
         }
 
-        static CharRangeOpt* parse(json j);
+        static CharRangeOpt<C, S>* parse(json j)
+        {
+            const bool compliment = j[1]["compliment"].get<bool>();
+
+            std::vector<SingleCharRange<C>> ranges;
+            auto jranges = j[1]["range"];
+            std::transform(jranges.cbegin(), jranges.cend(), std::back_inserter(ranges), [](const json& rv) {
+                auto lb = rv["lb"].get<C>();
+                auto ub = rv["ub"].get<C>();
+
+                return SingleCharRange<C>{lb, ub};
+            });
+
+            return new CharRangeOpt<C, S>(compliment, ranges);
+        }
+
         virtual StateID compile(StateID follows, std::vector<NFAOpt*>& states) const override final;
         virtual StateID compileReverse(StateID follows, std::vector<NFAOpt*>& states) const override final;
     };
 
-    //TODO: ADD STATE template <typename C, typename S>
-    class CharClassDotOpt : public RegexOpt
+    template <typename C, typename S>
+    class CharClassDotOpt : public RegexOpt<C, S>
     {
     public:
-        CharClassDotOpt() : RegexOpt() {;}
+        CharClassDotOpt() : RegexOpt<C, S>() {;}
         virtual ~CharClassDotOpt() = default;
 
-        virtual std::string toString() const override
+        virtual std::u8string toString() const override
         {
-            return ".";
+            return std::u8string{'.'};
         }
 
-        static CharClassDotOpt* parse(json j);
+        static CharClassDotOpt<C, S>* parse(json j)
+        {
+            return new CharClassDotOpt<C, S>();
+        }
+
         virtual StateID compile(StateID follows, std::vector<NFAOpt*>& states) const override final;
         virtual StateID compileReverse(StateID follows, std::vector<NFAOpt*>& states) const override final;
     };
 
-    //TODO: ADD STATE template <typename C, typename S>
-    class NegateOpt : public RegexOpt
+    template <typename C, typename S>
+    class NegateOpt : public RegexOpt<C, S>
     {
     public:
-        const RegexOpt* opt;
+        const RegexOpt<C, S>* opt;
 
-        NegateOpt(RegexOpt* opt) : RegexOpt() opt(opt) {;}
-        virtual ~NegateOpt() = default;
+        NegateOpt(RegexOpt<C, S>* opt) : RegexOpt<C, S>(), opt(opt) {;}
+        virtual ~NegateOpt() = { delete this->opt; }
 
-        virtual std::string toString() const override
+        virtual std::u8string toString() const override
         {
-            return ".";
+            return std::u8string{'!'} + this->opt->toString();
         }
 
-        static NegateOpt* parse(json j);
+        static NegateOpt<C, S>* parse(json j)
+        {
+            auto opt = RegexOpt<C, S>::parse(j[1]["opt"]);
+            return new NegateOpt<C, S>(opt);
+        }
+
         virtual StateID compile(StateID follows, std::vector<NFAOpt*>& states) const override final;
         virtual StateID compileReverse(StateID follows, std::vector<NFAOpt*>& states) const override final;
     };
 
-    class BSQStarRepeatRe : public BSQRegexOpt
+    template <typename C, typename S>
+    class StarRepeatOpt : public RegexOpt<C, S>
     {
     public:
-        const BSQRegexOpt* opt;
+        const RegexOpt<C, S>* repeat;
 
-        BSQStarRepeatRe(const BSQRegexOpt* opt) : BSQRegexOpt(), opt(opt) {;}
+        StarRepeatOpt(const RegexOpt<C, S>* repeat) : RegexOpt<C, S>(), repeat(repeat) {;}
+        virtual ~StarRepeatOpt() { delete this->repeat; }
 
-        virtual ~BSQStarRepeatRe() 
+        virtual std::u8string toString() const override
         {
-            delete this->opt;
+            return std::u8string{'('} + this->repeat->toString() + std::u8string{'*'} + std::u8string{')'};
         }
 
-        virtual std::string toString() const override
+        static StarRepeatOpt<C, S>* parse(json j)
         {
-            return "(" + this->opt->toString() + "*)";
+            auto repeat = RegexOpt<C, S>::parse(j[1]["repeat"]);
+            return new StarRepeatOpt<C, S>(repeat);
         }
 
-        static BSQStarRepeatRe* parse(json j);
         virtual StateID compile(StateID follows, std::vector<NFAOpt*>& states) const override final;
+        virtual StateID compileReverse(StateID follows, std::vector<NFAOpt*>& states) const override final;
     };
 
-    class BSQPlusRepeatRe : public BSQRegexOpt
+    template <typename C, typename S>
+    class PlusRepeatOpt : public RegexOpt<C, S>
     {
     public:
-        const BSQRegexOpt* opt;
+        const RegexOpt<C, S>* repeat;
 
-        BSQPlusRepeatRe(const BSQRegexOpt* opt) : BSQRegexOpt(), opt(opt) {;}
-        
-        virtual ~BSQPlusRepeatRe()
+        PlusRepeatOpt(const BSQRegexOpt<C, S>* repeat) : RegexOpt<C, S>(), repeat(repeat) {;}
+        virtual ~PlusRepeatOpt() { delete this->repeat; }
+
+        virtual std::u8string toString() const override
         {
-            delete this->opt;
+            return std::u8string{'('} + this->repeat->toString() + std::u8string{'+'} + std::u8string{')'};
         }
 
-        virtual std::string toString() const override
+        static PlusRepeatOpt<C, S>* parse(json j)
         {
-            return "(" + this->opt->toString() + "+)";
+            auto repeat = RegexOpt<C, S>::parse(j[1]["repeat"]);
+            return new PlusRepeatOpt<C, S>(repeat);
         }
 
-        static BSQPlusRepeatRe* parse(json j);
         virtual StateID compile(StateID follows, std::vector<NFAOpt*>& states) const override final;
+        virtual StateID compileReverse(StateID follows, std::vector<NFAOpt*>& states) const override final;
     };
 
     class BSQRangeRepeatRe : public BSQRegexOpt

@@ -47,27 +47,6 @@ namespace BREX
         return follows;
     }
 
-    std::string BSQCharRangeRe::escapeCode(CharCode c)
-    {
-        return "ignore me";
-    }
-
-    BSQCharRangeRe* BSQCharRangeRe::parse(json j)
-    {
-        const bool compliment = j[1]["compliment"].get<bool>();
-
-        std::vector<SingleCharRange> ranges;
-        auto jranges = j[1]["range"];
-        std::transform(jranges.cbegin(), jranges.cend(), std::back_inserter(ranges), [](const json& rv) {
-            auto lb = rv["lb"].get<CharCode>();
-            auto ub = rv["ub"].get<CharCode>();
-
-            return SingleCharRange{lb, ub};
-        });
-
-        return new BSQCharRangeRe(compliment, ranges);
-    }
-
     StateID BSQCharRangeRe::compile(StateID follows, std::vector<NFAOpt*>& states) const
     {
         auto thisstate = (StateID)states.size();
@@ -76,24 +55,12 @@ namespace BREX
         return thisstate;
     }
 
-    BSQCharClassDotRe* BSQCharClassDotRe::parse(json j)
-    {
-        return new BSQCharClassDotRe();
-    }
-
     StateID BSQCharClassDotRe::compile(StateID follows, std::vector<NFAOpt*>& states) const
     {
         auto thisstate = (StateID)states.size();
         states.push_back(new NFAOptDot(thisstate, follows));
 
         return thisstate;
-    }
-
-    BSQStarRepeatRe* BSQStarRepeatRe::parse(json j)
-    {
-        auto repeat = BSQRegexOpt::parse(j[1]["repeat"]);
-
-        return new BSQStarRepeatRe(repeat);
     }
 
     StateID BSQStarRepeatRe::compile(StateID follows, std::vector<NFAOpt*>& states) const

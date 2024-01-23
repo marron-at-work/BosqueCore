@@ -281,6 +281,24 @@ namespace BREX
         return std::make_optional<UnicodeString>(acc.cbegin(), acc.cend());
     }
 
+    std::optional<std::vector<UnicodeCharCode>> unescapeStringCodes(const uint8_t* bytes, size_t length)
+    {
+        auto x = unescapeString(bytes, length);
+        if(!x.has_value()) {
+            return std::nullopt;
+        }
+
+        auto uiter = UnicodeIterator(&x.value());
+        std::vector<UnicodeCharCode> acc;
+        while (uiter.valid())
+        {
+            acc.push_back(uiter.get());
+            uiter.advance();
+        }
+
+        return std::make_optional(acc);
+    }
+
     std::vector<uint8_t> escapeString(const UnicodeString& sv)
     {
         std::vector<uint8_t> acc = {};
@@ -342,6 +360,24 @@ namespace BREX
         }
 
         return std::make_optional(ASCIIString(acc.cbegin(), acc.cend()));
+    }
+
+    std::optional<std::vector<ASCIICharCode>> unescapeASCIIStringCodes(const uint8_t* bytes, size_t length)
+    {
+        auto x = unescapeASCIIString(bytes, length);
+        if(!x.has_value()) {
+            return std::nullopt;
+        }
+
+        auto uiter = ASCIIIterator(&x.value());
+        std::vector<ASCIICharCode> acc;
+        while (uiter.valid())
+        {
+            acc.push_back(uiter.get());
+            uiter.advance();
+        }
+
+        return std::make_optional(acc);
     }
 
     std::vector<uint8_t> escapeASCIIString(const std::string& sv)
