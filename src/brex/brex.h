@@ -28,15 +28,41 @@ namespace BREX
         virtual StateID compileReverse(StateID follows, std::vector<NFAOpt*>& states) const = 0;
     };
 
-    template <typename C, typename S>
+    template <typename S>
+    std::vector<uint8_t> convertToRegexLiteralBytes(const S& str)
+    {
+        return {};
+    }
+
+    template <>
+    std::vector<uint8_t> convertToRegexLiteralBytes<UnicodeString>(const UnicodeString& str)
+    {
+        return escapeString(str);
+    }
+
+    template <>
+    std::vector<uint8_t> convertToRegexLiteralBytes<ASCIIString>(const ASCIIString& str)
+    {
+        return escapeASCIIString(str);
+    }
+
+    template <typename S>
     S convertJSONBytesToRegexLiteral(const std::vector<uint8_t>& bytes)
     {
-        std::vector<uint8_t> bytes;
-        std::transform(jbytes.cbegin(), jbytes.cend(), std::back_inserter(bytes), [](const json& rv) {
-            return rv.get<uint8_t>();
-        });
+        S s;
+        return s;
+    }
 
-        return ;
+    template <>
+    UnicodeString convertJSONBytesToRegexLiteral<UnicodeString>(const std::vector<uint8_t>& bytes)
+    {
+        return unescapeString(bytes.data(), bytes.size()).value();
+    }
+
+    template <>
+    ASCIIString convertJSONBytesToRegexLiteral<ASCIIString>(const std::vector<uint8_t>& bytes)
+    {
+        return unescapeASCIIString(bytes.data(), bytes.size()).value();
     }
 
     template <typename C, typename S>
@@ -48,9 +74,10 @@ namespace BREX
         LiteralOpt(S litstr) : RegexOpt(), litstr(litstr) {;}
         virtual ~LiteralOpt() = default;
 
-        virtual std::string toString() const override
+        virtual std::u8string toString() const override
         {
-           return escapeString(this->litstr);
+            auto bytes = convertToRegexLiteralBytes<S>(this->litstr);
+            return "\"" + std::u8string(bytes.begin(), bytes.end()) + "\"";
         }
 
         static LiteralOpt* parse(json j)
@@ -61,12 +88,48 @@ namespace BREX
                 return rv.get<uint8_t>();
             });
 
-            return new LiteralOpt(convertJSONBytesToRegexLiteral<C, S>(bytes));
+            return new LiteralOpt(convertJSONBytesToRegexLiteral<S>(bytes));
         }
 
         virtual StateID compile(StateID follows, std::vector<NFAOpt*>& states) const override final;
         virtual StateID compilReverse(StateID follows, std::vector<NFAOpt*>& states) const override final;
     };
+
+    template <typename C>
+    std::vector<uint8_t> convertToRegexRangeCharBytes(C c)
+    {
+        return {};
+    }
+
+    template <>
+    std::vector<uint8_t> convertToRegexRangeCharBytes<UnicodeCharCode>(UnicodeCharCode c)
+    {
+        return escapeRegexCharRangeValue(c);
+    }
+
+    template <>
+    std::vector<uint8_t> convertToRegexRangeCharBytes<ASCIICharCode>(ASCIICharCode c)
+    {
+        return escapeASCIIRegexCharRangeValue(c);
+    }
+
+    template <typename C>
+    C convertJSONBytesToRegexRangeChar(const std::vector<uint8_t>& bytes)
+    {
+        return 0;
+    }
+
+    template <>
+    UnicodeCharCode convertJSONBytesToRegexRangeChar<UnicodeCharCode>(const std::vector<uint8_t>& bytes)
+    {
+        return unescapeRegexCharRangeValue(bytes.data(), bytes.size()).value();
+    }
+
+    template <>
+    ASCIICharCode convertJSONBytesToRegexRangeChar<ASCIICharCode>(const std::vector<uint8_t>& bytes)
+    {
+        return unescapeASCIIRegexCharRangeValue(bytes.data(), bytes.size()).value();
+    }
 
     //TODO: ADD STATE template <typename C, typename S>
     class CharRangeOpt : public RegexOpt
@@ -80,12 +143,12 @@ namespace BREX
 
         virtual std::string toString() const override
         {
-            return "[" + std::accumulate(this->ranges.cbegin(), this->ranges.cend(), std::string(this->compliment ? "^" : ""), [](std::string&& acc, SingleCharRange cr) {
+            return "[" + std::accumulate(this->ranges.cbegin(), this->ranges.cend(), std::string(this->compliment ? "^" : ""), [](std::string acc, SingleCharRange<C> cr) {
                 if(cr.low == cr.high) {
-                    return std::move(acc) + escapeCode(cr.low);
+                    return acc + convertToRegexRangeCharBytes<C>(cr.low);
                 }
                 else {
-                    return std::move(acc) + escapeCode(cr.low) + "-" + escapeCode(cr.high);
+                    return acc + convertToRegexRangeCharBytes<C>(cr.low) + "-" + convertToRegexRangeCharBytes<C>(cr.high);
                 }
             }) + "]";
         }

@@ -239,10 +239,8 @@ namespace BREX
 
     std::optional<UnicodeString> unescapeString(const uint8_t* bytes, size_t length)
     {
-        //assume string has "..." so we need to remove them
-
         std::vector<char8_t> acc;
-        for(size_t i = 1; i < length - 1; ++i) {
+        for(size_t i = 0; i < length; ++i) {
             uint8_t c = bytes[i];
 
             if(c <= 127 && !std::isprint(c) && !std::iswspace(c)) {
@@ -285,7 +283,7 @@ namespace BREX
 
     std::vector<uint8_t> escapeString(const UnicodeString& sv)
     {
-        std::vector<uint8_t> acc = {'"'};
+        std::vector<uint8_t> acc = {};
         for(auto ii = sv.cbegin(); ii != sv.cend(); ++ii) {
             char8_t c = *ii;
 
@@ -299,17 +297,14 @@ namespace BREX
                 acc.push_back(c);
             }
         }
-        acc.push_back('"');
 
         return std::move(acc);
     }
 
-    std::optional<std::string> unescapeASCIIString(const uint8_t* bytes, size_t length)
+    std::optional<ASCIIString> unescapeASCIIString(const uint8_t* bytes, size_t length)
     {
-        //assume string has '...' (or `...`, /.../) so we need to remove them
-
         std::vector<char> acc;
-        for(size_t i = 1; i < length - 1; ++i) {
+        for(size_t i = 0; i < length; ++i) {
             uint8_t c = bytes[i];
 
             if(!std::isprint(c) && !std::iswspace(c)) {
@@ -351,7 +346,7 @@ namespace BREX
 
     std::vector<uint8_t> escapeASCIIString(const std::string& sv)
     {
-        std::vector<uint8_t> acc = {'\''};
+        std::vector<uint8_t> acc = {};
         for(auto ii = sv.cbegin(); ii != sv.cend(); ++ii) {
             char c = *ii;
 
@@ -365,7 +360,6 @@ namespace BREX
                 acc.push_back(c);
             }
         }
-        acc.push_back('\'');
 
         return std::move(acc);
     }
@@ -377,7 +371,7 @@ namespace BREX
 
     std::vector<uint8_t> escapeRegexLiteral(const UnicodeString& sv)
     {
-        std::vector<uint8_t> acc = {'"'};
+        std::vector<uint8_t> acc = {};
         for(auto ii = sv.cbegin(); ii != sv.cend(); ++ii) {
             char8_t c = *ii;
 
@@ -391,7 +385,6 @@ namespace BREX
                 acc.push_back(c);
             }
         }
-        acc.push_back('"');
 
         return std::move(acc);
     }
@@ -427,10 +420,13 @@ namespace BREX
     {
         std::vector<uint8_t> acc;
         if(cc == U'%' || cc == U'"' || cc == U'/' || cc == U'\\' || (cc <= 127 && !std::isprint(cc))) {
-            ebytes = cconv.to_bytes(resolveEscapeUnicodeFromCode(cc));
+            auto escc = resolveEscapeUnicodeFromCode(cc);
+            while(*escc != '\0') {
+                acc.push_back(*escc++);
+            }
         }
         else {
-            ebytes = cconv.to_bytes(cc);
+            acc.push_back(cc);
         }
 
         return std::move(acc);
@@ -443,7 +439,7 @@ namespace BREX
 
     std::vector<uint8_t> escapeASCIIRegexLiteral(const ASCIIString& sv)
     {
-        std::vector<uint8_t> acc = {'\''};
+        std::vector<uint8_t> acc = {};
         for(auto ii = sv.cbegin(); ii != sv.cend(); ++ii) {
             char c = *ii;
 
@@ -457,7 +453,6 @@ namespace BREX
                 acc.push_back(c);
             }
         }
-        acc.push_back('\'');
 
         return std::move(acc);
     }
@@ -486,10 +481,13 @@ namespace BREX
     {
         std::vector<uint8_t> acc;
         if(cc == U'%' || cc == U'"' || cc == U'/' || cc == U'\\' || (cc <= 127 && !std::isprint(cc))) {
-            ebytes = resolveEscapeASCIIFromCode(cc);
+            auto escc = resolveEscapeASCIIFromCode(cc);
+            while(*escc != '\0') {
+                acc.push_back(*escc++);
+            }
         }
         else {
-            ebytes = {cc};
+            acc.push_back(cc);
         }
 
        return std::move(acc);

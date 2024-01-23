@@ -37,7 +37,7 @@ namespace BREX
     size_t charCodeByteCount(const uint8_t* byteptr);
 
     //convert to a UnicodeCharCode from bytes
-    std::optiona<UnicodeCharCode> toUnicodeCharCodeFromBytes(const uint8_t* byteptr, const uint8_t* endptr);
+    std::optional<UnicodeCharCode> toUnicodeCharCodeFromBytes(const uint8_t* byteptr, const uint8_t* endptr);
 
     //convert from a UnicodeCharCode to bytes
     void toBytesFromUnicodeCharCode(UnicodeCharCode cc, std::vector<char8_t>& intochars);
