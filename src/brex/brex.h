@@ -1,9 +1,6 @@
 #pragma once
 
 #include "common.h"
-#include "brex_engine.h"
-
-#include <sstream>
 
 namespace BREX
 {
@@ -464,300 +461,109 @@ namespace BREX
         }
     };
 
-    class BSQRegex
+    enum class RegexMatchTag
+    {
+        ValidateOnly,
+        MatchAndValidate
+    };
+
+    enum class RegexCharInfoTag
+    {
+        Unicode,
+        ASCII
+    };
+
+    class Regex
     {
     public:
-        const BSQRegexOpt* re;
-        const NFA* nfare;
+        const RegexMatchTag mtag;
+        const RegexCharInfoTag ctag;
 
-        BSQRegex(const BSQRegexOpt* re, NFA* nfare): re(re), nfare(nfare) {;}
-        ~BSQRegex() {;}
+        Regex(RegexMatchTag mtag, RegexCharInfoTag ctag): mtag(mtag), ctag(ctag) {;}
+        virtual ~Regex() = default;
 
-        static BSQRegex* jparse(json j);
+        static Regex* jparse(json j);
 
-        std::string toString() const 
+        virtual std::u8string toBSQONFormat() const = 0;
+    };
+
+    class ValidatorRegex : public Regex
+    {
+    public:
+        const RegexOpt* re; //of the form R+, !R+, or /\(R+|!R+)
+
+        ValidatorRegex(const RegexOpt* re, RegexCharInfoTag rtag) : Regex(RegexMatchTag::ValidateOnly, rtag), re(re) {;}
+        virtual ~ValidatorRegex() { delete this->re; };
+    };
+
+    class UnicodeValidatorRegex : public ValidatorRegex
+    {
+    public:
+        UnicodeValidatorRegex(const RegexOpt* re) : ValidatorRegex(re, RegexCharInfoTag::Unicode) {;}
+        virtual ~UnicodeValidatorRegex() = default;
+
+        virtual std::u8string toBSQONFormat() const override
         {
-            return re->toString();
-        }
-
-        bool test(CharCodeIterator& cci) const
-        {
-            return this->nfare->test(cci);
-        }
-
-        bool test(const UnicodeString* s) const
-        {
-            UnicodeIterator siter(s);
-            return this->nfare->test(siter);
-        }
-
-        bool test(const std::string* s) const
-        {
-            ASCIIIterator siter(s);
-            return this->nfare->test(siter);
+            return std::u8string{'/'} + this->re->toBSQONFormat() + std::u8string{'/'};
         }
     };
 
-    class RegexParser 
+    class ASCIIValidatorRegex : public ValidatorRegex
     {
-    private:
-        UnicodeString restr;
-        size_t pos;
-
-        RegexParser(const UnicodeString& restr) : restr(restr), pos(0) { ; }
-
-        bool done()
-        {
-            return this->restr.size() <= this->pos;
-        }
-
-        bool isToken(CharCode tk)
-        {
-            return this->restr[this->pos] == tk;
-        }
-
-        CharCode token() {
-            return this->restr[this->pos];
-        }
-
-        void advance() {
-            this->pos++;
-        }
-
-        void advance(size_t dist) {
-            this->pos = this->pos + dist;
-        }
-
-        bool matchLiteralPrefix(UnicodeString pfx)
-        {
-            for(size_t i = 0; i < pfx.size(); ++i) {
-                if(this->pos + i >= this->restr.size()) {
-                    return false;
-                }
-
-                if(pfx[i] != this->restr[this->pos + i]) {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        CharCode readUnescapedChar()
-        {
-            auto c = this->token();
-            this->advance();
-
-            return c;
-        }
-
-        const BSQRegexOpt* parseBaseComponent() 
-        {
-            const BSQRegexOpt* res = nullptr;
-            if(this->isToken(U'(')) {
-                this->advance();
-
-                res = this->parseComponent();
-                if(!this->isToken(U')')) {
-                    return nullptr;
-                }
-
-                this->advance();
-            }
-            else if(this->isToken(U'[')) {
-                this->advance();
-
-                auto compliment = this->isToken(U'^');
-                if(compliment) {
-                    this->advance();
-                }
-
-                std::vector<SingleCharRange> range;
-                while(!this->isToken(U']')) {
-                    auto lb = this->readUnescapedChar();
-
-                    if (!this->isToken(U'-')) {
-                        range.push_back({ lb, lb });
-                    }
-                    else {
-                        this->advance();
-
-                        auto ub = this->token();
-                        range.push_back({ lb, ub });
-                    }
-                }
-
-                if(!this->isToken(U']')) {
-                    return nullptr;
-                }
-                this->advance();
-
-                return new BSQCharRangeRe(compliment, range);
-            }
-            else {
-                res = new BSQLiteralRe({ this->readUnescapedChar() });
-            }
-
-            return res;
-        }
-
-        const BSQRegexOpt* parseCharClassOrEscapeComponent()
-        {
-            if(this->isToken(U'.')) {
-                this->advance();
-                return new BSQCharClassDotRe();
-            }
-            else {
-                return this->parseBaseComponent();
-            }
-        }
-
-        const BSQRegexOpt* parseRepeatComponent()
-        {
-            auto rcc = this->parseCharClassOrEscapeComponent();
-            if(rcc == nullptr) {
-                return nullptr;
-            }
-
-            while(this->isToken(U'*') || this->isToken(U'+') || this->isToken(U'?') || this->isToken(U'{')) {
-                if(this->isToken(U'*')) {
-                    rcc = new BSQStarRepeatRe(rcc);
-                    this->advance();
-                }
-                else if(this->isToken(U'+')) {
-                    rcc = new BSQPlusRepeatRe(rcc);
-                    this->advance();
-                }
-                else if(this->isToken(U'?')) {
-                    rcc = new BSQOptionalRe(rcc);
-                    this->advance();
-                }
-                else {
-                    this->advance();
-                    uint16_t min = 0;
-                    while(!this->done() && U'0' < this->token() && this->token() < U'9') {
-                        min = min * 10 + (this->token() - U'0');
-                        this->advance();
-                    }
-
-                    while(!this->done() && this->isToken(U' ')) {
-                        this->advance();
-                    }
-
-                    uint16_t max = min;
-                    if (!this->done() && this->isToken(U',')) {
-                        this->advance();
-
-                        while(!this->done() && this->isToken(U' ')) {
-                            this->advance();
-                        }
-
-                        if(!this->done() && !this->isToken(U'}')) {
-                            max = 0;
-                            while(!this->done() && U'0' < this->token() && this->token() < U'9') {
-                                max = max * 10 + (this->token() - U'0');
-                                this->advance();
-                            }
-                        }
-                    }
-
-                    if(this->done() || !this->isToken(U'}')) {
-                        return nullptr;
-                    }
-                    this->advance();
-
-                    rcc = new BSQRangeRepeatRe(min, max, rcc);
-                }
-            }   
-
-            return rcc;
-        }
-
-        const BSQRegexOpt* parseSequenceComponent()
-        {
-            std::vector<const BSQRegexOpt*> sre;
-
-            while(!this->done() && !this->isToken(U'|') && !this->isToken(U')')) {
-                auto rpe = this->parseRepeatComponent();
-                if(rpe == nullptr) {
-                    return nullptr;
-                }
-
-                if(sre.empty()) {
-                    sre.push_back(rpe);
-                }
-                else {
-                    auto lcc = sre[sre.size() - 1];
-                    if(lcc->isLiteral() && rpe->isLiteral()) {
-                        sre[sre.size() - 1] = BSQLiteralRe::mergeLiterals(static_cast<const BSQLiteralRe*>(lcc), static_cast<const BSQLiteralRe*>(rpe));
-                        delete lcc;
-                        delete rpe;
-                    }
-                    else {
-                        sre.push_back(rpe);
-                    }
-                }
-            }
-
-            if(sre.empty()) {
-                return nullptr;
-            }
-
-            if (sre.size() == 1) {
-                return sre[0];
-            }
-            else {
-                return new BSQSequenceRe(sre);
-            }
-        }
-
-        const BSQRegexOpt* parseAlternationComponent()
-        {
-            auto rpei = this->parseSequenceComponent();
-            if (rpei == nullptr) {
-                return nullptr;
-            }
-
-            std::vector<const BSQRegexOpt*> are = {rpei};
-
-            while (!this->done() && this->isToken(U'|')) {
-                this->advance();
-                auto rpe = this->parseSequenceComponent();
-                if (rpe == nullptr) {
-                    return nullptr;
-                }
-
-                are.push_back(rpe);
-            }
-
-            if(are.size() == 1) {
-                return are[0];
-            }
-            else {
-                return new BSQAlternationRe(are);
-            }
-        }
-
-        const BSQRegexOpt* parseComponent()
-        {
-            return this->parseAlternationComponent();
-        }
-
     public:
-        static BSQRegex* parseRegex(UnicodeString restr)
-        {
-            auto parser = RegexParser(restr);
+        const bool isPathRegex;
+        const bool isResourceRegex;
 
-            auto re = parser.parseComponent();
-            if(re == nullptr) {
-                return nullptr;
+        ASCIIValidatorRegex(const RegexOpt* re, bool isPathRegex, bool isResourceRegex) : ValidatorRegex(re, RegexCharInfoTag::ASCII), isPathRegex(isPathRegex), isResourceRegex(isResourceRegex) {;}
+        virtual ~ASCIIValidatorRegex() = default;
+
+        virtual std::u8string toBSQONFormat() const override
+        {
+            char8_t fchar;
+            if(this->isPathRegex) {
+                fchar = 'p';
+            }
+            else if(this->isResourceRegex) {
+                fchar = 'r';
+            }
+            else {
+                fchar = 'a';
             }
 
-            std::vector<NFAOpt*> nfastates = { new NFAOptAccept(0) };
-            auto nfastart = re->compile(0, nfastates);
+            return std::u8string{'/'} + this->re->toBSQONFormat() + std::u8string{'/', fchar};
+        }
+    };
 
-            auto nfare = new NFA(nfastart, 0, nfastates);
-            return new BSQRegex(re, nfare);
+    class MatcherRegex : public Regex
+    {
+    public:
+        const RegexOpt* re; //of the form [Q$]R+[$Q]
+
+        MatcherRegex(const RegexOpt* re, RegexCharInfoTag rtag) : Regex(RegexMatchTag::MatchAndValidate, rtag), re(re) {;}
+        virtual ~MatcherRegex() { delete this->re; };
+    };
+
+    class UnicodeMatcherRegex : public MatcherRegex
+    {
+    public:
+        UnicodeMatcherRegex(const RegexOpt* re) : MatcherRegex(re, RegexCharInfoTag::Unicode) {;}
+        virtual ~UnicodeMatcherRegex() = default;
+
+        virtual std::u8string toBSQONFormat() const override
+        {
+          return std::u8string{'/'} + this->re->toBSQONFormat() + std::u8string{'/', 'm'};
+        }
+    };
+
+    class ASCIIMatcherRegex : public MatcherRegex
+    {
+    public:
+        ASCIIMatcherRegex(const RegexOpt* re) : MatcherRegex(re, RegexCharInfoTag::ASCII) {;}
+        virtual ~ASCIIMatcherRegex() = default;
+
+        virtual std::u8string toBSQONFormat() const override
+        {
+            return std::u8string{'/'} + this->re->toBSQONFormat() + std::u8string{'/', 'a', 'm'};
         }
     };
 }
