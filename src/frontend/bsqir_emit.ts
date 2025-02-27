@@ -262,11 +262,11 @@ class BSQIREmitter {
     }
     
     private emitLiteralCStringExpression(exp: LiteralSimpleExpression): string {
-        return `BSQAssembly::LiteralCStringExpression{ ${this.emitExpressionBase(exp)}, value='${exp.value}' }`;
+        return `BSQAssembly::LiteralCStringExpression{ ${this.emitExpressionBase(exp)}, value=${exp.value} }`;
     }
 
     private emitLiteralStringExpression(exp: LiteralSimpleExpression): string {
-        return `BSQAssembly::LiteralStringExpression{ ${this.emitExpressionBase(exp)}, value='${exp.value}' }`;
+        return `BSQAssembly::LiteralStringExpression{ ${this.emitExpressionBase(exp)}, value='${exp.value.slice(1, -1)}' }`;
     }
  
     private emitLiteralTypeDeclValueExpression(exp: LiteralTypeDeclValueExpression): string {
