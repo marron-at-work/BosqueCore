@@ -522,67 +522,143 @@ class TypeChecker {
         }
     }
 
-    private checkTemplateBindingsOnInvoke(sinfo: SourceInfo, env: TypeEnvironment, targs: TypeSignature[], decl: ExplicitInvokeDecl, refinemap: TemplateNameMapper | undefined): TemplateNameMapper | undefined {
-        if(targs.length !== decl.terms.length) {
-            this.reportError(sinfo, `Invoke ${decl.name} expected ${decl.terms.length} terms but got ${targs.length}`);
+    private checkTemplateBindingsOnInvoke(sinfo: SourceInfo, env: TypeEnvironment, targs: TypeSignature[], decl: ExplicitInvokeDecl, classRefinemap: TemplateNameMapper | undefined): TemplateNameMapper | undefined {
+        // Check if number of provided template args exceeds declared ones
+        if (targs.length > decl.terms.length) {
+            this.reportError(sinfo, `Invoke ${decl.name} expected at most ${decl.terms.length} template terms but got ${targs.length}`);
             return undefined;
         }
 
-        let tmap = new Map<string, TypeSignature>();
-        for(let i = 0; i < targs.length; ++i) {
-            const targ = targs[i];
-            const tdecl = decl.terms[i];
+        let methodTMap = new Map<string, TypeSignature>();
 
+        // 1. Populate methodTMap with explicitly provided arguments
+        for (let i = 0; i < targs.length; ++i) {
+            const targ = targs[i]; // Explicitly provided type
+            const tdecl = decl.terms[i]; // Method's template parameter declaration
+
+            // Validate explicit targ against its constraint (tdecl.tconstraint)
             const trestrict = tdecl.tconstraint;
-            if(trestrict !== undefined && !this.relations.isSubtypeOf(targ, trestrict, this.constraints)) {
-                this.reportError(sinfo, `Template argument ${tdecl.name} is not a subtype of constraint type`);
+            if (trestrict !== undefined && !this.relations.isSubtypeOf(targ, trestrict, this.constraints)) {
+                this.reportError(sinfo, `Explicit template argument ${tdecl.name} of type ${targ.emit()} is not a subtype of its constraint ${trestrict.emit()}`);
                 return undefined;
             }
 
-            if(tdecl.extraTags.length !== 0) {
-                if(tdecl.extraTags.includes(TemplateTermDeclExtraTag.KeyType)) {
-                    if(this.checkError(sinfo, !this.relations.isKeyType(targ, this.constraints), `Template argument ${tdecl.name} is not a keytype`)) {
+            if (tdecl.extraTags.length !== 0) {
+                if (tdecl.extraTags.includes(TemplateTermDeclExtraTag.KeyType)) {
+                    if (this.checkError(sinfo, !this.relations.isKeyType(targ, this.constraints), `Explicit template argument ${tdecl.name} must be a keytype`)) {
                         return undefined;
                     }
                 }
-                if(tdecl.extraTags.includes(TemplateTermDeclExtraTag.Numeric)) {
-                    if(this.checkError(sinfo, !this.relations.isNumericType(targ, this.constraints), `Template argument ${tdecl.name} is not a numeric type`)) {
+                if (tdecl.extraTags.includes(TemplateTermDeclExtraTag.Numeric)) {
+                    if (this.checkError(sinfo, !this.relations.isNumericType(targ, this.constraints), `Explicit template argument ${tdecl.name} must be a numeric type`)) {
                         return undefined;
                     }
                 }
             }
-
-            tmap.set(tdecl.name, targ);
+            methodTMap.set(tdecl.name, targ);
         }
 
-        if(decl.termRestriction !== undefined) {
-            assert(refinemap !== undefined, "Template mapper must be defined");
-
-            for(let i = 0; i < decl.termRestriction.clauses.length; ++i) {
-                let cc = decl.termRestriction.clauses[i];
-                let trefine = refinemap.resolveTemplateMapping(cc.t);
-
-                if(cc.subtype !== undefined && !this.relations.isSubtypeOf(trefine, cc.subtype, this.constraints)) {
-                    this.reportError(sinfo, `Template argument ${decl.terms[i].name} is not a subtype of subtype restriction`);
-                    return undefined;
+        // 2. Attempt inference for method template parameters not yet in methodTMap, using termRestrictions (when clauses)
+        if (decl.termRestriction !== undefined && classRefinemap !== undefined) {
+            for (const methodTDecl of decl.terms) { // Iterate over method's template parameters (e.g., U in <U>)
+                if (methodTMap.has(methodTDecl.name)) {
+                    continue; // Already provided explicitly
                 }
 
-                if(cc.extraTags.length !== 0) {
-                    if(cc.extraTags.includes(TemplateTermDeclExtraTag.KeyType)) {
-                        if(this.checkError(sinfo, !this.relations.isKeyType(trefine, this.constraints), `Template argument ${cc.t.name} is not a keytype`)) {
-                            return undefined;
+                // Try to find a 'when' clause that could infer this methodTDecl
+                for (const clause of decl.termRestriction.clauses) {
+                    // clause is like { t: Class::T, subtype: Option<Method::U> }
+                    const classT_ActualType = classRefinemap.resolveTemplateMapping(clause.t); // e.g., Option<Int>
+
+                    if (clause.subtype instanceof NominalTypeSignature && classT_ActualType instanceof NominalTypeSignature) {
+                        const patternNominal = clause.subtype; // e.g., Option<U>
+                        const actualNominal = classT_ActualType;   // e.g., Option<Int>
+
+                        if (patternNominal.decl === actualNominal.decl &&
+                            patternNominal.alltermargs.length === actualNominal.alltermargs.length) {
+
+                            for (let i = 0; i < patternNominal.alltermargs.length; i++) {
+                                const patternArg = patternNominal.alltermargs[i]; // e.g., U (as TemplateTypeSignature)
+                                const actualArg = actualNominal.alltermargs[i];   // e.g., Int
+
+                                if (patternArg instanceof TemplateTypeSignature && patternArg.name === methodTDecl.name) {
+                                    // Potential inference: methodTDecl.name (U) can be inferred as actualArg (Int)
+                                    const inferredType = actualArg;
+                                    const directConstraint = methodTDecl.tconstraint;
+                                    if (directConstraint !== undefined && !this.relations.isSubtypeOf(inferredType, directConstraint, this.constraints)) {
+                                        this.reportError(sinfo, `Inferred template argument ${methodTDecl.name} of type ${inferredType.emit()} from 'when' clause is not a subtype of its direct constraint ${directConstraint.emit()}`);
+                                        return undefined;
+                                    }
+
+                                    if (methodTDecl.extraTags.length !== 0) {
+                                        if (methodTDecl.extraTags.includes(TemplateTermDeclExtraTag.KeyType)) {
+                                            if (this.checkError(sinfo, !this.relations.isKeyType(inferredType, this.constraints), `Inferred template argument ${methodTDecl.name} must be a keytype`)) {
+                                                return undefined;
+                                            }
+                                        }
+                                        if (methodTDecl.extraTags.includes(TemplateTermDeclExtraTag.Numeric)) {
+                                            if (this.checkError(sinfo, !this.relations.isNumericType(inferredType, this.constraints), `Inferred template argument ${methodTDecl.name} must be a numeric type`)) {
+                                                return undefined;
+                                            }
+                                        }
+                                    }
+
+                                    if (methodTMap.has(methodTDecl.name) && !this.relations.areSameTypes(methodTMap.get(methodTDecl.name) as TypeSignature, inferredType)) {
+                                         this.reportError(sinfo, `Template argument ${methodTDecl.name} inferred as ${inferredType.emit()} but previously inferred/set as ${methodTMap.get(methodTDecl.name)?.emit()}`);
+                                         return undefined;
+                                    }
+
+                                    methodTMap.set(methodTDecl.name, inferredType);
+                                    break;
+                                }
+                            }
                         }
                     }
-                    if(cc.extraTags.includes(TemplateTermDeclExtraTag.Numeric)) {
-                        if(this.checkError(sinfo, !this.relations.isNumericType(trefine, this.constraints), `Template argument ${cc.t.name} is not a numeric type`)) {
-                            return undefined;
+                    if (methodTMap.has(methodTDecl.name)) {
+                        break;
+                    }
+                }
+            }
+        }
+
+        // 3. Final check: ensure all method template parameters are now resolved
+        for (const tdecl of decl.terms) {
+            if (!methodTMap.has(tdecl.name)) {
+                this.reportError(sinfo, `Invoke ${decl.name}: template argument ${tdecl.name} was not provided and could not be inferred.`);
+                return undefined;
+            }
+        }
+
+        // 4. The original `decl.termRestriction` check needs to be performed *after* methodTMap is fully populated (including inferred types).
+        if (decl.termRestriction !== undefined && classRefinemap !== undefined) {
+            for (const clause of decl.termRestriction.clauses) {
+                const classT_ActualType = classRefinemap.resolveTemplateMapping(clause.t);
+
+                if (clause.subtype) {
+                const fullyResolvedPatternSubtype = clause.subtype.remapTemplateBindings(TemplateNameMapper.createInitialMapping(methodTMap));
+
+                    if (!this.relations.isSubtypeOf(classT_ActualType, fullyResolvedPatternSubtype, this.constraints)) {
+                        this.reportError(sinfo, `Constraint violated after inference: ${classT_ActualType.emit()} is not a subtype of ${fullyResolvedPatternSubtype.emit()} (original constraint: ${clause.t.name} : ${clause.subtype.emit()})`);
+                        return undefined;
+                    }
+
+                    if (clause.extraTags.length !== 0) {
+                        if (clause.extraTags.includes(TemplateTermDeclExtraTag.KeyType)) {
+                            if (this.checkError(sinfo, !this.relations.isKeyType(classT_ActualType, this.constraints), `Constrained class template argument ${clause.t.name} (actual: ${classT_ActualType.emit()}) is not a keytype as required by 'when' clause`)) {
+                                return undefined;
+                            }
+                        }
+                        if (clause.extraTags.includes(TemplateTermDeclExtraTag.Numeric)) {
+                             if (this.checkError(sinfo, !this.relations.isNumericType(classT_ActualType, this.constraints), `Constrained class template argument ${clause.t.name} (actual: ${classT_ActualType.emit()}) is not a numeric type as required by 'when' clause`)) {
+                                return undefined;
+                            }
                         }
                     }
                 }
             }
         }
 
-        return TemplateNameMapper.createInitialMapping(tmap);
+        return TemplateNameMapper.createInitialMapping(methodTMap);
     }
 
     private checkTemplateBindingsOnConstructor(sinfo: SourceInfo, env: TypeEnvironment, targs: TypeSignature[], cdecl: AbstractNominalTypeDecl): TemplateNameMapper | undefined {
