@@ -1398,17 +1398,18 @@ function emitBuiltinFunctionDecl(f: SMTAssembly::BuiltinFunctionDecl, trgterr: N
             let utype = f.binds.find(pred(bb) => bb.0 === 'U').1.value;
             let vresconv = CString::concat('((as @Result-err (@Result (Seq ', utype, '))) (@Result-etag vvres))');
 
-            let bop = CString::concat('(ite (is-@Result-err acc) acc (let ((vvres (f vv))) (ite (is-@Result-err vvres) ', vresconv,' (@Result-ok (seq.++ (@Result-value acc) (seq.unit (@Result-value vvres)))))))');
-            let lparams = CString::concat('((acc (@Result (Seq ', utype, '))) (vv ', oftype, '))');
-            let sop = CString::concat('(lambda ', lparams, ' ', bop, ')');
-            let decl = CString::concat(sop, ' ', '(@Result-ok (as seq.empty (Seq ', utype, ')))');
-            let reduceop = CString::concat('(seq.foldl ', decl, ' ', lseq, ')');
+            let mfn = CString::concat('(lambda ((vv ', oftype, ')) (f vv))');
+            let sop = CString::concat('let ((mres (seq.map ', mfn, ' ', lseq, ')))');
 
-            let converr = CString::concat('((as @Result-err (@Result ', f.resultType.rtype.value, ')) (@Result-etag seqval))');
-            let wwrap = CString::concat('let ((seqval ', reduceop, '))');
-            let dispatch = CString::concat('(ite (is-@Result-err seqval) ', converr, ' (@Result-ok (', lmk, ' (@Result-value seqval))))');
+            let bmc = CString::concat('let ((resmap (seq.map (lambda ((vv (@Result ', utype, '))) (is-@Result-err vv)) mres)))');
+            let idc = CString::concat('let ((eidx (seq.indexof resmap (seq.unit true) 0)))');
 
-            body = CString::concat('(', wwrap, ' ', dispatch, ')');
+            let eres = CString::concat('((as @Result-err (@Result ', f.resultType.rtype.value, ')) (@Result-etag (seq.nth mres eidx)))');
+            let lextract = CString::concat(' (seq.map (lambda ((vv (@Result ', utype, '))) (@Result-value vv)) mres)');
+            let itc = CString::concat('(ite (= eidx -1) (@Result-ok (', lmk, lextract, ')) ', eres, ')');
+            let mchk = CString::concat(bmc, ' (', idc, ' ', itc, ')');
+
+            body = CString::concat('(', sop, ' (', mchk, '))');
         }
     }
     elif(f.specialname === 's_list_mapidx') {
