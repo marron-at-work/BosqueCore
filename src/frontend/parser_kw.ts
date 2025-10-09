@@ -26,6 +26,9 @@ const KW_ok = "ok";
 const KW_option = "option";
 const KW_pred = "pred";
 const KW_ref = "ref";
+const KW_out = "out";
+const KW_condout = "out?";
+const KW_inout = "inout";
 const KW_return = "return";
 const KW_result = "result";
 const KW_some = "some";
@@ -123,6 +126,9 @@ const KeywordStrings = [
     KW_predicate,
     KW_provides,
     KW_ref,
+    KW_out,
+    KW_condout,
+    KW_inout,
     KW_release,
     KW_return,
     KW_result,
@@ -245,7 +251,6 @@ const SYM_eqeq = " == ";
 const SYM_eqeqeq = " === ";
 const SYM_bigarrow = " => ";
 const SYM_implies = " ==> ";
-const SYM_iff = " <==> ";
 const SYM_arrow = " -> ";
 const SYM_barbar = " || ";
 const SYM_plus = " + ";
@@ -287,7 +292,6 @@ const SpaceRequiredSymbols = [
     SYM_eqeqeq,
     SYM_bigarrow,
     SYM_implies,
-    SYM_iff,
     SYM_arrow,
     SYM_barbar,
     SYM_plus,
@@ -359,6 +363,9 @@ export {
     KW_predicate,
     KW_provides,
     KW_ref,
+    KW_out,
+    KW_condout,
+    KW_inout,
     KW_release,
     KW_return,
     KW_result,
@@ -429,7 +436,6 @@ export {
     SYM_eqeqeq,
     SYM_bigarrow,
     SYM_implies,
-    SYM_iff,
     SYM_arrow,
     SYM_barbar,
     SYM_plus,

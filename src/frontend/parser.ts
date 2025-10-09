@@ -6,7 +6,7 @@ import { AutoTypeSignature, EListTypeSignature, ErrorTypeSignature, FullyQualifi
 import { AbortStatement, AbstractBodyImplementation, AccessEnumExpression, AccessNamespaceConstantExpression, AccessVariableExpression, ArgumentList, ArgumentValue, AssertStatement, BinAddExpression, BinDivExpression, BinKeyEqExpression, BinKeyNeqExpression, BinLogicAndExpression, BinLogicIFFExpression, BinLogicImpliesExpression, BinLogicOrExpression, BinMultExpression, BinSubExpression, BinderInfo, BlockStatement, BodyImplementation, BuiltinBodyImplementation, CallNamespaceFunctionExpression, ConstantExpressionValue, ConstructorEListExpression, ConstructorLambdaExpression, DebugStatement, EmptyStatement, ErrorExpression, ErrorStatement, Expression, ExpressionBodyImplementation, ExpressionTag, ITest, ITestFail, ITestNone, ITestOk, ITestSome, ITestType, IfElifElseStatement, IfElseStatement, IfExpression, ConditionalValueExpression, IfStatement, IfTest, LiteralExpressionValue, LiteralRegexExpression, LiteralSimpleExpression, LiteralNoneExpression, LiteralTypeDeclValueExpression, MapEntryConstructorExpression, MatchStatement, NamedArgumentValue, NumericEqExpression, NumericGreaterEqExpression, NumericGreaterExpression, NumericLessEqExpression, NumericLessExpression, NumericNeqExpression, ParseAsTypeExpression, PositionalArgumentValue, PostfixAsConvert, PostfixIsTest, PostfixOp, PostfixOperation, PredicateUFBodyImplementation, PrefixNegateOrPlusOpExpression, PrefixNotOpExpression, RefArgumentValue, SpreadArgumentValue, StandardBodyImplementation, Statement, SwitchStatement, SynthesisBodyImplementation, ValidateStatement, VariableAssignmentStatement, VariableDeclarationStatement, VariableInitializationStatement, VariableMultiAssignmentStatement, VariableMultiDeclarationStatement, VariableMultiInitializationStatement, VariableRetypeStatement, SpecialConstructorExpression, ConstructorPrimaryExpression, PostfixAccessFromName, ReturnVoidStatement, ReturnSingleStatement, PostfixInvoke, KeyCompareEqExpression, KeyCompareLessExpression, ReturnMultiStatement, SafeConvertExpression, PostfixAccessFromIndex, AccessStaticFieldExpression, CallTypeFunctionExpression, CreateDirectExpression, LambdaInvokeExpression, ThisUpdateStatement, VarUpdateStatement, CallRefThisExpression, VoidRefCallStatement, CallRefSelfExpression, CallRefVariableExpression, CallRefInvokeExpression, PostfixAssignFields } from "./body.js";
 import { APIDecl, APIResultTypeDecl, AbstractNominalTypeDecl, AdditionalTypeDeclTag, Assembly, ConceptTypeDecl, ConstMemberDecl, CRopeTypeDecl, CRopeIteratorTypeDecl, UnicodeRopeTypeDecl, DatatypeMemberEntityTypeDecl, DatatypeTypeDecl, DeclarationAttibute, EntityTypeDecl, EnumTypeDecl, EnvironmentVariableInformation, EventListTypeDecl, FunctionInvokeDecl, InternalConceptTypeDecl, InvariantDecl, InvokeTemplateTermDecl, InvokeTemplateTypeRestriction, InvokeTemplateTypeRestrictionClause, LambdaDecl, ListTypeDecl, MapEntryTypeDecl, MapTypeDecl, MemberFieldDecl, MethodDecl, NamespaceDeclaration, NamespaceFunctionDecl, NamespaceUsing, PostConditionDecl, PreConditionDecl, PrimitiveEntityTypeDecl, QueueTypeDecl, ResourceAccessModes, ResourceInformation, ResultTypeDecl, SetTypeDecl, StackTypeDecl, TaskActionDecl, TaskDecl, TaskMethodDecl, TypeFunctionDecl, TypeTemplateTermDecl, TypedeclTypeDecl, ValidateDecl, WELL_KNOWN_EVENTS_VAR_NAME, WELL_KNOWN_RETURN_VAR_NAME, SomeTypeDecl, OptionTypeDecl, TemplateTermDeclExtraTag, InvokeParameterDecl, OkTypeDecl, FailTypeDecl, APIRejectedTypeDecl, APIFailedTypeDecl, APIErrorTypeDecl, APISuccessTypeDecl, InternalEntityTypeDecl, AbstractCollectionTypeDecl, TestAssociation } from "./assembly.js";
 import { BuildLevel, CodeFileInfo, CodeFormatter, SourceInfo } from "./build_decls.js";
-import { AllAttributes, CoreOnlyAttributes, KW__debug, KW_abort, KW_action, KW_api, KW_as, KW_assert, KW_chktest, KW_concept, KW_const, KW_datatype, KW_debug, KW_declare, KW_elif, KW_else, KW_ensures, KW_entity, KW_enum, KW_env, KW_fail, KW_errtest, KW_event, KW_example, KW_false, KW_field, KW_fn, KW_function, KW_if, KW_implements, KW_invariant, KW_let, KW_match, KW_method, KW_namespace, KW_none, KW_of, KW_ok, KW_pred, KW_predicate, KW_provides, KW_recursive, KW_recursive_q, KW_ref, KW_release, KW_requires, KW_resource, KW_return, KW_safety, KW_self, KW_softcheck, KW_some, KW_spec, KW_status, KW_switch, KW_task, KW_test, KW_then, KW_this, KW_true, KW_type, KW_under, KW_using, KW_validate, KW_var, KW_when, KeywordStrings, LeftScanParens, ParenSymbols, RightScanParens, SYM_HOLE, SYM_amp, SYM_ampamp, SYM_arrow, SYM_at, SYM_atat, SYM_bang, SYM_bangeq, SYM_bangeqeq, SYM_bar, SYM_barbar, SYM_bigarrow, SYM_colon, SYM_coloncolon, SYM_coma, SYM_div, SYM_dot, SYM_dotdotdot, SYM_eq, SYM_eqeq, SYM_eqeqeq, SYM_gt, SYM_gteq, SYM_hash, SYM_iff, SYM_implies, SYM_langle, SYM_lbrace, SYM_lbrack, SYM_lparen, SYM_lparenbar, SYM_lt, SYM_lteq, SYM_minus, SYM_negate, SYM_plus, SYM_positive, SYM_question, SYM_rangle, SYM_rbrace, SYM_rbrack, SYM_rparen, SYM_rparenbar, SYM_semicolon, SYM_times, SpaceFrontSymbols, SpaceRequiredSymbols, StandardSymbols, TermRestrictions } from "./parser_kw.js";
+import { AllAttributes, CoreOnlyAttributes, KW__debug, KW_abort, KW_action, KW_api, KW_as, KW_assert, KW_chktest, KW_concept, KW_const, KW_datatype, KW_debug, KW_declare, KW_elif, KW_else, KW_ensures, KW_entity, KW_enum, KW_env, KW_fail, KW_errtest, KW_event, KW_example, KW_false, KW_field, KW_fn, KW_function, KW_if, KW_implements, KW_invariant, KW_let, KW_match, KW_method, KW_namespace, KW_none, KW_of, KW_ok, KW_pred, KW_predicate, KW_provides, KW_recursive, KW_recursive_q, KW_ref, KW_release, KW_requires, KW_resource, KW_return, KW_safety, KW_self, KW_softcheck, KW_some, KW_spec, KW_status, KW_switch, KW_task, KW_test, KW_then, KW_this, KW_true, KW_type, KW_under, KW_using, KW_validate, KW_var, KW_when, KeywordStrings, LeftScanParens, ParenSymbols, RightScanParens, SYM_HOLE, SYM_amp, SYM_ampamp, SYM_arrow, SYM_at, SYM_atat, SYM_bang, SYM_bangeq, SYM_bangeqeq, SYM_bar, SYM_barbar, SYM_bigarrow, SYM_colon, SYM_coloncolon, SYM_coma, SYM_div, SYM_dot, SYM_dotdotdot, SYM_eq, SYM_eqeq, SYM_eqeqeq, SYM_gt, SYM_gteq, SYM_hash, SYM_implies, SYM_langle, SYM_lbrace, SYM_lbrack, SYM_lparen, SYM_lparenbar, SYM_lt, SYM_lteq, SYM_minus, SYM_negate, SYM_plus, SYM_positive, SYM_question, SYM_rangle, SYM_rbrace, SYM_rbrack, SYM_rparen, SYM_rparenbar, SYM_semicolon, SYM_times, SpaceFrontSymbols, SpaceRequiredSymbols, StandardSymbols, TermRestrictions } from "./parser_kw.js";
 
 type ParsePhase = number;
 const ParsePhase_RegisterNames: ParsePhase = 1;
@@ -1083,11 +1083,10 @@ class Lexer {
 }
 
 enum ParseAllowedFlag {
-    AllowImplies,
     AllowRefParams,
+    AllowInOutParams,
     AllowOutParams,
     AllowCondOutParams,
-    AllowConditionalRHS,
     AllowEnvExp,
     AllowTaskOps
 }
@@ -1096,7 +1095,7 @@ class ParserEnabledFlags {
     readonly enabled: ParseAllowedFlag[];
 
     private static isExpNestedDisabledFlag(flag: ParseAllowedFlag): boolean {
-        return flag === ParseAllowedFlag.AllowImplies || flag === ParseAllowedFlag.AllowRefParams || flag === ParseAllowedFlag.AllowOutParams || flag === ParseAllowedFlag.AllowCondOutParams || flag === ParseAllowedFlag.AllowConditionalRHS;
+        return flag === ParseAllowedFlag.AllowRefParams || flag === ParseAllowedFlag.AllowInOutParams || flag === ParseAllowedFlag.AllowOutParams || flag === ParseAllowedFlag.AllowCondOutParams;
     }
 
     constructor(enabled: ParseAllowedFlag[]) {
@@ -1116,7 +1115,7 @@ class ParserEnabledFlags {
             return new ParserEnabledFlags(this.enabled);
         }
         else {
-            return new ParserEnabledFlags([...this.enabled, ParseAllowedFlag.AllowOutParams, ParseAllowedFlag.AllowRefParams, ParseAllowedFlag.AllowConditionalRHS]);
+            return new ParserEnabledFlags([...this.enabled, ParseAllowedFlag.AllowOutParams, ParseAllowedFlag.AllowRefParams, ParseAllowedFlag.AllowInOutParams]);
         }
     }
 
@@ -1125,16 +1124,12 @@ class ParserEnabledFlags {
             return new ParserEnabledFlags(this.enabled);
         }
         else {
-            return new ParserEnabledFlags([...this.enabled, ParseAllowedFlag.AllowOutParams, ParseAllowedFlag.AllowRefParams, ParseAllowedFlag.AllowConditionalRHS]);
+            return new ParserEnabledFlags([...this.enabled, ParseAllowedFlag.AllowOutParams, ParseAllowedFlag.AllowRefParams, ParseAllowedFlag.AllowInOutParams]);
         }
     }
 
-    initialCheckingExp(): ParserEnabledFlags {
-        return new ParserEnabledFlags([...this.enabled, ParseAllowedFlag.AllowImplies]);
-    }
-
     initialTopLevelTest(): ParserEnabledFlags {
-        return new ParserEnabledFlags([...this.enabled, ParseAllowedFlag.AllowOutParams, ParseAllowedFlag.AllowCondOutParams]);
+        return new ParserEnabledFlags([...this.enabled, ParseAllowedFlag.AllowOutParams, ParseAllowedFlag.AllowCondOutParams, ParseAllowedFlag.AllowRefParams, ParseAllowedFlag.AllowInOutParams]);
     }
 
     initialDefault(): ParserEnabledFlags {
@@ -2789,14 +2784,14 @@ class Parser {
         }
     }
 
-    private parseArgumentsCallStd(refok: boolean): ArgumentList {
+    private parseArgumentsCallStd(penabled: ParserEnabledFlags): ArgumentList {
         const args = this.parseListOf<ArgumentValue>("argument list", SYM_lparen, SYM_rparen, SYM_coma, () => {
             if(this.testToken(KW_ref)) {
                 if(!refok) {
                     this.recordErrorGeneral(this.peekToken(), "Cannot have a reference argument in this context");
                 }
                 this.consumeToken();
-                const exp = this.parseExpression();
+                const exp = this.parseExpression(penabled);
                 if(!(exp instanceof AccessVariableExpression)) {
                     this.recordErrorGeneral(exp.sinfo, "Expected variable as target in ref argument");
                 }
@@ -2805,14 +2800,14 @@ class Parser {
             }
             else if(this.testToken(SYM_dotdotdot)) {
                 this.consumeToken();
-                const exp = this.parseExpression();
+                const exp = this.parseExpression(penabled);
 
                 return new SpreadArgumentValue(exp);
             }
             else if(this.testFollows(TokenStrings.IdentifierName, SYM_eq)) {
                 const name = this.parseIdentifierAsStdVariable();
                 this.consumeToken();
-                const exp = this.parseExpression();
+                const exp = this.parseExpression(penabled);
 
                 return new NamedArgumentValue(name, exp);
             }
@@ -2828,7 +2823,7 @@ class Parser {
         return new ArgumentList(args);
     }
 
-    private parseArgumentsCallLambda(refok: boolean): ArgumentList {
+    private parseArgumentsCallLambda(penabled: ParserEnabledFlags): ArgumentList {
         const args = this.parseListOf<ArgumentValue>("argument list", SYM_lparen, SYM_rparen, SYM_coma, () => {
             if(this.testToken(KW_ref)) {
                 if(!refok) {
@@ -2836,7 +2831,7 @@ class Parser {
                 }
 
                 this.consumeToken();
-                const exp = this.parseExpression();
+                const exp = this.parseExpression(penabled);
                 if(!(exp instanceof AccessVariableExpression)) {
                     this.recordErrorGeneral(exp.sinfo, "Expected variable as target in ref argument");
                 }
@@ -2845,7 +2840,7 @@ class Parser {
             }
             else if(this.testToken(SYM_dotdotdot)) {
                 this.consumeToken();
-                const exp = this.parseExpression();
+                const exp = this.parseExpression(penabled);
 
                 return new SpreadArgumentValue(exp);
             }
@@ -2854,7 +2849,7 @@ class Parser {
 
                 const name = this.parseIdentifierAsStdVariable();
                 this.consumeToken();
-                const exp = this.parseExpression();
+                const exp = this.parseExpression(penabled);
 
                 return new NamedArgumentValue(name, exp);
             }
@@ -2870,13 +2865,13 @@ class Parser {
         return new ArgumentList(args);
     }
 
-    private parseArgumentsConstructorStd(): ArgumentList {
+    private parseArgumentsConstructorStd(penabled: ParserEnabledFlags): ArgumentList {
         const args = this.parseListOf<ArgumentValue>("argument list", SYM_lbrace, SYM_rbrace, SYM_coma, () => {
             if(this.testToken(KW_ref)) {
                 this.recordErrorGeneral(this.peekToken(), "Cannot have a reference argument in this context");
                 
                 this.consumeToken();
-                const exp = this.parseExpression();
+                const exp = this.parseExpression(penabled);
                 if(!(exp instanceof AccessVariableExpression)) {
                     this.recordErrorGeneral(exp.sinfo, "Expected variable as target in ref argument");
                 }
@@ -2885,19 +2880,19 @@ class Parser {
             }
             else if(this.testToken(SYM_dotdotdot)) {
                 this.consumeToken();
-                const exp = this.parseExpression();
+                const exp = this.parseExpression(penabled);
 
                 return new SpreadArgumentValue(exp);
             }
             else if(this.testFollows(TokenStrings.IdentifierName, SYM_eq)) {
                 const name = this.parseIdentifierAsStdVariable();
                 this.consumeToken();
-                const exp = this.parseExpression();
+                const exp = this.parseExpression(penabled);
 
                 return new NamedArgumentValue(name, exp);
             }
             else {
-                const exp = this.parseExpression();
+                const exp = this.parseExpression(penabled);
                 
                 return new PositionalArgumentValue(exp);
             }
@@ -2908,13 +2903,13 @@ class Parser {
         return new ArgumentList(args);
     }
 
-    private parseArgumentsCollection(mapargs: boolean): ArgumentList {
+    private parseArgumentsCollection(penabled: ParserEnabledFlags, mapargs: boolean): ArgumentList {
         const args = this.parseListOf<ArgumentValue>("argument list", SYM_lbrace, SYM_rbrace, SYM_coma, () => {
             if(this.testToken(KW_ref)) {
                 this.recordErrorGeneral(this.peekToken(), "Cannot have a reference argument in collection constructor context");
 
                 this.consumeToken();
-                const exp = this.parseExpression();
+                const exp = this.parseExpression(penabled);
                 if(!(exp instanceof AccessVariableExpression)) {
                     this.recordErrorGeneral(exp.sinfo, "Expected variable as target in ref argument");
                 }
@@ -2923,7 +2918,7 @@ class Parser {
             }
             else if(this.testToken(SYM_dotdotdot)) {
                 this.consumeToken();
-                const exp = this.parseExpression();
+                const exp = this.parseExpression(penabled);
 
                 return new SpreadArgumentValue(exp);
             }
@@ -2932,17 +2927,17 @@ class Parser {
 
                 const name = this.parseIdentifierAsStdVariable();
                 this.consumeToken();
-                const exp = this.parseExpression();
+                const exp = this.parseExpression(penabled);
 
                 return new NamedArgumentValue(name, exp);
             }
             else {
                 let exp: Expression;
                 if(mapargs) {
-                    exp = this.parseMapEntryConstructorExpression();
+                    exp = this.parseMapEntryConstructorExpression(penabled);
                 }
                 else {
-                    exp = this.parseExpression();
+                    exp = this.parseExpression(penabled);
                 }
                 
                 return new PositionalArgumentValue(exp);
@@ -3046,7 +3041,7 @@ class Parser {
         return undefined;
     }
 
-    private parseImplicitNamespaceScopedConstOrFunc(ns: NamespaceDeclaration, decl: "isfunction" | "isconstant"): Expression {
+    private parseImplicitNamespaceScopedConstOrFunc(penabled: ParserEnabledFlags, ns: NamespaceDeclaration, decl: "isfunction" | "isconstant"): Expression {
         const sinfo = this.peekToken().getSourceInfo();
 
         const idname = this.parseIdentifierAsStdVariable();
@@ -3057,7 +3052,7 @@ class Parser {
         else {
             const rec = this.parseInvokeRecursiveArgs();
             const targs = this.parseInvokeTemplateArguments();
-            const args = this.parseArgumentsCallStd(true);
+            const args = this.parseArgumentsCallStd(penabled);
 
             const specialop = this.trySpecialNamespaceCall(sinfo, ns, idname, targs, args);
             if(specialop !== undefined) {
@@ -3069,7 +3064,7 @@ class Parser {
         }
     }
 
-    private parseNamespaceScopedFirstExpression(nspace: NamespaceDeclaration): Expression {
+    private parseNamespaceScopedFirstExpression(penabled: ParserEnabledFlags, nspace: NamespaceDeclaration): Expression {
         const sinfo = this.peekToken().getSourceInfo();
 
         this.ensureAndConsumeTokenAlways(SYM_coloncolon, "namespace scoped expression");
@@ -3085,7 +3080,7 @@ class Parser {
         else if(isFunOpt) {
             const rec = this.parseInvokeRecursiveArgs();
             const targs = this.parseInvokeTemplateArguments();
-            const args = this.parseArgumentsCallStd(true);
+            const args = this.parseArgumentsCallStd(penabled);
 
             const specialop = this.trySpecialNamespaceCall(sinfo, nspace, idname, targs, args);
             if(specialop !== undefined) {
@@ -3101,7 +3096,7 @@ class Parser {
         }
     }
 
-    private parseTypeScopedFirstExpression(access: {altScope: string[] | undefined, nsScope: NamespaceDeclaration, typeTokens: {tname: string, tterms: TypeSignature[]}[]}): Expression {
+    private parseTypeScopedFirstExpression(penabled: ParserEnabledFlags, access: {altScope: string[] | undefined, nsScope: NamespaceDeclaration, typeTokens: {tname: string, tterms: TypeSignature[]}[]}): Expression {
         const sinfo = this.peekToken().getSourceInfo();
 
         if(this.testToken(SYM_hash) || this.testToken(SYM_lbrace)) {
@@ -3125,11 +3120,11 @@ class Parser {
                 const isMap = isContainer && (tsig instanceof NominalTypeSignature) && (tsig.decl instanceof MapTypeDecl);
 
                 if(isContainer) {
-                    const args = this.parseArgumentsCollection(isMap);
+                    const args = this.parseArgumentsCollection(penabled, isMap);
                     return new ConstructorPrimaryExpression(sinfo, tsig, args);
                 }
                 else {
-                    const args = this.parseArgumentsConstructorStd();
+                    const args = this.parseArgumentsConstructorStd(penabled);
                     return new ConstructorPrimaryExpression(sinfo, tsig, args);
                 }
             }
@@ -3162,7 +3157,7 @@ class Parser {
             const targs = this.parseInvokeTemplateArguments();
 
             if(this.testToken(SYM_lparen)) {
-                const args = this.parseArgumentsCallStd(true);
+                const args = this.parseArgumentsCallStd(penabled);
 
                 return new CallTypeFunctionExpression(sinfo, tsig, idname, targs, isrecursive, args);
             }
@@ -3180,7 +3175,7 @@ class Parser {
         }
     }
 
-    private parseIdentifierFirstExpression(): Expression {
+    private parseIdentifierFirstExpression(penabled: ParserEnabledFlags): Expression {
         const sinfo = this.peekToken().getSourceInfo();
         if (this.peekTokenData().startsWith("$")) {
             const idname = this.parseIdentifierAsBinderVariable();
@@ -3191,7 +3186,7 @@ class Parser {
 
             if(this.testToken(SYM_lparen) || this.testFollows(SYM_lbrack, KW_recursive) || this.testFollows(SYM_lbrack, KW_recursive_q)) {
                 const recursive = this.parseInvokeRecursiveArgs();
-                const args = this.parseArgumentsCallLambda(true);
+                const args = this.parseArgumentsCallLambda(penabled);
                 return new LambdaInvokeExpression(sinfo, idname, recursive, args);
             }
             else {
@@ -3203,7 +3198,7 @@ class Parser {
 
             const isScopedConstOrFunc = this.identifierResolvesAsScopedConstOrFunction(this.peekTokenData());
             if(isScopedConstOrFunc !== undefined) {
-                return this.parseImplicitNamespaceScopedConstOrFunc(isScopedConstOrFunc[0], isScopedConstOrFunc[1]);
+                return this.parseImplicitNamespaceScopedConstOrFunc(penabled, isScopedConstOrFunc[0], isScopedConstOrFunc[1]);
             }
             else {
                 const access = this.parseIdentifierAccessChain();
@@ -3213,29 +3208,29 @@ class Parser {
                 }
 
                 if(access.typeTokens.length === 0) {
-                    return this.parseNamespaceScopedFirstExpression(access.nsScope);
+                    return this.parseNamespaceScopedFirstExpression(penabled, access.nsScope);
                 }
                 else {
-                    return this.parseTypeScopedFirstExpression(access);
+                    return this.parseTypeScopedFirstExpression(penabled, access);
                 }
             }
         }
     }
 
-    private parseSpecialConstructorExpression(): Expression {
+    private parseSpecialConstructorExpression(penabled: ParserEnabledFlags): Expression {
         const sinfo = this.peekToken().getSourceInfo();
         const cons = this.consumeTokenAndGetValue() as "fail" | "ok" | "some";
 
         this.ensureAndConsumeTokenAlways(SYM_lparen, "special constructor expression");
-        const exp = this.parseExpression();
+        const exp = this.parseExpression(penabled);
         this.ensureAndConsumeTokenAlways(SYM_rparen, "special constructor expression");
 
         return new SpecialConstructorExpression(sinfo, cons, exp);
     }
 
-    private parseEListConstructorExpression(): Expression {
+    private parseEListConstructorExpression(penabled: ParserEnabledFlags): Expression {
         let exps = this.parseListOf<Expression>("elist constructor expression", SYM_lparenbar, SYM_rparenbar, SYM_coma, () => {
-            return this.parseExpression();
+            return this.parseExpression(penabled);
         });
 
         if(exps.length === 0) {
@@ -3249,7 +3244,7 @@ class Parser {
         return new ConstructorEListExpression(this.peekToken().getSourceInfo(), argl);
     }
 
-    private parseParseAsTypeExpression(): Expression {
+    private parseParseAsTypeExpression(penabled: ParserEnabledFlags): Expression {
         const sinfo = this.peekToken().getSourceInfo();
 
         this.ensureAndConsumeTokenAlways(SYM_langle, "parse as type expression");
@@ -3257,13 +3252,13 @@ class Parser {
         this.ensureAndConsumeTokenAlways(SYM_rangle, "parse as type expression");
 
         this.ensureAndConsumeTokenAlways(SYM_lparen, "parse as type expression");
-        const exp = this.parseExpression();
+        const exp = this.parseExpressionEnabledUnchanged(penabled);
         this.ensureAndConsumeTokenAlways(SYM_rparen, "parse as type expression");
 
         return new ParseAsTypeExpression(sinfo, exp, tsig);
     }
 
-    private parsePrimaryExpression(): Expression {
+    private parsePrimaryExpression(penabled: ParserEnabledFlags): Expression {
         const sinfo = this.peekToken().getSourceInfo();
 
         const tk = this.peekTokenKind();
@@ -3411,20 +3406,20 @@ class Parser {
             assert(false, "Need to handle any self cases");
         }
         else if(tk === KW_some || tk === KW_ok || tk === KW_fail) {
-            return this.parseSpecialConstructorExpression();
+            return this.parseSpecialConstructorExpression(penabled);
         }
         else if(tk === SYM_lparenbar) {
-            return this.parseEListConstructorExpression();
+            return this.parseEListConstructorExpression(penabled);
         }
         else if(tk === SYM_langle) {
-            return this.parseParseAsTypeExpression();
+            return this.parseParseAsTypeExpression(penabled);
         }
         else if(tk === SYM_lparen) {
             const closeparen = this.scanMatchingParens(SYM_lparen, SYM_rparen);
             this.prepStateStackForNested("paren-type", closeparen);
 
             this.consumeToken();
-            let exp = this.parseExpression();
+            let exp = this.parseExpressionEnabledUnchanged(penabled);
             
             if(this.testToken(SYM_rparen)) {
                 this.consumeToken();
@@ -3439,7 +3434,7 @@ class Parser {
             return exp;
         }
         else if (tk === TokenStrings.IdentifierName || tk === TokenStrings.Template) {
-            return this.parseIdentifierFirstExpression();
+            return this.parseIdentifierFirstExpression(penabled);
         }
         else {
             this.recordErrorGeneral(sinfo, `Unexpected token in expression -- ${tk}`);
@@ -3459,8 +3454,8 @@ class Parser {
         return false;
     }
 
-    private parsePostfixExpression(): Expression {
-        let rootexp = this.parsePrimaryExpression();
+    private parsePostfixExpression(penabled: ParserEnabledFlags): Expression {
+        let rootexp = this.parsePrimaryExpression(penabled);
 
         let ops: PostfixOperation[] = [];
         while (this.testToken(SYM_dot) || this.testToken(SYM_question) || this.testToken(SYM_at) || this.testToken(SYM_lbrack)) {
@@ -3521,7 +3516,7 @@ class Parser {
                     else {
                         const rec = this.parseInvokeRecursiveArgs();
                         const targs = this.parseInvokeTemplateArguments();
-                        const args = this.parseArgumentsCallStd(true);
+                        const args = this.parseArgumentsCallStd(penabled);
 
                         ops.push(new PostfixInvoke(sinfo, resolvedScope, name, targs, rec, args));
                     }
@@ -3565,6 +3560,8 @@ class Parser {
         while(this.testToken(SYM_bang) || this.testToken(SYM_positive) || this.testToken(SYM_negate)) {
             ops.push([this.consumeTokenAndGetValue(), undefined]);
         }
+
+xxxx;
 
         let exp: Expression;
         if (this.testToken(KW_if)) {
@@ -3680,28 +3677,36 @@ class Parser {
         }
     }
 
-    private parseAndExpression(): Expression {
+    private parseAndExpression(penabled: ParserEnabledFlags): Expression {
         const sinfo = this.peekToken().getSourceInfo();
         const exp = this.parseRelationalExpression();
 
         if (this.testAndConsumeTokenIf(SYM_ampamp)) {
-            return new BinLogicAndExpression(sinfo, exp, this.parseAndExpression());
+            return new BinLogicAndExpression(sinfo, exp, this.parseAndExpression(penabled));
         }
         else {
             return exp;
         }
     }
 
-    private parseOrExpression(): Expression {
+    private parseOrExpression(penabled: ParserEnabledFlags): Expression {
         const sinfo = this.peekToken().getSourceInfo();
-        const exp = this.parseAndExpression();
+        const exp = this.parseAndExpression(penabled);
 
         if (this.testAndConsumeTokenIf(SYM_barbar)) {
-            return new BinLogicOrExpression(sinfo, exp, this.parseOrExpression());
+            return new BinLogicOrExpression(sinfo, exp, this.parseOrExpression(penabled));
         }
         else {
             return exp;
         }
+    }
+
+    private parseExpression(penabled: ParserEnabledFlags): Expression {
+        return this.parseOrExpression(penabled.disableStdSet());
+    }
+
+    private parseExpressionEnabledUnchanged(penabled: ParserEnabledFlags): Expression {
+        return this.parseOrExpression(penabled);
     }
 
     private parseIfTest(isexp: boolean): [Expression, string | undefined, boolean, boolean, ITest | undefined] {
@@ -3768,7 +3773,7 @@ class Parser {
         return [exp, bindername, implicitdef, ispostflow, itest];
     }
 
-    private parseMatchTest(isexp: boolean): [Expression, string | undefined, boolean] {
+    private parseMatchTest(penabled: ParserEnabledFlags): [Expression, string | undefined, boolean] {
         let exp: Expression;
         let bindername: string | undefined = undefined;
         let implicitdef: boolean = true;
@@ -3781,7 +3786,7 @@ class Parser {
             this.ensureAndConsumeTokenAlways(SYM_eq, "if test");
         }
         
-        exp = this.parseExpression();
+        exp = this.parseExpression(penabled);
         this.ensureAndConsumeTokenIf(SYM_rparen, "swtich/match test");
 
         dobind = this.testAndConsumeTokenIf(SYM_at);
@@ -3823,6 +3828,20 @@ class Parser {
         return new IfExpression(sinfo, new IfTest(iexp, itest), binder, ifvalueinfo, elsevalueinfo);
     }
 
+    private parseMapEntryConstructorExpression(penabled: ParserEnabledFlags): Expression {
+        const sinfo = this.peekToken().getSourceInfo();
+        //TODO: this will reject (2 => 3) since there are parens, maybe this is ok or maybe we should allow it?
+
+        const lexp = this.parseExpression();   
+        if(this.testAndConsumeTokenIf(SYM_bigarrow)) {
+            const rexp = this.parseExpression();
+            return new MapEntryConstructorExpression(sinfo, lexp, rexp);
+        }
+        else {
+            return lexp;
+        }
+    }
+
     private parseTestExpression(penabled: ParserEnabledFlags): Expression {
         xxxx;
     }
@@ -3843,24 +3862,6 @@ class Parser {
         }
         else {
             return exp;
-        }
-    }
-
-    private parseExpression(penabled: ParserEnabledFlags): Expression {
-        return this.parseOrExpression(penabled);
-    }
-
-    private parseMapEntryConstructorExpression(): Expression {
-        const sinfo = this.peekToken().getSourceInfo();
-        //TODO: this will reject (2 => 3) since there are parens, maybe this is ok or maybe we should allow it?
-
-        const lexp = this.parseExpression();   
-        if(this.testAndConsumeTokenIf(SYM_bigarrow)) {
-            const rexp = this.parseExpression();
-            return new MapEntryConstructorExpression(sinfo, lexp, rexp);
-        }
-        else {
-            return lexp;
         }
     }
 
