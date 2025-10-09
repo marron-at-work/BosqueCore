@@ -973,6 +973,10 @@ class InstantiationPropagator {
                 this.instantiateIfExpression(exp as IfExpression);
                 break;
             }
+            case ExpressionTag.ConditionalValueExpression: {
+                assert(false, "Not Implemented -- instantiateConditionalValueExpression");
+                break;
+            }
             default: {
                 ; //handled by the type signature instantiation on exp type
             }

@@ -1240,6 +1240,9 @@ class BSQIREmitter {
             case ExpressionTag.IfExpression: {
                 return this.emitIfExpression(exp as IfExpression);
             }
+            case ExpressionTag.ConditionalValueExpression: {
+                assert(false, "Not implemented -- ConditionalValue");
+            }
             default: {
                 assert(exp.tag === ExpressionTag.ErrorExpression, "Unknown expression kind");
                 return "[ERROR EXPRESSION]";

@@ -3,7 +3,7 @@ import assert from "node:assert";
 
 import { LocalVariableDefinitionInfo, ParserEnvironment, StandardScopeInfo } from "./parser_env.js";
 import { AutoTypeSignature, EListTypeSignature, ErrorTypeSignature, FullyQualifiedNamespace, LambdaParameterSignature, LambdaTypeSignature, NominalTypeSignature, TemplateTypeSignature, TypeSignature } from "./type.js";
-import { AbortStatement, AbstractBodyImplementation, AccessEnumExpression, AccessNamespaceConstantExpression, AccessVariableExpression, ArgumentList, ArgumentValue, AssertStatement, BinAddExpression, BinDivExpression, BinKeyEqExpression, BinKeyNeqExpression, BinLogicAndExpression, BinLogicIFFExpression, BinLogicImpliesExpression, BinLogicOrExpression, BinMultExpression, BinSubExpression, BinderInfo, BlockStatement, BodyImplementation, BuiltinBodyImplementation, CallNamespaceFunctionExpression, ConstantExpressionValue, ConstructorEListExpression, ConstructorLambdaExpression, DebugStatement, EmptyStatement, ErrorExpression, ErrorStatement, Expression, ExpressionBodyImplementation, ExpressionTag, ITest, ITestFail, ITestNone, ITestOk, ITestSome, ITestType, IfElifElseStatement, IfElseStatement, IfExpression, IfStatement, IfTest, LiteralExpressionValue, LiteralRegexExpression, LiteralSimpleExpression, LiteralNoneExpression, LiteralTypeDeclValueExpression, MapEntryConstructorExpression, MatchStatement, NamedArgumentValue, NumericEqExpression, NumericGreaterEqExpression, NumericGreaterExpression, NumericLessEqExpression, NumericLessExpression, NumericNeqExpression, ParseAsTypeExpression, PositionalArgumentValue, PostfixAsConvert, PostfixIsTest, PostfixOp, PostfixOperation, PredicateUFBodyImplementation, PrefixNegateOrPlusOpExpression, PrefixNotOpExpression, RefArgumentValue, SpreadArgumentValue, StandardBodyImplementation, Statement, SwitchStatement, SynthesisBodyImplementation, ValidateStatement, VariableAssignmentStatement, VariableDeclarationStatement, VariableInitializationStatement, VariableMultiAssignmentStatement, VariableMultiDeclarationStatement, VariableMultiInitializationStatement, VariableRetypeStatement, SpecialConstructorExpression, ConstructorPrimaryExpression, PostfixAccessFromName, ReturnVoidStatement, ReturnSingleStatement, PostfixInvoke, KeyCompareEqExpression, KeyCompareLessExpression, ReturnMultiStatement, SafeConvertExpression, PostfixAccessFromIndex, AccessStaticFieldExpression, CallTypeFunctionExpression, CreateDirectExpression, LambdaInvokeExpression, ThisUpdateStatement, VarUpdateStatement, CallRefThisExpression, VoidRefCallStatement, CallRefSelfExpression, CallRefVariableExpression, CallRefInvokeExpression, PostfixAssignFields } from "./body.js";
+import { AbortStatement, AbstractBodyImplementation, AccessEnumExpression, AccessNamespaceConstantExpression, AccessVariableExpression, ArgumentList, ArgumentValue, AssertStatement, BinAddExpression, BinDivExpression, BinKeyEqExpression, BinKeyNeqExpression, BinLogicAndExpression, BinLogicIFFExpression, BinLogicImpliesExpression, BinLogicOrExpression, BinMultExpression, BinSubExpression, BinderInfo, BlockStatement, BodyImplementation, BuiltinBodyImplementation, CallNamespaceFunctionExpression, ConstantExpressionValue, ConstructorEListExpression, ConstructorLambdaExpression, DebugStatement, EmptyStatement, ErrorExpression, ErrorStatement, Expression, ExpressionBodyImplementation, ExpressionTag, ITest, ITestFail, ITestNone, ITestOk, ITestSome, ITestType, IfElifElseStatement, IfElseStatement, IfExpression, ConditionalValueExpression, IfStatement, IfTest, LiteralExpressionValue, LiteralRegexExpression, LiteralSimpleExpression, LiteralNoneExpression, LiteralTypeDeclValueExpression, MapEntryConstructorExpression, MatchStatement, NamedArgumentValue, NumericEqExpression, NumericGreaterEqExpression, NumericGreaterExpression, NumericLessEqExpression, NumericLessExpression, NumericNeqExpression, ParseAsTypeExpression, PositionalArgumentValue, PostfixAsConvert, PostfixIsTest, PostfixOp, PostfixOperation, PredicateUFBodyImplementation, PrefixNegateOrPlusOpExpression, PrefixNotOpExpression, RefArgumentValue, SpreadArgumentValue, StandardBodyImplementation, Statement, SwitchStatement, SynthesisBodyImplementation, ValidateStatement, VariableAssignmentStatement, VariableDeclarationStatement, VariableInitializationStatement, VariableMultiAssignmentStatement, VariableMultiDeclarationStatement, VariableMultiInitializationStatement, VariableRetypeStatement, SpecialConstructorExpression, ConstructorPrimaryExpression, PostfixAccessFromName, ReturnVoidStatement, ReturnSingleStatement, PostfixInvoke, KeyCompareEqExpression, KeyCompareLessExpression, ReturnMultiStatement, SafeConvertExpression, PostfixAccessFromIndex, AccessStaticFieldExpression, CallTypeFunctionExpression, CreateDirectExpression, LambdaInvokeExpression, ThisUpdateStatement, VarUpdateStatement, CallRefThisExpression, VoidRefCallStatement, CallRefSelfExpression, CallRefVariableExpression, CallRefInvokeExpression, PostfixAssignFields } from "./body.js";
 import { APIDecl, APIResultTypeDecl, AbstractNominalTypeDecl, AdditionalTypeDeclTag, Assembly, ConceptTypeDecl, ConstMemberDecl, CRopeTypeDecl, CRopeIteratorTypeDecl, UnicodeRopeTypeDecl, DatatypeMemberEntityTypeDecl, DatatypeTypeDecl, DeclarationAttibute, EntityTypeDecl, EnumTypeDecl, EnvironmentVariableInformation, EventListTypeDecl, FunctionInvokeDecl, InternalConceptTypeDecl, InvariantDecl, InvokeTemplateTermDecl, InvokeTemplateTypeRestriction, InvokeTemplateTypeRestrictionClause, LambdaDecl, ListTypeDecl, MapEntryTypeDecl, MapTypeDecl, MemberFieldDecl, MethodDecl, NamespaceDeclaration, NamespaceFunctionDecl, NamespaceUsing, PostConditionDecl, PreConditionDecl, PrimitiveEntityTypeDecl, QueueTypeDecl, ResourceAccessModes, ResourceInformation, ResultTypeDecl, SetTypeDecl, StackTypeDecl, TaskActionDecl, TaskDecl, TaskMethodDecl, TypeFunctionDecl, TypeTemplateTermDecl, TypedeclTypeDecl, ValidateDecl, WELL_KNOWN_EVENTS_VAR_NAME, WELL_KNOWN_RETURN_VAR_NAME, SomeTypeDecl, OptionTypeDecl, TemplateTermDeclExtraTag, InvokeParameterDecl, OkTypeDecl, FailTypeDecl, APIRejectedTypeDecl, APIFailedTypeDecl, APIErrorTypeDecl, APISuccessTypeDecl, InternalEntityTypeDecl, AbstractCollectionTypeDecl, TestAssociation } from "./assembly.js";
 import { BuildLevel, CodeFileInfo, CodeFormatter, SourceInfo } from "./build_decls.js";
 import { AllAttributes, CoreOnlyAttributes, KW__debug, KW_abort, KW_action, KW_api, KW_as, KW_assert, KW_chktest, KW_concept, KW_const, KW_datatype, KW_debug, KW_declare, KW_elif, KW_else, KW_ensures, KW_entity, KW_enum, KW_env, KW_fail, KW_errtest, KW_event, KW_example, KW_false, KW_field, KW_fn, KW_function, KW_if, KW_implements, KW_invariant, KW_let, KW_match, KW_method, KW_namespace, KW_none, KW_of, KW_ok, KW_pred, KW_predicate, KW_provides, KW_recursive, KW_recursive_q, KW_ref, KW_release, KW_requires, KW_resource, KW_return, KW_safety, KW_self, KW_softcheck, KW_some, KW_spec, KW_status, KW_switch, KW_task, KW_test, KW_then, KW_this, KW_true, KW_type, KW_under, KW_using, KW_validate, KW_var, KW_when, KeywordStrings, LeftScanParens, ParenSymbols, RightScanParens, SYM_HOLE, SYM_amp, SYM_ampamp, SYM_arrow, SYM_at, SYM_atat, SYM_bang, SYM_bangeq, SYM_bangeqeq, SYM_bar, SYM_barbar, SYM_bigarrow, SYM_colon, SYM_coloncolon, SYM_coma, SYM_div, SYM_dot, SYM_dotdotdot, SYM_eq, SYM_eqeq, SYM_eqeqeq, SYM_gt, SYM_gteq, SYM_hash, SYM_iff, SYM_implies, SYM_langle, SYM_lbrace, SYM_lbrack, SYM_lparen, SYM_lparenbar, SYM_lt, SYM_lteq, SYM_minus, SYM_negate, SYM_plus, SYM_positive, SYM_question, SYM_rangle, SYM_rbrace, SYM_rbrack, SYM_rparen, SYM_rparenbar, SYM_semicolon, SYM_times, SpaceFrontSymbols, SpaceRequiredSymbols, StandardSymbols, TermRestrictions } from "./parser_kw.js";
@@ -1079,6 +1079,75 @@ class Lexer {
         }
         
         return this.tokens;
+    }
+}
+
+enum ParseAllowedFlag {
+    AllowImplies,
+    AllowRefParams,
+    AllowOutParams,
+    AllowCondOutParams,
+    AllowConditionalRHS,
+    AllowEnvExp,
+    AllowTaskOps
+}
+
+class ParserEnabledFlags {
+    readonly enabled: ParseAllowedFlag[];
+
+    private static isExpNestedDisabledFlag(flag: ParseAllowedFlag): boolean {
+        return flag === ParseAllowedFlag.AllowImplies || flag === ParseAllowedFlag.AllowRefParams || flag === ParseAllowedFlag.AllowOutParams || flag === ParseAllowedFlag.AllowCondOutParams || flag === ParseAllowedFlag.AllowConditionalRHS;
+    }
+
+    constructor(enabled: ParseAllowedFlag[]) {
+        this.enabled = enabled;
+    }
+
+    static initialStdBody(): ParserEnabledFlags {
+        return new ParserEnabledFlags([]);
+    }
+
+    static initialTaskBody(): ParserEnabledFlags {
+        return new ParserEnabledFlags([ParseAllowedFlag.AllowEnvExp, ParseAllowedFlag.AllowTaskOps]);
+    }
+
+    initialAssignRHSExp(multiassign: boolean): ParserEnabledFlags {
+        if(multiassign) {
+            return new ParserEnabledFlags(this.enabled);
+        }
+        else {
+            return new ParserEnabledFlags([...this.enabled, ParseAllowedFlag.AllowOutParams, ParseAllowedFlag.AllowRefParams, ParseAllowedFlag.AllowConditionalRHS]);
+        }
+    }
+
+    initialReturnRHS(multireturn: boolean): ParserEnabledFlags {
+        if(multireturn) {
+            return new ParserEnabledFlags(this.enabled);
+        }
+        else {
+            return new ParserEnabledFlags([...this.enabled, ParseAllowedFlag.AllowOutParams, ParseAllowedFlag.AllowRefParams, ParseAllowedFlag.AllowConditionalRHS]);
+        }
+    }
+
+    initialCheckingExp(): ParserEnabledFlags {
+        return new ParserEnabledFlags([...this.enabled, ParseAllowedFlag.AllowImplies]);
+    }
+
+    initialTopLevelTest(): ParserEnabledFlags {
+        return new ParserEnabledFlags([...this.enabled, ParseAllowedFlag.AllowOutParams, ParseAllowedFlag.AllowCondOutParams]);
+    }
+
+    initialDefault(): ParserEnabledFlags {
+        return new ParserEnabledFlags([]);
+    }
+
+    checkFlag(flag: ParseAllowedFlag): boolean {
+        return this.enabled.includes(flag);
+    }
+
+    disableStdSet(): ParserEnabledFlags {
+        const nflags = this.enabled.filter((v) => ParserEnabledFlags.isExpNestedDisabledFlag(v));
+        return new ParserEnabledFlags(nflags);
     }
 }
 
@@ -3635,21 +3704,6 @@ class Parser {
         }
     }
 
-    private parseImpliesExpression(): Expression {
-        const sinfo = this.peekToken().getSourceInfo();
-        const exp = this.parseOrExpression();
-
-        if (this.testAndConsumeTokenIf(SYM_implies)) {
-            return new BinLogicImpliesExpression(sinfo, exp, this.parseImpliesExpression());
-        }
-        else if(this.testAndConsumeTokenIf(SYM_iff)) {
-            return new BinLogicIFFExpression(sinfo, exp, this.parseImpliesExpression());
-        }
-        else {
-            return exp;
-        }
-    }
-
     private parseIfTest(isexp: boolean): [Expression, string | undefined, boolean, boolean, ITest | undefined] {
         let exp: Expression;
         let bindername: string | undefined = undefined;
@@ -3769,8 +3823,31 @@ class Parser {
         return new IfExpression(sinfo, new IfTest(iexp, itest), binder, ifvalueinfo, elsevalueinfo);
     }
 
-    private parseExpression(): Expression {
-        return this.parseImpliesExpression();
+    private parseTestExpression(penabled: ParserEnabledFlags): Expression {
+        xxxx;
+    }
+
+    private parseConditionalValueExpression(penabled: ParserEnabledFlags): Expression {
+        xxxx;
+    }
+
+    private parseImpliesExpression(penabled: ParserEnabledFlags): Expression {
+        const sinfo = this.peekToken().getSourceInfo();
+        const exp = this.parseOrExpression();
+
+        if (this.testAndConsumeTokenIf(SYM_implies)) {
+            return new BinLogicImpliesExpression(sinfo, exp, this.parseImpliesExpression());
+        }
+        else if(this.testAndConsumeTokenIf(SYM_iff)) {
+            return new BinLogicIFFExpression(sinfo, exp, this.parseImpliesExpression());
+        }
+        else {
+            return exp;
+        }
+    }
+
+    private parseExpression(penabled: ParserEnabledFlags): Expression {
+        return this.parseOrExpression(penabled);
     }
 
     private parseMapEntryConstructorExpression(): Expression {
@@ -3801,7 +3878,7 @@ class Parser {
         }
     }
 
-    private parseRHSExpression(): Expression {
+    private parseRHSExpression(penabled: ParserEnabledFlags): Expression {
         //TODO: later we need to parse trailing early returns/checks
 
         if(this.testToken(KW_ref)) {

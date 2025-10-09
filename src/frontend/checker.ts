@@ -2727,6 +2727,9 @@ class TypeChecker {
             case ExpressionTag.IfExpression: {
                 return this.checkIfExpression(env, exp as IfExpression, typeinfer);
             }
+            case ExpressionTag.ConditionalValueExpression: {
+                assert(false, "Not Implemented -- checkConditionalValueExpression");
+            }
             default: {
                 assert(exp.tag === ExpressionTag.ErrorExpression, "Unknown expression kind");
                 return new ErrorTypeSignature(exp.sinfo, undefined);
