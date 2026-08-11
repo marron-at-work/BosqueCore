@@ -9,7 +9,7 @@ namespace ᐸRuntimeᐳ
     static std::regex s_int_re("^(0|[+-]?[1-9][0-9]*)i", std::regex_constants::nosubs | std::regex_constants::optimize);
     static std::regex s_chknat_re("^(ChkNat::npos|((0|[+-]?[1-9][0-9]*)N))", std::regex_constants::nosubs | std::regex_constants::optimize);
     static std::regex s_chkint_re("^(ChkInt::npos|((0|[+-]?[1-9][0-9]*)I))", std::regex_constants::nosubs | std::regex_constants::optimize);
-    static std::regex s_float_re("^[+-]?(0|[1-9][0-9]*)(\\.[0-9]+)([eE][+-]?[0-9]+)?f", std::regex_constants::nosubs | std::regex_constants::optimize);
+    static std::regex s_float_re("^([+-]?(0|[1-9][0-9]*)(\\.[0-9]+)([eE][+-]?[0-9]+)?f)|(Float::nan)|(Float::pinfty)|(Float::ninfty)", std::regex_constants::nosubs | std::regex_constants::optimize);
 
     static std::regex s_byte_re("^0x[0-9a-fA-F]{1,2}", std::regex_constants::nosubs | std::regex_constants::optimize);
     static std::regex s_cchar_re("^c'[^']{1,16}'", std::regex_constants::nosubs | std::regex_constants::optimize);

@@ -12,11 +12,6 @@ namespace ᐸRuntimeᐳ
     public:
         double value;
 
-        static bool isValidFloat(double v)
-        {
-            return std::isfinite(v);
-        }
-
         template <typename T>
         static XBool isSafeConvertInto(XFloat f)
         {
@@ -31,24 +26,6 @@ namespace ᐸRuntimeᐳ
         static T doSafeConvertInto(XFloat f)
         {
             return T{static_cast<typename T::value_type>(f.value)};
-        }
-
-        // Check operators on Float
-        static void checkOverflowAddition(XFloat n1, XFloat n2, const char* file, uint32_t line)
-        {
-            if(!(XFloat::isValidFloat(n1.value + n2.value))) [[unlikely]] { ᐸRuntimeᐳ::bsq_handle_error(file, line, ᐸRuntimeᐳ::ErrorKind::NumericBounds, nullptr, "Float addition bounds"); }
-        }
-        static void checkOverflowSubtraction(XFloat n1, XFloat n2, const char* file, uint32_t line)
-        {
-            if(!(XFloat::isValidFloat(n1.value - n2.value))) [[unlikely]] { ᐸRuntimeᐳ::bsq_handle_error(file, line, ᐸRuntimeᐳ::ErrorKind::NumericBounds, nullptr, "Float subtraction bounds"); }
-        }
-        static void checkOverflowMultiplication(XFloat n1, XFloat n2, const char* file, uint32_t line)
-        {
-            if(!(XFloat::isValidFloat(n1.value * n2.value))) [[unlikely]] { ᐸRuntimeᐳ::bsq_handle_error(file, line, ᐸRuntimeᐳ::ErrorKind::NumericBounds, nullptr, "Float multiplication bounds"); }
-        }
-        static void checkDivisionByZero(XFloat n2, const char* file, uint32_t line)
-        {
-            if(n2.value == 0.0) [[unlikely]] { ᐸRuntimeᐳ::bsq_handle_error(file, line, ᐸRuntimeᐳ::ErrorKind::DivisionByZero, nullptr, "Float division by zero"); }
         }
 
         // Overloaded operators on Float

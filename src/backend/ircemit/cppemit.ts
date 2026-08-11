@@ -1313,8 +1313,7 @@ class CPPEmitter {
             bstr = "ᐸRuntimeᐳ::XFloat{std::sqrt(v.value)}"
         }
         else if(body.builtin === "float_pow") {
-            prestr = 'auto pp = std::pow(x.value, y.value); if(!ᐸRuntimeᐳ::XFloat::isValidFloat(pp)) [[unlikely]] { ᐸRuntimeᐳ::bsq_handle_error("internal code", 0, ᐸRuntimeᐳ::ErrorKind::NumericBounds, nullptr, "Float power bounds"); }';
-            bstr = 'ᐸRuntimeᐳ::XFloat{pp}';
+            bstr = 'ᐸRuntimeᐳ::XFloat{std::pow(x.value, y.value)}';
         }
         else if(body.builtin === "cstring_empty") {
             bstr = "ᐸRuntimeᐳ::XBool::from(s.empty())";

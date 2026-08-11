@@ -121,8 +121,21 @@ namespace ᐸRuntimeᐳ
             this->bufferMgr.writeNumberWFormat("%.12lgf", f.value);
         }
         else {
-            //force the decimal and a single trailing 0 for whole numbers
-            this->bufferMgr.writeNumberWFormat("%.12lg.0f", f.value);
+            if(std::isnan(f.value)) {
+                this->bufferMgr.writeImmediate("Float::nan");
+            }
+            else if(std::isinf(f.value)) {
+                if(f.value > 0) {
+                    this->bufferMgr.writeImmediate("Float::pinfty");
+                }
+                else {
+                    this->bufferMgr.writeImmediate("Float::ninfty");
+                }
+            }
+            else {
+                //force the decimal and a single trailing 0 for whole numbers
+                this->bufferMgr.writeNumberWFormat("%.12lg.0f", f.value);
+            }
         }
     }
 

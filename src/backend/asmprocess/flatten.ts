@@ -1567,7 +1567,7 @@ class ASMToIRConverter {
     }
 
     private needsAddCheck(opchk: "Nat" | "Int" | "ChkNat" | "ChkInt" | "Float"): boolean {
-        if(opchk === "ChkNat" || opchk === "ChkInt") {
+        if(opchk === "ChkNat" || opchk === "ChkInt" || opchk === "Float") {
             return false;
         }
 
@@ -1575,7 +1575,7 @@ class ASMToIRConverter {
     }
 
     private needsSubCheck(opchk: "Nat" | "Int" | "ChkNat" | "ChkInt" | "Float"): boolean {
-        if(opchk === "ChkInt") {
+        if(opchk === "ChkInt" || opchk === "Float") {
             return false;
         }
 
@@ -1583,7 +1583,7 @@ class ASMToIRConverter {
     }
 
     private needsMultCheck(opchk: "Nat" | "Int" | "ChkNat" | "ChkInt" | "Float"): boolean {
-        if(opchk === "ChkNat" || opchk === "ChkInt") {
+        if(opchk === "ChkNat" || opchk === "ChkInt" || opchk === "Float") {
             return false;
         }
 
@@ -1609,7 +1609,7 @@ class ASMToIRConverter {
             return /[+-]?0I/.test(rval);
         }
         else if(opchk === "Float") {
-            return /[+-]?0\.0+f/.test(rval);
+            return false;
         }
         else {
             return true;
