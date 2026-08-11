@@ -154,12 +154,17 @@ class TypeChecker {
                 assert(false, "Rational range constraints not supported yet");
             }
             case "Float": {
-                if(TypeChecker.isValidFloatLiteral(lit.value.slice(0, lit.value.length - 1))) {
-                    return parseFloat(lit.value.slice(0, lit.value.length - 1));
+                if(lit.value === "Float::nan" || lit.value === "Float::pinfty" || lit.value === "Float::ninfty") {
+                    return undefined;
                 }
                 else {
-                    this.reportError(sinfo, `Invalid Float literal in range -- ${lit.value}`);
-                    return undefined;
+                    if(TypeChecker.isValidFloatLiteral(lit.value.slice(0, lit.value.length - 1))) {
+                        return parseFloat(lit.value.slice(0, lit.value.length - 1));
+                    }
+                    else {
+                        this.reportError(sinfo, `Invalid Float literal in range -- ${lit.value}`);
+                        return undefined;
+                    }
                 }
             }
             case "CString": {
@@ -1380,7 +1385,9 @@ class TypeChecker {
     }
 
     private checkLiteralFloatExpression(env: TypeEnvironment, exp: LiteralSimpleExpression): TypeSignature {
-        this.checkError(exp.sinfo, !TypeChecker.isValidFloatLiteral(exp.value.slice(0, exp.value.length - 1)), "Invalid Float literal");
+        const isspecial = exp.value === 'Float::nan' || exp.value === 'Float::pinfty' || exp.value === 'Float::ninfty';
+        const isvalidfin = TypeChecker.isValidFloatLiteral(exp.value.slice(0, exp.value.length - 1));
+        this.checkError(exp.sinfo, !isspecial && !isvalidfin, "Invalid Float literal");
 
         return exp.setType(this.getWellKnownType("Float"));
     }
@@ -1417,8 +1424,14 @@ class TypeChecker {
         const realval = exp.value.slice(0, spos);
         const imagval = exp.value.slice(spos, exp.value.length - 1);
 
-        this.checkError(exp.sinfo, !TypeChecker.isValidFloatLiteral(realval), "Invalid Complex literal real value");
-        this.checkError(exp.sinfo, !TypeChecker.isValidFloatLiteral(imagval), "Invalid Complex literal imaginary value");
+        const isspecialreal = realval === 'Float::nan' || realval === 'Float::pinfty';
+        const isvalidreal = TypeChecker.isValidFloatLiteral(realval);
+        this.checkError(exp.sinfo, !isspecialreal && !isvalidreal, "Invalid Complex literal real value");
+
+
+        const isspecialimag = imagval === 'Float::nan' || imagval === 'Float::pinfty';
+        const isvalidimag = TypeChecker.isValidFloatLiteral(imagval);
+        this.checkError(exp.sinfo, !isspecialimag && !isvalidimag, "Invalid Complex literal imaginary value");
 
         return exp.setType(this.getWellKnownType("Complex"));
     }

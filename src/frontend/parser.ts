@@ -337,6 +337,8 @@ class Lexer {
 
     private static readonly _s_floatValueNoSign = '[0-9]+[.][0-9]+([eE][-+]?[0-9]+)?';
     private static readonly _s_floatValue = `[+-]?${Lexer._s_floatValueNoSign}([eE][-+]?[0-9]+)?`;
+    private static readonly _s_floatValueSpecials = '(Float::nan)|(Float::pinfty)|(Float::ninfty)';
+    private static readonly _s_floatValueSpecialsNoSign = '(Float::nan)|(Float::pinfty)';
 
     private static readonly _s_floatSimpleValueNoSign = '[0-9]+[.][0-9]+';
     private static readonly _s_floatSimpleValue = `[+-]?${Lexer._s_floatSimpleValueNoSign}`;
@@ -350,10 +352,10 @@ class Lexer {
     private static readonly _s_chkintRe = new RegExp(`ChkInt::npos|(${Lexer._s_intValue})I`, "y");
     private static readonly _s_chknatRe = new RegExp(`ChkNat::npos|(${Lexer._s_intValue})N`, "y");
 
-    private static readonly _s_floatRe = new RegExp(`(${Lexer._s_floatValue})f`, "y");
+    private static readonly _s_floatRe = new RegExp(`((${Lexer._s_floatValue})f)|(${Lexer._s_floatValueSpecials})`, "y");
     private static readonly _s_decimalRe = new RegExp(`(${Lexer._s_floatValue})d`, "y");
     private static readonly _s_rationalRe = new RegExp(`(${Lexer._s_intValue})(/(${Lexer._s_nonzeroIntValNoSign}))?R`, "y");
-    private static readonly _s_complexRe = new RegExp(`(${Lexer._s_floatValue})[+-](${Lexer._s_floatValueNoSign})j`, "y");
+    private static readonly _s_complexRe = new RegExp(`((${Lexer._s_floatValue})|(${Lexer._s_floatValueSpecials}))[+-]((${Lexer._s_floatValueNoSign})|(${Lexer._s_floatValueSpecialsNoSign}))j`, "y");
 
     private static readonly _s_decimalDegreeRe = new RegExp(`(${Lexer._s_floatSimpleValue})dd`, "y");
     private static readonly _s_latlongRe = new RegExp(`(${Lexer._s_floatSimpleValue})lat[+-]${Lexer._s_floatSimpleValueNoSign}long`, "y");
