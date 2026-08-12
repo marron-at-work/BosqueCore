@@ -1360,8 +1360,13 @@ class TypeChecker {
     }
 
     private static isValidFloatLiteral(val: string): boolean {
-        const fval = Number.parseFloat(val);
-        return !Number.isNaN(fval) && Number.isFinite(fval);
+        if(/^[+-]?#infinity#$/.test(val)) {
+            return true;
+        }
+        else {
+            const fval = Number.parseFloat(val);
+            return !Number.isNaN(fval) && Number.isFinite(fval);
+        }
     }
 
     private static isValidDecimalLiteral(val: string): boolean {

@@ -236,15 +236,29 @@ namespace ᐸRuntimeᐳ
                 return std::nullopt;
             }
 
-            double vv = 0;
-            auto [_, ec] = std::from_chars(skipPlusSignOpt(outbuff), outbuff + sizeof(outbuff), vv);
-
-            if(ec != std::errc() || !std::isfinite(vv)) {
-                return std::nullopt;
+            if(std::strcmp(outbuff, "#infinity#") == 0) {
+                this->lexer.consume();
+                return std::make_optional(XFloat{std::numeric_limits<double>::infinity()});
+            }
+            else if(std::strcmp(outbuff, "+#infinity#") == 0) {
+                this->lexer.consume();
+                return std::make_optional(XFloat{std::numeric_limits<double>::infinity()});
+            }
+            else if(std::strcmp(outbuff, "-#infinity#") == 0) {
+                this->lexer.consume();
+                return std::make_optional(XFloat{-std::numeric_limits<double>::infinity()});
             }
             else {
-                this->lexer.consume();
-                return std::make_optional(XFloat{vv});
+                double vv = 0;
+                auto [_, ec] = std::from_chars(skipPlusSignOpt(outbuff), outbuff + sizeof(outbuff), vv);
+
+                if(ec != std::errc() || !std::isfinite(vv)) {
+                    return std::nullopt;
+                }
+                else {
+                    this->lexer.consume();
+                    return std::make_optional(XFloat{vv});
+                }
             }
         }
 
