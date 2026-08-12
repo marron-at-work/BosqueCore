@@ -32,6 +32,10 @@ describe ("Parser -- ChkNat", () => {
         parseTestExp("0N", undefined, "ChkNat");
         parseTestExp("+2N", undefined, "ChkNat");
     });
+
+    it("should parse special big nat", function () {
+        parseTestExp("ChkNat::npos", undefined, "ChkNat");
+    });
 });
 
 describe ("Parser -- ChkInt", () => {
@@ -39,6 +43,10 @@ describe ("Parser -- ChkInt", () => {
         parseTestExp("0I", undefined, "ChkInt");
         parseTestExp("+2I", undefined, "ChkInt");
         parseTestExp("-2I", undefined, "ChkInt");
+    });
+
+    it("should parse special big int", function () {
+        parseTestExp("ChkInt::npos", undefined, "ChkInt");
     });
 });
 
@@ -55,6 +63,12 @@ describe ("Parser -- Float", () => {
 
     it("should fail stacked signs", function () {
         parseTestExpError("+-1.0f", "Redundant sign", "Float");
+    });
+
+    it("should parse special floats", function () {
+        parseTestExp("#infinity#f", undefined, "Float");
+        parseTestExp("+#infinity#f", undefined, "Float");
+        parseTestExp("-#infinity#f", undefined, "Float");
     });
 });
 
@@ -124,10 +138,15 @@ describe ("Parser -- Complex", () => {
     });
 
     it("should fail missing real", function () {
-        parseTestExpError("-0.5j", "Unrecognized token", "Complex");
+        parseTestExpError("-0.5j", "Un-annotated numeric literals are not supported", "Complex");
     });
 
     it("should fail missing imag", function () {
         parseTestExpError("-2.0", "Un-annotated numeric literals are not supported", "Complex");
+    });
+
+    it("should parse special complex", function () {
+        parseTestExp("#infinity#+#infinity#j", undefined, "Complex");
+        parseTestExp("#infinity#-#infinity#j", undefined, "Complex");
     });
 });
