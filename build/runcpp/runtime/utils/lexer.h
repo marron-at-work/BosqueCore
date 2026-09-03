@@ -78,7 +78,7 @@ namespace ᐸRuntimeᐳ
         virtual bool testDataMatches(const uint8_t* data, size_t len) const = 0;
         
         virtual uint8_t extractSingleCharToken() const = 0;
-        virtual size_t extractSmallToken(std::array<uint8_t, 64>& outchars) const = 0;
+        virtual size_t extractSmallToken(std::array<uint8_t, 64>& outchars) const = 0; //also null terminate the output inbuffer
 
         virtual void consume() = 0;
 

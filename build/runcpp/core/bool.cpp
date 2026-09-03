@@ -32,8 +32,8 @@ namespace ᐸRuntimeᐳ
         serializer->appendConstString((bool)(*(XBool*)valptr == XTRUE) ? "true" : "false");
     }
 
-    void displayValue_Bool(const TypeInfo* tinfo, const void* valptr, std::ostream& os)
+    void displayValue_Bool(const TypeInfo* tinfo, const void* valptr, std::ostream& os, std::optional<std::string> indent)
     {
-        os << ((bool)(*(XBool*)valptr == XTRUE) ? "true" : "false");
+        os << getDisplayIndent(indent) << ((bool)(*(XBool*)valptr == XTRUE) ? "true" : "false");
     }
 }

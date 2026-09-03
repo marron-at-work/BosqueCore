@@ -27,8 +27,8 @@ namespace ᐸRuntimeᐳ
         serializer->appendConstString("none");
     }
 
-    void displayValue_None(const TypeInfo* tinfo, const void* valptr, std::ostream& os)
+    void displayValue_None(const TypeInfo* tinfo, const void* valptr, std::ostream& os, std::optional<std::string> indent)
     {
-        os << "none";
+        os << getDisplayIndent(indent) << "none";
     }
 }

@@ -441,7 +441,7 @@ namespace ᐸRuntimeᐳ
     void parseToBSQ_Nat(const TypeInfo* tinfo, BAPILexer* lexer, void* resptr);
     json bsqToJSON_Nat(const TypeInfo* tinfo, const void* valptr);
     void bsqToBAPI_Nat(const TypeInfo* tinfo, const void* valptr, BSQSerializer* serializer);
-    void displayValue_Nat(const TypeInfo* tinfo, const void* valptr, std::ostream& os);
+    void displayValue_Nat(const TypeInfo* tinfo, const void* valptr, std::ostream& os, std::optional<std::string> indent);
 
     inline constexpr TypeInfo g_typeinfo_Nat = {
         WELL_KNOWN_TYPE_ID_NAT,
@@ -464,7 +464,7 @@ namespace ᐸRuntimeᐳ
     void parseToBSQ_Int(const TypeInfo* tinfo, BAPILexer* lexer, void* resptr);
     json bsqToJSON_Int(const TypeInfo* tinfo, const void* valptr);
     void bsqToBAPI_Int(const TypeInfo* tinfo, const void* valptr, BSQSerializer* serializer);
-    void displayValue_Int(const TypeInfo* tinfo, const void* valptr, std::ostream& os);
+    void displayValue_Int(const TypeInfo* tinfo, const void* valptr, std::ostream& os, std::optional<std::string> indent);
 
     inline constexpr TypeInfo g_typeinfo_Int = {
         WELL_KNOWN_TYPE_ID_INT,
@@ -487,7 +487,7 @@ namespace ᐸRuntimeᐳ
     void parseToBSQ_ChkNat(const TypeInfo* tinfo, BAPILexer* lexer, void* resptr);
     json bsqToJSON_ChkNat(const TypeInfo* tinfo, const void* valptr);
     void bsqToBAPI_ChkNat(const TypeInfo* tinfo, const void* valptr, BSQSerializer* serializer);
-    void displayValue_ChkNat(const TypeInfo* tinfo, const void* valptr, std::ostream& os);
+    void displayValue_ChkNat(const TypeInfo* tinfo, const void* valptr, std::ostream& os, std::optional<std::string> indent);
 
     inline constexpr TypeInfo g_typeinfo_ChkNat = {
         WELL_KNOWN_TYPE_ID_CHKNAT,
@@ -510,7 +510,7 @@ namespace ᐸRuntimeᐳ
     void parseToBSQ_ChkInt(const TypeInfo* tinfo, BAPILexer* lexer, void* resptr);
     json bsqToJSON_ChkInt(const TypeInfo* tinfo, const void* valptr);
     void bsqToBAPI_ChkInt(const TypeInfo* tinfo, const void* valptr, BSQSerializer* serializer);
-    void displayValue_ChkInt(const TypeInfo* tinfo, const void* valptr, std::ostream& os);
+    void displayValue_ChkInt(const TypeInfo* tinfo, const void* valptr, std::ostream& os, std::optional<std::string> indent);
 
     inline constexpr TypeInfo g_typeinfo_ChkInt = {
         WELL_KNOWN_TYPE_ID_CHKINT,

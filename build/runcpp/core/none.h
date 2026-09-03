@@ -12,7 +12,7 @@ namespace ᐸRuntimeᐳ
     void parseToBSQ_None(const TypeInfo* tinfo, BAPILexer* lexer, void* resptr);
     json bsqToJSON_None(const TypeInfo* tinfo, const void* valptr);
     void bsqToBAPI_None(const TypeInfo* tinfo, const void* valptr, BSQSerializer* serializer);
-    void displayValue_None(const TypeInfo* tinfo, const void* valptr, std::ostream& os);
+    void displayValue_None(const TypeInfo* tinfo, const void* valptr, std::ostream& os, std::optional<std::string> indent);
 
     inline constexpr TypeInfo g_typeinfo_None = {
         WELL_KNOWN_TYPE_ID_NONE,

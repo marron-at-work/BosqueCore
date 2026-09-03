@@ -74,7 +74,7 @@ namespace ᐸRuntimeᐳ
     using BSQToBAPIFp = void(*)(const TypeInfo*, const void*, BSQSerializer*); 
 
     //Function pointer to write a value for display (diagnostics)
-    using DisplayValueFp = void(*)(const TypeInfo*, const void*, std::ostream&); 
+    using DisplayValueFp = void(*)(const TypeInfo*, const void*, std::ostream&, std::optional<std::string>); 
 
     class TypeOpDispatchInfo
     {

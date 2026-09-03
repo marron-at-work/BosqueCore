@@ -79,6 +79,7 @@ namespace ᐸRuntimeᐳ
 
         bsq_validate(isok && XNat::isValidNat(vv), "BAPI -> BSQ", 0, nullptr, "Invalid literal Nat token");
         *(XNat*)resptr = XNat{vv};
+        lexer->consume();
     }
 
     json bsqToJSON_Nat(const TypeInfo* tinfo, const void* valptr)
@@ -104,13 +105,13 @@ namespace ᐸRuntimeᐳ
         serializer->appendConstString(numbuf.data(), written);
     }
 
-    void displayValue_Nat(const TypeInfo* tinfo, const void* valptr, std::ostream& os)
+    void displayValue_Nat(const TypeInfo* tinfo, const void* valptr, std::ostream& os, std::optional<std::string> indent)
     {
         XNat n = *(XNat*)valptr;
         std::array<char, 64> numbuf;
         size_t written = writeNatNumber(n, numbuf, true);
         
-        os << std::string(numbuf.data(), written);
+        os << getDisplayIndent(indent) << std::string(numbuf.data(), written);
     }
 
     ///////////////////////////////
@@ -143,6 +144,7 @@ namespace ᐸRuntimeᐳ
 
         bsq_validate(isok && XInt::isValidInt(vv), "BAPI -> BSQ", 0, nullptr, "Invalid literal Int token");
         *(XInt*)resptr = XInt{vv};
+        lexer->consume();
     }
 
     json bsqToJSON_Int(const TypeInfo* tinfo, const void* valptr)
@@ -168,13 +170,13 @@ namespace ᐸRuntimeᐳ
         serializer->appendConstString(numbuf.data(), written);
     }
 
-    void displayValue_Int(const TypeInfo* tinfo, const void* valptr, std::ostream& os)
+    void displayValue_Int(const TypeInfo* tinfo, const void* valptr, std::ostream& os, std::optional<std::string> indent)
     {
         XInt n = *(XInt*)valptr;
         std::array<char, 64> numbuf;
         size_t written = writeIntNumber(n, numbuf, true);
         
-        os << std::string(numbuf.data(), written);
+        os << getDisplayIndent(indent) << std::string(numbuf.data(), written);
     }
 
     ///////////////////////////////
@@ -204,10 +206,74 @@ namespace ᐸRuntimeᐳ
         }
     }
 
-    void parseToBSQ_ChkNat(const TypeInfo* tinfo, BAPILexer* lexer, void* resptr);
-    json bsqToJSON_ChkNat(const TypeInfo* tinfo, const void* valptr);
-    void bsqToBAPI_ChkNat(const TypeInfo* tinfo, const void* valptr, BSQSerializer* serializer);
-    void displayValue_ChkNat(const TypeInfo* tinfo, const void* valptr, std::ostream& os);
+    void parseToBSQ_ChkNat(const TypeInfo* tinfo, BAPILexer* lexer, void* resptr)
+    {
+        bsq_validate(lexer->getCurrentTokenType() == BAPITokenType::LiteralChkNat, "BAPI -> BSQ", 0, nullptr, "Expected literal ChkNat token");
+
+        constexpr const char* nposStr = "ChkNat::npos";
+
+        std::array<uint8_t, 64> outbuff;
+        size_t ssize = lexer->extractSmallToken(outbuff);
+
+        if(std::strcmp(reinterpret_cast<const char*>(outbuff.data()), nposStr) == 0) {
+            *(XChkNat*)resptr = XChkNat::bliteral();
+        }
+        else {
+            __int128_t vv = 0;
+            bool isok = lexer->tryExtractNumericValue<__int128_t>(vv);
+
+            bsq_validate(isok && XChkNat::isValidNat(vv), "BAPI -> BSQ", 0, nullptr, "Invalid literal ChkNat token");
+            *(XChkNat*)resptr = XChkNat{vv};
+        }
+        lexer->consume();
+    }
+
+    json bsqToJSON_ChkNat(const TypeInfo* tinfo, const void* valptr)
+    {
+        XChkNat n = *(XChkNat*)valptr;
+        if(JSON_MIN_SAFE_INTEGER <= n.value && n.value <= JSON_MAX_SAFE_INTEGER) {
+            return json(n.value);
+        }
+        else {
+            if(n.isBottom()) {
+                return json("ChkNat::npos");
+            }
+            else {
+                std::array<char, 64> numbuf;
+                size_t written = writeChkNatNumberSafe(n, numbuf, false);
+
+                return json(std::string(numbuf.data(), written));
+            }
+        }
+    }
+
+    void bsqToBAPI_ChkNat(const TypeInfo* tinfo, const void* valptr, BSQSerializer* serializer)
+    {
+        XChkNat n = *(XChkNat*)valptr;
+        if(n.isBottom()) {
+            serializer->appendConstString("ChkNat::npos");
+        }
+        else {
+            std::array<char, 64> numbuf;
+            size_t written = writeChkNatNumberSafe(n, numbuf, true);
+
+            serializer->appendConstString(numbuf.data(), written);
+        }
+    }
+
+    void displayValue_ChkNat(const TypeInfo* tinfo, const void* valptr, std::ostream& os, std::optional<std::string> indent)
+    {
+        XChkNat n = *(XChkNat*)valptr;
+        if(n.isBottom()) {
+            os << getDisplayIndent(indent) << "ChkNat::npos";
+        }
+        else {
+            std::array<char, 64> numbuf;
+            size_t written = writeChkNatNumberSafe(n, numbuf, true);
+
+            os << getDisplayIndent(indent) << std::string(numbuf.data(), written);
+        }
+    }
 
     ///////////////////////////////
     //ChkInt
@@ -236,8 +302,72 @@ namespace ᐸRuntimeᐳ
         }
     }
 
-    void parseToBSQ_ChkInt(const TypeInfo* tinfo, BAPILexer* lexer, void* resptr);
-    json bsqToJSON_ChkInt(const TypeInfo* tinfo, const void* valptr);
-    void bsqToBAPI_ChkInt(const TypeInfo* tinfo, const void* valptr, BSQSerializer* serializer);
-    void displayValue_ChkInt(const TypeInfo* tinfo, const void* valptr, std::ostream& os);
+    void parseToBSQ_ChkInt(const TypeInfo* tinfo, BAPILexer* lexer, void* resptr)
+    {
+        bsq_validate(lexer->getCurrentTokenType() == BAPITokenType::LiteralChkInt, "BAPI -> BSQ", 0, nullptr, "Expected literal ChkInt token");
+
+        constexpr const char* nposStr = "ChkInt::npos";
+
+        std::array<uint8_t, 64> outbuff;
+        size_t ssize = lexer->extractSmallToken(outbuff);
+
+        if(std::strcmp(reinterpret_cast<const char*>(outbuff.data()), nposStr) == 0) {
+            *(XChkInt*)resptr = XChkInt::bliteral();
+        }
+        else {
+            __int128_t vv = 0;
+            bool isok = lexer->tryExtractNumericValue<__int128_t>(vv);
+
+            bsq_validate(isok && XChkInt::isValidInt(vv), "BAPI -> BSQ", 0, nullptr, "Invalid literal ChkInt token");
+            *(XChkInt*)resptr = XChkInt{vv};
+        }
+        lexer->consume();
+    }
+
+    json bsqToJSON_ChkInt(const TypeInfo* tinfo, const void* valptr)
+    {
+        XChkInt n = *(XChkInt*)valptr;
+        if(JSON_MIN_SAFE_INTEGER <= n.value && n.value <= JSON_MAX_SAFE_INTEGER) {
+            return json(n.value);
+        }
+        else {
+            if(n.isBottom()) {
+                return json("ChkInt::npos");
+            }
+            else {
+                std::array<char, 64> numbuf;
+                size_t written = writeChkIntNumberSafe(n, numbuf, false);
+
+                return json(std::string(numbuf.data(), written));
+            }
+        }
+    }
+
+    void bsqToBAPI_ChkInt(const TypeInfo* tinfo, const void* valptr, BSQSerializer* serializer)
+    {
+        XChkInt n = *(XChkInt*)valptr;
+        if(n.isBottom()) {
+            serializer->appendConstString("ChkInt::npos");
+        }
+        else {
+            std::array<char, 64> numbuf;
+            size_t written = writeChkIntNumberSafe(n, numbuf, true);
+
+            serializer->appendConstString(numbuf.data(), written);
+        }
+    }
+
+    void displayValue_ChkInt(const TypeInfo* tinfo, const void* valptr, std::ostream& os, std::optional<std::string> indent)
+    {
+        XChkInt n = *(XChkInt*)valptr;
+        if(n.isBottom()) {
+            os << getDisplayIndent(indent) << "ChkInt::npos";
+        }
+        else {
+            std::array<char, 64> numbuf;
+            size_t written = writeChkIntNumberSafe(n, numbuf, true);
+
+            os << getDisplayIndent(indent) << std::string(numbuf.data(), written);
+        }
+    }
 }

@@ -77,4 +77,19 @@ namespace ᐸRuntimeᐳ
             return (char32_t)((inbuff[0] & 0x07) << 18 | ((inbuff[1] & 0x3F) << 12) | ((inbuff[2] & 0x3F) << 6) | (inbuff[3] & 0x3F));
         }
     }
+
+    std::string getDisplayIndent(std::optional<std::string> indent)
+    {
+        return indent.has_value() ? indent.value() : "";
+    }
+
+    char* skipPlusSignOpt(char* ptr)
+    {
+        if(*ptr == '+') {
+            return ptr + 1;
+        }
+        else {
+            return ptr;
+        }
+    }
 }
