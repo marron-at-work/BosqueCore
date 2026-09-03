@@ -5,7 +5,7 @@
 
 #include "../../core/coredecls.h"
 
-#include "../../core/bools.h"
+#include "../../core/bool.h"
 #include "../../core/chars.h"
 #include "../../core/integrals.h"
 #include "../../core/strings.h"

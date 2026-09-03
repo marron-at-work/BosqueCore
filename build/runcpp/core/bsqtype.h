@@ -1,6 +1,8 @@
 #pragma once
 
 #include "../common.h"
+#include "lexer.h"
+#include "serializer.h"
 
 #define BSQ_PTR_MASK_LEAF nullptr
 
@@ -56,7 +58,36 @@ namespace ᐸRuntimeᐳ
         Ref        //a pointer to a heap allocated value
     };
 
-    class FieldOffsetInfo
+    //Function pointer type for entrypoint constructors will run all needed validations on arguments (passed as pointer array of void* and write the constructed value to the second void* argument) -- this needs to handle long jump on error
+    using ValidatingConstructorFp = void(*)(void**, void*); 
+
+    //Function pointer type for JSON to BSQ conversion (takes the target typeinfo, a JSON object, and a pointer to the destination BSQ value) -- this needs to handle long jump on error
+    using JSONParseToBSQFp = void(*)(const TypeInfo*, const json&, void*);
+
+    //Function pointer type for parser to BSQ conversion (takes the target typeinfo, a parser object, and a pointer to the destination BSQ value) -- this needs to handle long jump on error
+    using ParseToBSQFp = void(*)(const TypeInfo*, BAPILexer*, void*);
+
+    //Function pointer type to convert a BSQ value to JSON (takes the source typeinfo, a pointer to the source BSQ value, and a JSON object to write to)
+    using BSQToJSONFp = json(*)(const TypeInfo*, const void*);
+
+    //Function pointer type to convert a BSQ value to BAPI (takes the source typeinfo, a pointer to the source BSQ value, and a out buffer (iobuffer or ByteBuffer writer) to write to)
+    using BSQToBAPIFp = void(*)(const TypeInfo*, const void*, BSQSerializer*); 
+
+    //Function pointer to write a value for display (diagnostics)
+    using DisplayValueFp = void(*)(const TypeInfo*, const void*, std::ostream&); 
+
+    class TypeOpDispatchInfo
+    {
+    public:
+        ValidatingConstructorFp validatingConstructorFp;
+        JSONParseToBSQFp jsonParseToBSQFp;
+        ParseToBSQFp parseToBSQFp;
+        BSQToJSONFp bsqToJSONFp;
+        BSQToBAPIFp bsqToBAPIFp;
+        DisplayValueFp displayFp;
+    };
+
+    class TypeLayoutInfo
     {
     public:
         uint32_t fieldid;
@@ -90,14 +121,19 @@ namespace ᐸRuntimeᐳ
 
         const uint32_t* supertypes;
         const uint32_t supertypescount;
-        const FieldOffsetInfo* ftable;
+        const TypeLayoutInfo* ftable;
         const uint32_t ftablecount;
         const VInvokeTargetInfo* vitable;
         const uint32_t vitablecount;
+        const TypeOpDispatchInfo opdispatch;
 
         const char* typekey;
 
         bool quickrelease;
+
+        //Way to get any typeinfo by its bsqtypeid -- map might be slower than desired (and not static initializable -- maybe evaluate later)
+        // This map initialization needs to happen in emitter (otherwise linker error)
+        static std::map<uint32_t, TypeInfo*> tinfomap;
     };
 
     consteval uint32_t byteSizeToSlotCount(size_t bytesize)
@@ -109,22 +145,4 @@ namespace ᐸRuntimeᐳ
     {
         return slotcount * sizeof(uint64_t);
     }
-
-    inline constexpr uint16_t BSQ_TYPEINFO_NO_ESLOT = 0x0;
-
-    inline constexpr TypeInfo g_typeinfo_None = {
-        WELL_KNOWN_TYPE_ID_NONE,
-        8,
-        byteSizeToSlotCount(8),
-        LayoutTag::Value,
-        BSQ_PTR_MASK_LEAF,
-        nullptr,
-        0,
-        nullptr,
-        0,
-        nullptr,
-        0,
-        "None",
-        true
-    };
 }

@@ -389,6 +389,113 @@ namespace ᐸRuntimeᐳ
         }   
     };
 
+    class IOBufferIterator
+    {
+    private:
+        std::list<uint8_t*>::const_iterator iobuffs;
+        int64_t cindex;
+
+        int64_t gindex;
+        int64_t totalbytes;
+
+        IOBufferIterator(std::list<uint8_t*>::const_iterator iobuffs, int64_t cindex, int64_t gindex, int64_t totalbytes) : iobuffs(iobuffs), cindex(cindex), gindex(gindex), totalbytes(totalbytes) {}
+
+        void incrementSlow()
+        {        
+            this->iobuffs++;
+            this->cindex = 0;
+        }
+
+        void decrementSlow()
+        {        
+            this->iobuffs--;
+            this->cindex = MINT_IO_BUFFER_ALLOCATOR_BLOCK_SIZE - 1;
+        }
+
+    public:
+        using value_type = uint8_t;
+        using difference_type = std::ptrdiff_t;
+        using iterator_category = std::bidirectional_iterator_tag;
+
+        using pointer = value_type*;
+        using reference = value_type&;
+
+        IOBufferIterator() : iobuffs(), cindex(0), gindex(0), totalbytes(0) {}
+        IOBufferIterator(const IOBufferIterator& other) = default;
+        
+        static IOBufferIterator initializeBegin(const std::list<uint8_t*>& buff, size_t totalbytes)
+        {
+            return IOBufferIterator(buff.cbegin(), 0, 0, totalbytes);
+        }
+
+        static IOBufferIterator initializeEnd(const std::list<uint8_t*>& buff, size_t totalbytes)
+        {
+            return IOBufferIterator(buff.cend(), 0, totalbytes, totalbytes);
+        }
+
+        value_type operator*() const 
+        { 
+            return (*this->iobuffs)[this->cindex]; 
+        }
+
+        IOBufferIterator& operator++()
+        {
+            this->gindex++;
+            this->cindex++;
+            if(this->cindex >= (int64_t)MINT_IO_BUFFER_ALLOCATOR_BLOCK_SIZE) {
+                this->incrementSlow();
+            }
+
+            return *this;
+        }
+ 
+        IOBufferIterator operator++(int)
+        {
+            auto tmp = *this;
+            ++*this;
+            return tmp;
+        }
+
+        IOBufferIterator& operator--()
+        {
+            this->gindex--;
+            this->cindex--;
+            if(this->cindex < 0) {
+                this->decrementSlow();
+            }
+
+            return *this;
+        }
+ 
+        IOBufferIterator operator--(int)
+        {
+            auto tmp = *this;
+            --*this;
+            return tmp;
+        }
+ 
+        friend bool operator==(const IOBufferIterator& lhs, const IOBufferIterator& rhs)
+        {
+            return lhs.gindex == rhs.gindex;
+        }
+
+        friend bool operator!=(const IOBufferIterator& lhs, const IOBufferIterator& rhs) 
+        {
+            return lhs.gindex != rhs.gindex;
+        }
+
+        inline size_t getIndex() const 
+        {
+            return this->gindex;
+        }
+
+        inline bool canRead() const
+        {
+            return this->gindex < this->totalbytes;
+        }
+    };
+    static_assert(std::bidirectional_iterator<IOBufferIterator>);
+
     extern thread_local AllocatorThreadLocalInfo tl_alloc_info;
     extern AllocatorGlobalInfo g_alloc_info;
 }

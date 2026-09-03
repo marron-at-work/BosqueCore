@@ -3,7 +3,8 @@
 #include "../common.h"
 
 #include "bsqtype.h"
-#include "bools.h"
+#include "none.h"
+#include "bool.h"
 
 namespace ᐸRuntimeᐳ
 {
@@ -18,9 +19,6 @@ namespace ᐸRuntimeᐳ
         auto ii = std::find(etype->supertypes, etype->supertypes + etype->supertypescount, oftype->bsqtypeid);
         return XBool::from(ii == (etype->supertypes + etype->supertypescount));
     }
-
-    using XNone = uint64_t;
-    constexpr XNone xnone = 0ull;
 
     template <typename T>
     class XSome 

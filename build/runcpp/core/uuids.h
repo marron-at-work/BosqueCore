@@ -3,7 +3,7 @@
 #include "../common.h"
 
 #include "bsqtype.h"
-#include "bools.h"
+#include "bool.h"
 
 namespace ᐸRuntimeᐳ
 {
