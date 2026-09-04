@@ -4,8 +4,6 @@
 
 #include "bsqtype.h"
 
-#include "../runtime/allocator/alloc.h"
-
 namespace ᐸRuntimeᐳ 
 {
     class ByteBufferEntry
@@ -55,6 +53,7 @@ namespace ᐸRuntimeᐳ
         0,
         nullptr,
         0,
+        TypeOpDispatchInfo{ (ValidatingConstructorFp)nullptr, (JSONParseToBSQFp)nullptr, (ParseToBSQFp)nullptr, (BSQToJSONFp)nullptr, (BSQToBAPIFp)nullptr, (DisplayValueFp)nullptr },
         "ByteBufferEntry",
         true
     };
@@ -71,9 +70,16 @@ namespace ᐸRuntimeᐳ
         0,
         nullptr,
         0,
+        TypeOpDispatchInfo{ (ValidatingConstructorFp)nullptr, (JSONParseToBSQFp)nullptr, (ParseToBSQFp)nullptr, (BSQToJSONFp)nullptr, (BSQToBAPIFp)nullptr, (DisplayValueFp)nullptr },
         "ByteBufferBlock",
         false
     };
+
+    void jsonParseToBSQ_ByteBuffer(const TypeInfo* tinfo, const json& j, void* resptr);
+    void parseToBSQ_ByteBuffer(const TypeInfo* tinfo, BAPILexer* lexer, void* resptr);
+    json bsqToJSON_ByteBuffer(const TypeInfo* tinfo, const void* valptr);
+    void bsqToBAPI_ByteBuffer(const TypeInfo* tinfo, const void* valptr, BSQSerializer* serializer);
+    void displayValue_ByteBuffer(const TypeInfo* tinfo, const void* valptr, std::ostream& os, std::optional<std::string> indent);
 
     inline constexpr TypeInfo g_typeinfo_ByteBuffer = {
         WELL_KNOWN_TYPE_ID_BYTEBUFFER,
@@ -87,6 +93,7 @@ namespace ᐸRuntimeᐳ
         0,
         nullptr,
         0,
+        TypeOpDispatchInfo{ (ValidatingConstructorFp)nullptr, (JSONParseToBSQFp)&jsonParseToBSQ_ByteBuffer, (ParseToBSQFp)&parseToBSQ_ByteBuffer, (BSQToJSONFp)&bsqToJSON_ByteBuffer, (BSQToBAPIFp)&bsqToBAPI_ByteBuffer, (DisplayValueFp)&displayValue_ByteBuffer },
         "ByteBuffer",
         false
     };

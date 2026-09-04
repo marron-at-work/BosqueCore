@@ -1,4 +1,6 @@
 #include "strings.h"
+#include "../runtime/utils/lexer.h"
+#include "../runtime/utils/serializer.h"
 
 namespace ᐸRuntimeᐳ
 {
@@ -17,6 +19,65 @@ namespace ᐸRuntimeᐳ
     template<> thread_local GCAllocator<PosRBTreeLeaf<char32_t, StrRootTreeContent::STR_MAX_LEAF_SIZE>>* PosRBTree<char32_t, StrRootTreeContent::STR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_POSRB_TREE_STRING>::s_leafallocator = &PosRBTreeLeaf_String_allocator;
     template<> const TypeInfo* PosRBTree<char32_t, StrRootTreeContent::STR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_POSRB_TREE_STRING>::s_nodetypeinfo = &g_typeinfo_PosRBTreeNode_String;
     template<> thread_local GCAllocator<PosRBTreeNode<char32_t, StrRootTreeContent::STR_MAX_LEAF_SIZE>>* PosRBTree<char32_t, StrRootTreeContent::STR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_POSRB_TREE_STRING>::s_nodeallocator = &PosRBTreeNode_String_allocator;
+
+    ///////////////////////////////
+    //CString
+    ///////////////////////////////
+
+    void jsonParseToBSQ_CString(const TypeInfo* tinfo, const json& j, void* resptr)
+    {
+        xxxx;
+    }
+
+    void parseToBSQ_CString(const TypeInfo* tinfo, BAPILexer* lexer, void* resptr)
+    {
+        xxxx;
+    }
+
+    json bsqToJSON_CString(const TypeInfo* tinfo, const void* valptr)
+    {
+        xxxx;
+    }
+
+    void bsqToBAPI_CString(const TypeInfo* tinfo, const void* valptr, BSQSerializer* serializer)
+    {
+        xxxx;
+    }
+
+    void displayValue_CString(const TypeInfo* tinfo, const void* valptr, std::ostream& os, std::optional<std::string> indent)
+    {
+        xxxx;
+    }
+
+    ///////////////////////////////
+    //String
+    ///////////////////////////////
+
+    void jsonParseToBSQ_String(const TypeInfo* tinfo, const json& j, void* resptr)
+    {
+        xxxx;
+    }
+
+    void parseToBSQ_String(const TypeInfo* tinfo, BAPILexer* lexer, void* resptr)
+    {
+        xxxx;
+    }
+
+    json bsqToJSON_String(const TypeInfo* tinfo, const void* valptr)
+    {
+        xxxx;
+    }
+    void bsqToBAPI_String(const TypeInfo* tinfo, const void* valptr, BSQSerializer* serializer)
+    {
+        xxxx;
+    }
+
+    void displayValue_String(const TypeInfo* tinfo, const void* valptr, std::ostream& os, std::optional<std::string> indent)
+    {
+        xxxx;
+    }
+
+    ///////////////////////////////////////////
 
     XCString XCString::natToCString(int64_t value) {
         char numbuf[64];
@@ -71,6 +132,9 @@ namespace ᐸRuntimeᐳ
 
         return XCString::mk(numbuf, static_cast<size_t>(written));
     }
+
+
+    ///////////////////////////////////////////
 
     XBool XCString::startsWith(const XCString& prefix) const
     {

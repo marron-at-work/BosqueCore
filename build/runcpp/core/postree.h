@@ -434,6 +434,7 @@ namespace ᐸRuntimeᐳ
             0,
             nullptr,
             0,
+            TypeOpDispatchInfo{ (ValidatingConstructorFp)nullptr, (JSONParseToBSQFp)nullptr, (ParseToBSQFp)nullptr, (BSQToJSONFp)nullptr, (BSQToBAPIFp)nullptr, (DisplayValueFp)nullptr },
             tname,
             quickrelease
         };
@@ -468,6 +469,7 @@ namespace ᐸRuntimeᐳ
             0,
             nullptr,
             0,
+            TypeOpDispatchInfo{ (ValidatingConstructorFp)nullptr, (JSONParseToBSQFp)nullptr, (ParseToBSQFp)nullptr, (BSQToJSONFp)nullptr, (BSQToBAPIFp)nullptr, (DisplayValueFp)nullptr },
             tname,
             false
         };
@@ -2267,6 +2269,7 @@ private:
             0,
             nullptr,
             0,
+            TypeOpDispatchInfo{ (ValidatingConstructorFp)nullptr, (JSONParseToBSQFp)nullptr, (ParseToBSQFp)nullptr, (BSQToJSONFp)nullptr, (BSQToBAPIFp)nullptr, (DisplayValueFp)nullptr },
             tname,
             false
         };

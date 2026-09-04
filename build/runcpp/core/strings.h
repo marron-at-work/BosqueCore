@@ -210,6 +210,7 @@ namespace ᐸRuntimeᐳ
         0,
         nullptr,
         0,
+        TypeOpDispatchInfo{ (ValidatingConstructorFp)nullptr, (JSONParseToBSQFp)nullptr, (ParseToBSQFp)nullptr, (BSQToJSONFp)nullptr, (BSQToBAPIFp)nullptr, (DisplayValueFp)nullptr },
         "CStringInline",
         false
     };
@@ -226,9 +227,16 @@ namespace ᐸRuntimeᐳ
         0,
         nullptr,
         0,
+        TypeOpDispatchInfo{ (ValidatingConstructorFp)nullptr, (JSONParseToBSQFp)nullptr, (ParseToBSQFp)nullptr, (BSQToJSONFp)nullptr, (BSQToBAPIFp)nullptr, (DisplayValueFp)nullptr },
         "CStringTree",
         false
     };
+
+    void jsonParseToBSQ_CString(const TypeInfo* tinfo, const json& j, void* resptr);
+    void parseToBSQ_CString(const TypeInfo* tinfo, BAPILexer* lexer, void* resptr);
+    json bsqToJSON_CString(const TypeInfo* tinfo, const void* valptr);
+    void bsqToBAPI_CString(const TypeInfo* tinfo, const void* valptr, BSQSerializer* serializer);
+    void displayValue_CString(const TypeInfo* tinfo, const void* valptr, std::ostream& os, std::optional<std::string> indent);
 
     inline constexpr TypeInfo g_typeinfo_CString = {
         WELL_KNOWN_TYPE_ID_CSTRING,
@@ -242,6 +250,7 @@ namespace ᐸRuntimeᐳ
         0,
         nullptr,
         0,
+        TypeOpDispatchInfo{ (ValidatingConstructorFp)nullptr, (JSONParseToBSQFp)&jsonParseToBSQ_CString, (ParseToBSQFp)&parseToBSQ_CString, (BSQToJSONFp)&bsqToJSON_CString, (BSQToBAPIFp)&bsqToBAPI_CString, (DisplayValueFp)&displayValue_CString },
         "CString",
         false
     };
@@ -777,6 +786,12 @@ namespace ᐸRuntimeᐳ
         }
     };
 
+    void jsonParseToBSQ_String(const TypeInfo* tinfo, const json& j, void* resptr);
+    void parseToBSQ_String(const TypeInfo* tinfo, BAPILexer* lexer, void* resptr);
+    json bsqToJSON_String(const TypeInfo* tinfo, const void* valptr);
+    void bsqToBAPI_String(const TypeInfo* tinfo, const void* valptr, BSQSerializer* serializer);
+    void displayValue_String(const TypeInfo* tinfo, const void* valptr, std::ostream& os, std::optional<std::string> indent);
+
     inline constexpr TypeInfo g_typeinfo_StringInline = {
         WELL_KNOWN_TYPE_ID_STRING_INLINE,
         sizeof(StrRootInlineContent),
@@ -789,6 +804,7 @@ namespace ᐸRuntimeᐳ
         0,
         nullptr,
         0,
+        TypeOpDispatchInfo{ (ValidatingConstructorFp)nullptr, (JSONParseToBSQFp)nullptr, (ParseToBSQFp)nullptr, (BSQToJSONFp)nullptr, (BSQToBAPIFp)nullptr, (DisplayValueFp)nullptr },
         "StringInline",
         false
     };
@@ -805,6 +821,7 @@ namespace ᐸRuntimeᐳ
         0,
         nullptr,
         0,
+        TypeOpDispatchInfo{ (ValidatingConstructorFp)nullptr, (JSONParseToBSQFp)nullptr, (ParseToBSQFp)nullptr, (BSQToJSONFp)nullptr, (BSQToBAPIFp)nullptr, (DisplayValueFp)nullptr },
         "StringTree",
         false
     };
@@ -821,6 +838,7 @@ namespace ᐸRuntimeᐳ
         0,
         nullptr,
         0,
+        TypeOpDispatchInfo{ (ValidatingConstructorFp)nullptr, (JSONParseToBSQFp)&jsonParseToBSQ_String, (ParseToBSQFp)&parseToBSQ_String, (BSQToJSONFp)&bsqToJSON_String, (BSQToBAPIFp)&bsqToBAPI_String, (DisplayValueFp)&displayValue_String },
         "String",
         false
     };

@@ -73,6 +73,8 @@ namespace ᐸRuntimeᐳ
     class BAPILexer
     {
     public:
+        bool allowSloppyStrings;
+
         virtual BAPITokenType getCurrentTokenType() const = 0;
         virtual size_t getCurrentTokenDataSize() const = 0;
         virtual bool testDataMatches(const uint8_t* data, size_t len) const = 0;
@@ -135,8 +137,8 @@ namespace ᐸRuntimeᐳ
             std::array<uint8_t, 64> outchars;
             size_t size = this->extractSmallToken(outchars);
 
-            auto [ptr, ec] = std::from_chars(skipPlusSignOpt(reinterpret_cast<char*>(outchars.data())), reinterpret_cast<char*>(outchars.data()) + size, outval);
-            return ec == std::errc() && ptr == reinterpret_cast<char*>(outchars.data()) + size;
+            auto [ptr, ec] = std::from_chars(skipPlusSignOpt(reinterpret_cast<char*>(outchars.data())), reinterpret_cast<char*>(outchars.data()) + size - 1, outval);
+            return ec == std::errc() && ptr == reinterpret_cast<char*>(outchars.data()) + size - 1;
         }
     };
 
