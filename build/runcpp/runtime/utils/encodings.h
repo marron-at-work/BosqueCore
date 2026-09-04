@@ -143,12 +143,7 @@ namespace ᐸRuntimeᐳ
 
     inline bool isMustEscapeCChar(char c)
     {
-        if(40 <= c && c <= 126) {
-            return false;
-        }
-        else {
-            return (c != 32 && c != 33 && c != 38);
-        }
+        return (c == '%' || c == '\'' || c == '\t' || c == '\n');
     }
 
     inline bool isLegalCChar(uint8_t c)
@@ -174,4 +169,7 @@ namespace ᐸRuntimeᐳ
     size_t multibyteCharCount(uint8_t c);
     size_t ucharToMultiByteEncoding(char32_t c, std::array<uint8_t, 4>& outbuff);
     char32_t multibyteToUChar(const std::array<uint8_t, 4>& inbuff, size_t bytecount);
+
+    /* Given a buffer that contains and encoded CChar (either named or numeric) get the char value (or return false if invalid) */
+    bool processEncodedCChar(const std::array<uint8_t, 64>& inbuff, size_t bytecount, char& outchar);
 }

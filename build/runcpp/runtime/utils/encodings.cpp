@@ -54,4 +54,40 @@ namespace ᐸRuntimeᐳ
             return (char32_t)((inbuff[0] & 0x07) << 18 | ((inbuff[1] & 0x3F) << 12) | ((inbuff[2] & 0x3F) << 6) | (inbuff[3] & 0x3F));
         }
     }
+
+    /* Given a buffer that contains and encoded CChar (either named or numeric) get the char value (or return false if invalid) */
+    bool processEncodedCChar(const std::array<uint8_t, 64>& inbuff, size_t bytecount, char& outchar)
+    {
+        uint8_t c = inbuff[0];
+        
+        if(c != '%') { 
+            if(bytecount != 1) {
+                return false;
+            }
+
+            outchar = c;
+            return isLegalCChar(c) && !isMustEscapeCChar(c);
+        }
+        else {
+            if(bytecount < 2 || inbuff[bytecount - 1] != ';') {
+                return false;
+            }
+
+            auto ii = std::find_if(s_escape_names_char.cbegin(), s_escape_names_char.cend(), [&](const auto& p) { return std::strcmp(p.second, reinterpret_cast<const char*>(inbuff.data())) == 0; });
+        if(ii != s_escape_names_char.cend()) {
+            res = static_cast<char>(ii->first);
+            return isLegalCChar(ii->first);
+        }
+
+        if(inbuff[1] == 'x') {
+            uint8_t output = 0;
+            auto [ptr, ec] = std::from_chars(reinterpret_cast<const char*>(inbuff.data()) + 2, reinterpret_cast<const char*>(inbuff.data()) + bytecount - 1, output, 16);
+
+            res = static_cast<char>(output);
+            return ec == std::errc() && (ptr == reinterpret_cast<const char*>(inbuff.data()) + bytecount - 1) && isLegalCChar(output);
+        }
+
+        return false;
+        }
+    }
 }

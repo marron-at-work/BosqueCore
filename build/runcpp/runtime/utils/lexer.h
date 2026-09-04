@@ -2,6 +2,8 @@
 
 #include "../../common.h"
 
+#include "builder.h"
+
 namespace ᐸRuntimeᐳ 
 {
     char* skipPlusSignOpt(char* ptr)
@@ -13,7 +15,7 @@ namespace ᐸRuntimeᐳ
             return ptr;
         }
     }
-    
+
     enum class BAPITokenType : uint64_t
     {
         Invalid = 0,
@@ -61,22 +63,35 @@ namespace ᐸRuntimeᐳ
             return this->size;
         }
 
+        bool matches(const uint8_t* data, size_t len) const
+        {
+            if(len != this->size) {
+                return false;
+            }
+
+            return std::equal(this->begin, this->end, data, data + len);
+        }
+
         uint8_t extract() const
         {
             return *(this->begin);
         }
 
-        bool matches(const char8_t* cchars) const;
-        bool extract(uint8_t* outchars, size_t maxlen) const;
-
-        template<size_t len>
-        bool xmatches(const char8_t (&cchars)[len]) const
+        size_t extract(std::array<uint8_t, 64>& outchars) const
         {
-            if((len - 1) != this->size()) {
-                return false;
-            }
+            assert(this->size < 64);
 
-            return std::equal(this->begin, this->end, cchars);
+            std::copy(this->begin, this->end, outchars.begin());
+            outchars[this->size] = 0;
+
+            return this->size;
+        }
+
+        void extract(BSQStreamingBuilder* builder) const
+        {
+            for(auto it = this->begin; it != this->end; ++it) {
+                builder->appendByte(*it);
+            }
         }
     };
 
@@ -91,6 +106,7 @@ namespace ᐸRuntimeᐳ
         
         virtual uint8_t extractSingleCharToken() const = 0;
         virtual size_t extractSmallToken(std::array<uint8_t, 64>& outchars) const = 0; //also null terminate the output inbuffer
+        virtual bool extractBuilder(BSQStreamingBuilder* builder) const = 0;
 
         virtual void consume() = 0;
 
@@ -156,5 +172,16 @@ namespace ᐸRuntimeᐳ
     class BAPILexerImpl : public BAPILexer
     {
     public:
+        BAPITokenType getCurrentTokenType() const override;
+        size_t getCurrentTokenDataSize() const override;
+        bool testDataMatches(const uint8_t* data, size_t len) const override;
+        
+        uint8_t extractSingleCharToken() const override;
+        size_t extractSmallToken(std::array<uint8_t, 64>& outchars) const override;
+        bool extractBuilder(BSQStreamingBuilder* builder) const override;
+
+        void consume() override;
+
+        xxxx;
     };
 }
