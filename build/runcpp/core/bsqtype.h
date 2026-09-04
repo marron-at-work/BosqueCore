@@ -2,7 +2,7 @@
 
 #include "../common.h"
 #include "lexer.h"
-#include "serializer.h"
+#include "builder.h"
 
 #define BSQ_PTR_MASK_LEAF nullptr
 
@@ -71,7 +71,7 @@ namespace ᐸRuntimeᐳ
     using BSQToJSONFp = json(*)(const TypeInfo*, const void*);
 
     //Function pointer type to convert a BSQ value to BAPI (takes the source typeinfo, a pointer to the source BSQ value, and a out buffer (iobuffer or ByteBuffer writer) to write to)
-    using BSQToBAPIFp = void(*)(const TypeInfo*, const void*, BSQSerializer*); 
+    using BSQToBAPIFp = void(*)(const TypeInfo*, const void*, BSQStreamingBuilder*); 
 
     //Function pointer to write a value for display (diagnostics)
     using DisplayValueFp = void(*)(const TypeInfo*, const void*, std::ostream&, std::optional<std::string>); 

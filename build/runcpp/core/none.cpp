@@ -1,6 +1,6 @@
 #include "none.h"
 #include "../runtime/utils/lexer.h"
-#include "../runtime/utils/serializer.h"
+#include "../runtime/utils/builder.h"
 
 namespace ᐸRuntimeᐳ
 {
@@ -22,9 +22,9 @@ namespace ᐸRuntimeᐳ
         return json(nullptr);
     }
 
-    void bsqToBAPI_None(const TypeInfo* tinfo, const void* valptr, BSQSerializer* serializer)
+    void bsqToBAPI_None(const TypeInfo* tinfo, const void* valptr, BSQStreamingBuilder* builder)
     {
-        serializer->appendConstString("none");
+        builder->appendConstString("none");
     }
 
     void displayValue_None(const TypeInfo* tinfo, const void* valptr, std::ostream& os, std::optional<std::string> indent)

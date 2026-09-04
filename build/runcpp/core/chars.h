@@ -49,7 +49,7 @@ namespace ᐸRuntimeᐳ
     void jsonParseToBSQ_Byte(const TypeInfo* tinfo, const json& j, void* resptr);
     void parseToBSQ_Byte(const TypeInfo* tinfo, BAPILexer* lexer, void* resptr);
     json bsqToJSON_Byte(const TypeInfo* tinfo, const void* valptr);
-    void bsqToBAPI_Byte(const TypeInfo* tinfo, const void* valptr, BSQSerializer* serializer);
+    void bsqToBAPI_Byte(const TypeInfo* tinfo, const void* valptr, BSQStreamingBuilder* builder);
     void displayValue_Byte(const TypeInfo* tinfo, const void* valptr, std::ostream& os, std::optional<std::string> indent);
 
     inline constexpr TypeInfo g_typeinfo_Byte = {
@@ -72,7 +72,7 @@ namespace ᐸRuntimeᐳ
     void jsonParseToBSQ_CChar(const TypeInfo* tinfo, const json& j, void* resptr);
     void parseToBSQ_CChar(const TypeInfo* tinfo, BAPILexer* lexer, void* resptr);
     json bsqToJSON_CChar(const TypeInfo* tinfo, const void* valptr);
-    void bsqToBAPI_CChar(const TypeInfo* tinfo, const void* valptr, BSQSerializer* serializer);
+    void bsqToBAPI_CChar(const TypeInfo* tinfo, const void* valptr, BSQStreamingBuilder* builder);
     void displayValue_CChar(const TypeInfo* tinfo, const void* valptr, std::ostream& os, std::optional<std::string> indent);
 
     inline constexpr TypeInfo g_typeinfo_CChar = {
@@ -95,7 +95,7 @@ namespace ᐸRuntimeᐳ
     void jsonParseToBSQ_UnicodeChar(const TypeInfo* tinfo, const json& j, void* resptr);
     void parseToBSQ_UnicodeChar(const TypeInfo* tinfo, BAPILexer* lexer, void* resptr);
     json bsqToJSON_UnicodeChar(const TypeInfo* tinfo, const void* valptr);
-    void bsqToBAPI_UnicodeChar(const TypeInfo* tinfo, const void* valptr, BSQSerializer* serializer);
+    void bsqToBAPI_UnicodeChar(const TypeInfo* tinfo, const void* valptr, BSQStreamingBuilder* builder);
     void displayValue_UnicodeChar(const TypeInfo* tinfo, const void* valptr, std::ostream& os, std::optional<std::string> indent);
 
     inline constexpr TypeInfo g_typeinfo_UnicodeChar = {

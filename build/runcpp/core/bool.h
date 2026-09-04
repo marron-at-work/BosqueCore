@@ -32,7 +32,7 @@ namespace ᐸRuntimeᐳ
     void jsonParseToBSQ_Bool(const TypeInfo* tinfo, const json& j, void* resptr);
     void parseToBSQ_Bool(const TypeInfo* tinfo, BAPILexer* lexer, void* resptr);
     json bsqToJSON_Bool(const TypeInfo* tinfo, const void* valptr);
-    void bsqToBAPI_Bool(const TypeInfo* tinfo, const void* valptr, BSQSerializer* serializer);
+    void bsqToBAPI_Bool(const TypeInfo* tinfo, const void* valptr, BSQStreamingBuilder* builder);
     void displayValue_Bool(const TypeInfo* tinfo, const void* valptr, std::ostream& os, std::optional<std::string> indent);
 
     inline constexpr TypeInfo g_typeinfo_Bool = {

@@ -89,7 +89,7 @@ namespace ᐸRuntimeᐳ
     void jsonParseToBSQ_Float(const TypeInfo* tinfo, const json& j, void* resptr);
     void parseToBSQ_Float(const TypeInfo* tinfo, BAPILexer* lexer, void* resptr);
     json bsqToJSON_Float(const TypeInfo* tinfo, const void* valptr);
-    void bsqToBAPI_Float(const TypeInfo* tinfo, const void* valptr, BSQSerializer* serializer);
+    void bsqToBAPI_Float(const TypeInfo* tinfo, const void* valptr, BSQStreamingBuilder* builder);
     void displayValue_Float(const TypeInfo* tinfo, const void* valptr, std::ostream& os, std::optional<std::string> indent);
 
     inline constexpr TypeInfo g_typeinfo_Float = {

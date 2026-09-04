@@ -440,7 +440,7 @@ namespace ᐸRuntimeᐳ
     void jsonParseToBSQ_Nat(const TypeInfo* tinfo, const json& j, void* resptr);
     void parseToBSQ_Nat(const TypeInfo* tinfo, BAPILexer* lexer, void* resptr);
     json bsqToJSON_Nat(const TypeInfo* tinfo, const void* valptr);
-    void bsqToBAPI_Nat(const TypeInfo* tinfo, const void* valptr, BSQSerializer* serializer);
+    void bsqToBAPI_Nat(const TypeInfo* tinfo, const void* valptr, BSQStreamingBuilder* builder);
     void displayValue_Nat(const TypeInfo* tinfo, const void* valptr, std::ostream& os, std::optional<std::string> indent);
 
     inline constexpr TypeInfo g_typeinfo_Nat = {
@@ -463,7 +463,7 @@ namespace ᐸRuntimeᐳ
     void jsonParseToBSQ_Int(const TypeInfo* tinfo, const json& j, void* resptr);
     void parseToBSQ_Int(const TypeInfo* tinfo, BAPILexer* lexer, void* resptr);
     json bsqToJSON_Int(const TypeInfo* tinfo, const void* valptr);
-    void bsqToBAPI_Int(const TypeInfo* tinfo, const void* valptr, BSQSerializer* serializer);
+    void bsqToBAPI_Int(const TypeInfo* tinfo, const void* valptr, BSQStreamingBuilder* builder);
     void displayValue_Int(const TypeInfo* tinfo, const void* valptr, std::ostream& os, std::optional<std::string> indent);
 
     inline constexpr TypeInfo g_typeinfo_Int = {
@@ -486,7 +486,7 @@ namespace ᐸRuntimeᐳ
     void jsonParseToBSQ_ChkNat(const TypeInfo* tinfo, const json& j, void* resptr);
     void parseToBSQ_ChkNat(const TypeInfo* tinfo, BAPILexer* lexer, void* resptr);
     json bsqToJSON_ChkNat(const TypeInfo* tinfo, const void* valptr);
-    void bsqToBAPI_ChkNat(const TypeInfo* tinfo, const void* valptr, BSQSerializer* serializer);
+    void bsqToBAPI_ChkNat(const TypeInfo* tinfo, const void* valptr, BSQStreamingBuilder* builder);
     void displayValue_ChkNat(const TypeInfo* tinfo, const void* valptr, std::ostream& os, std::optional<std::string> indent);
 
     inline constexpr TypeInfo g_typeinfo_ChkNat = {
@@ -509,7 +509,7 @@ namespace ᐸRuntimeᐳ
     void jsonParseToBSQ_ChkInt(const TypeInfo* tinfo, const json& j, void* resptr);
     void parseToBSQ_ChkInt(const TypeInfo* tinfo, BAPILexer* lexer, void* resptr);
     json bsqToJSON_ChkInt(const TypeInfo* tinfo, const void* valptr);
-    void bsqToBAPI_ChkInt(const TypeInfo* tinfo, const void* valptr, BSQSerializer* serializer);
+    void bsqToBAPI_ChkInt(const TypeInfo* tinfo, const void* valptr, BSQStreamingBuilder* builder);
     void displayValue_ChkInt(const TypeInfo* tinfo, const void* valptr, std::ostream& os, std::optional<std::string> indent);
 
     inline constexpr TypeInfo g_typeinfo_ChkInt = {

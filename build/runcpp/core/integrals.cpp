@@ -1,6 +1,6 @@
 #include "integrals.h"
 #include "../runtime/utils/lexer.h"
-#include "../runtime/utils/serializer.h"
+#include "../runtime/utils/builder.h"
 
 namespace ᐸRuntimeᐳ
 {
@@ -96,13 +96,13 @@ namespace ᐸRuntimeᐳ
         }
     }
 
-    void bsqToBAPI_Nat(const TypeInfo* tinfo, const void* valptr, BSQSerializer* serializer)
+    void bsqToBAPI_Nat(const TypeInfo* tinfo, const void* valptr, BSQStreamingBuilder* builder)
     {
         XNat n = *(XNat*)valptr;
         std::array<char, 64> numbuf;
         size_t written = writeNatNumber(n, numbuf, true);
 
-        serializer->appendConstString(numbuf.data(), written);
+        builder->appendConstString(numbuf.data(), written);
     }
 
     void displayValue_Nat(const TypeInfo* tinfo, const void* valptr, std::ostream& os, std::optional<std::string> indent)
@@ -161,13 +161,13 @@ namespace ᐸRuntimeᐳ
         }
     }
 
-    void bsqToBAPI_Int(const TypeInfo* tinfo, const void* valptr, BSQSerializer* serializer)
+    void bsqToBAPI_Int(const TypeInfo* tinfo, const void* valptr, BSQStreamingBuilder* builder)
     {
         XInt n = *(XInt*)valptr;
         std::array<char, 64> numbuf;
         size_t written = writeIntNumber(n, numbuf, true);
 
-        serializer->appendConstString(numbuf.data(), written);
+        builder->appendConstString(numbuf.data(), written);
     }
 
     void displayValue_Int(const TypeInfo* tinfo, const void* valptr, std::ostream& os, std::optional<std::string> indent)
@@ -247,17 +247,17 @@ namespace ᐸRuntimeᐳ
         }
     }
 
-    void bsqToBAPI_ChkNat(const TypeInfo* tinfo, const void* valptr, BSQSerializer* serializer)
+    void bsqToBAPI_ChkNat(const TypeInfo* tinfo, const void* valptr, BSQStreamingBuilder* builder)
     {
         XChkNat n = *(XChkNat*)valptr;
         if(n.isBottom()) {
-            serializer->appendConstString("ChkNat::npos");
+            builder->appendConstString("ChkNat::npos");
         }
         else {
             std::array<char, 64> numbuf;
             size_t written = writeChkNatNumberSafe(n, numbuf, true);
 
-            serializer->appendConstString(numbuf.data(), written);
+            builder->appendConstString(numbuf.data(), written);
         }
     }
 
@@ -343,17 +343,17 @@ namespace ᐸRuntimeᐳ
         }
     }
 
-    void bsqToBAPI_ChkInt(const TypeInfo* tinfo, const void* valptr, BSQSerializer* serializer)
+    void bsqToBAPI_ChkInt(const TypeInfo* tinfo, const void* valptr, BSQStreamingBuilder* builder)
     {
         XChkInt n = *(XChkInt*)valptr;
         if(n.isBottom()) {
-            serializer->appendConstString("ChkInt::npos");
+            builder->appendConstString("ChkInt::npos");
         }
         else {
             std::array<char, 64> numbuf;
             size_t written = writeChkIntNumberSafe(n, numbuf, true);
 
-            serializer->appendConstString(numbuf.data(), written);
+            builder->appendConstString(numbuf.data(), written);
         }
     }
 

@@ -1,6 +1,6 @@
 #include "strings.h"
 #include "../runtime/utils/lexer.h"
-#include "../runtime/utils/serializer.h"
+#include "../runtime/utils/builder.h"
 
 namespace ᐸRuntimeᐳ
 {
@@ -39,7 +39,7 @@ namespace ᐸRuntimeᐳ
         xxxx;
     }
 
-    void bsqToBAPI_CString(const TypeInfo* tinfo, const void* valptr, BSQSerializer* serializer)
+    void bsqToBAPI_CString(const TypeInfo* tinfo, const void* valptr, BSQStreamingBuilder* builder)
     {
         xxxx;
     }
@@ -67,7 +67,7 @@ namespace ᐸRuntimeᐳ
     {
         xxxx;
     }
-    void bsqToBAPI_String(const TypeInfo* tinfo, const void* valptr, BSQSerializer* serializer)
+    void bsqToBAPI_String(const TypeInfo* tinfo, const void* valptr, BSQStreamingBuilder* builder)
     {
         xxxx;
     }

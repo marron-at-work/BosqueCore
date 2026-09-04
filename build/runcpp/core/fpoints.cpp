@@ -1,6 +1,6 @@
 #include "fpoints.h"
 #include "../runtime/utils/lexer.h"
-#include "../runtime/utils/serializer.h"
+#include "../runtime/utils/builder.h"
 
 namespace ᐸRuntimeᐳ 
 {
@@ -42,13 +42,13 @@ namespace ᐸRuntimeᐳ
         return json(n.value);
     }
 
-    void bsqToBAPI_Float(const TypeInfo* tinfo, const void* valptr, BSQSerializer* serializer)
+    void bsqToBAPI_Float(const TypeInfo* tinfo, const void* valptr, BSQStreamingBuilder* builder)
     {
         XFloat n = *(XFloat*)valptr;
         std::array<char, 64> numbuf;
         size_t written = writeFloatNumber(n, numbuf);
 
-        serializer->appendConstString(numbuf.data(), written);
+        builder->appendConstString(numbuf.data(), written);
     }
 
     void displayValue_Float(const TypeInfo* tinfo, const void* valptr, std::ostream& os, std::optional<std::string> indent)

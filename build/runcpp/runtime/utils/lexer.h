@@ -4,6 +4,16 @@
 
 namespace ᐸRuntimeᐳ 
 {
+    char* skipPlusSignOpt(char* ptr)
+    {
+        if(*ptr == '+') {
+            return ptr + 1;
+        }
+        else {
+            return ptr;
+        }
+    }
+    
     enum class BAPITokenType : uint64_t
     {
         Invalid = 0,

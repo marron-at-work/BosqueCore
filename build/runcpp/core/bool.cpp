@@ -1,6 +1,6 @@
 #include "bool.h"
 #include "../runtime/utils/lexer.h"
-#include "../runtime/utils/serializer.h"
+#include "../runtime/utils/builder.h"
 
 namespace ᐸRuntimeᐳ
 {
@@ -27,9 +27,9 @@ namespace ᐸRuntimeᐳ
         return json((bool)(*(XBool*)valptr == XTRUE));
     }
 
-    void bsqToBAPI_Bool(const TypeInfo* tinfo, const void* valptr, BSQSerializer* serializer)
+    void bsqToBAPI_Bool(const TypeInfo* tinfo, const void* valptr, BSQStreamingBuilder* builder)
     {
-        serializer->appendConstString((bool)(*(XBool*)valptr == XTRUE) ? "true" : "false");
+        builder->appendConstString((bool)(*(XBool*)valptr == XTRUE) ? "true" : "false");
     }
 
     void displayValue_Bool(const TypeInfo* tinfo, const void* valptr, std::ostream& os, std::optional<std::string> indent)
