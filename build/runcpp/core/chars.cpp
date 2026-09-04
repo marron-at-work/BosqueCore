@@ -1,4 +1,6 @@
 #include "chars.h"
+
+#include "../runtime/utils/encodings.h"
 #include "../runtime/utils/lexer.h"
 #include "../runtime/utils/builder.h"
 
@@ -7,6 +9,35 @@ namespace ᐸRuntimeᐳ
     size_t writeByteValue(XByte val, std::array<char, 64>& numbuf)
     {
         return std::snprintf(numbuf.data(), numbuf.size(), "0x%x", val.value);
+    }
+
+    size_t writeCCharValue(XCChar val, std::array<char, 64>& numbuf)
+    {
+        if(!isMustEscapeCChar((char)val.value)) {
+            return std::snprintf(numbuf.data(), numbuf.size(), "c'%c'", (char)val.value);            
+        }
+        else {
+            auto ii = std::find_if(s_escape_names_char_simple.begin(), s_escape_names_char_simple.end(), [val](const std::pair<uint8_t, const char*>& p) { 
+                return p.first == (uint8_t)val.value; 
+            });
+            
+            if(ii != s_escape_names_char_simple.end()) {
+                return std::snprintf(numbuf.data(), numbuf.size(), "c'%s'", ii->second);
+            }
+            else {
+                return std::snprintf(numbuf.data(), numbuf.size(), "c'%%x%x;'", (uint8_t)val.value);
+            }
+        }
+    }
+
+    size_t writeUnicodeCharValue(XUnicodeChar val, std::array<char, 64>& numbuf)
+    {
+        if(!isMustEscapeUnicodeChar((char32_t)val.value)) {
+            xxxx;            
+        }
+        else {
+            xxxx;
+        }
     }
 
     ///////////////////////////////
@@ -87,13 +118,12 @@ namespace ᐸRuntimeᐳ
         char output = 0;
         if(size == 4) {
             output = outchars[2]; //just a simple char c'x'
+            bsq_validate(isLegalCChar(output), "Parse -> BSQ", 0, nullptr, "Invalid CChar literal");
         }
         else {
-            bool charok = processCCharFromEncoding(outchars.data() + 2, outchars.data() + size - 3, &output); //skip c' and '
+            bool charok = processEncodedCChar(outchars, size, output); //skip c' and '
             bsq_validate(charok, "Parse -> BSQ", 0, nullptr, "Invalid CChar literal");
         }
-
-        bsq_validate(isLegalCChar(output), "Parse -> BSQ", 0, nullptr, "Invalid CChar literal");
 
         *(XCChar*)resptr = XCChar{output};
         lexer->consume();
@@ -108,12 +138,19 @@ namespace ᐸRuntimeᐳ
     void bsqToBAPI_CChar(const TypeInfo* tinfo, const void* valptr, BSQStreamingBuilder* builder)
     {
         XCChar v = *(XCChar*)valptr;
-        xxxx;
+        
+        std::array<char, 64> numbuf;
+        size_t written = writeCCharValue(v, numbuf);
+
+        builder->appendConstString(numbuf.data(), written);
     
     }
     void displayValue_CChar(const TypeInfo* tinfo, const void* valptr, std::ostream& os, std::optional<std::string> indent)
     {
-        xxxx;
+        std::array<char, 64> numbuf;
+        size_t written = writeCCharValue(*(XCChar*)valptr, numbuf);
+
+        os << getDisplayIndent(indent) << std::string(numbuf.data(), written);
     }
     
     ///////////////////////////////
@@ -139,16 +176,20 @@ namespace ᐸRuntimeᐳ
         size_t size = lexer->extractSmallToken(outchars);
 
         char32_t output = 0;
-        if(xxxx) {
-            output = outchars[2]; //just a simple char c'x'
+        if(isMultibyteEncoding(outchars[2])) {
+            xxxx;
         }
         else {
-            bool charok = processCCharFromEncoding(outchars.data() + 2, outchars.data() + size - 3, &output); //skip c' and '
-            bsq_validate(charok, "Parse -> BSQ", 0, nullptr, "Invalid CChar literal");
+            if(size == 4) {
+                output = outchars[2]; //just a simple char c"x" and x is not multi-byte encoded
+                bsq_validate(isLegalUnicodeChar(output), "Parse -> BSQ", 0, nullptr, "Invalid UnicodeChar literal");
+            }
+            else {
+                bool charok = processCCharFromEncoding(outchars.data() + 2, outchars.data() + size - 3, &output); //skip c' and '
+                bsq_validate(charok, "Parse -> BSQ", 0, nullptr, "Invalid CChar literal");
+            }
         }
-
-        bsq_validate(isLegalUnicodeChar(output), "Parse -> BSQ", 0, nullptr, "Invalid CChar literal");
-
+            
         *(XUnicodeChar*)resptr = XUnicodeChar{output};
         lexer->consume();
     }

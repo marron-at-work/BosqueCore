@@ -73,21 +73,26 @@ namespace ᐸRuntimeᐳ
                 return false;
             }
 
-            auto ii = std::find_if(s_escape_names_char.cbegin(), s_escape_names_char.cend(), [&](const auto& p) { return std::strcmp(p.second, reinterpret_cast<const char*>(inbuff.data())) == 0; });
-        if(ii != s_escape_names_char.cend()) {
-            res = static_cast<char>(ii->first);
-            return isLegalCChar(ii->first);
-        }
+            const char* iichars = reinterpret_cast<const char*>(inbuff.data());
+            auto ii = std::find_if(s_escape_names_char.cbegin(), s_escape_names_char.cend(), [&](const auto& p) { 
+                return p.second.first == bytecount && std::equal(iichars, iichars + bytecount, p.second.second, p.second.second + p.second.first); 
+            });
 
-        if(inbuff[1] == 'x') {
-            uint8_t output = 0;
-            auto [ptr, ec] = std::from_chars(reinterpret_cast<const char*>(inbuff.data()) + 2, reinterpret_cast<const char*>(inbuff.data()) + bytecount - 1, output, 16);
+            if(ii != s_escape_names_char.cend()) {
+                outchar = static_cast<char>(ii->first);
+                return true;
+            }
+            else {
+                if(inbuff[1] != 'x') {
+                    return false;
+                }
 
-            res = static_cast<char>(output);
-            return ec == std::errc() && (ptr == reinterpret_cast<const char*>(inbuff.data()) + bytecount - 1) && isLegalCChar(output);
-        }
+                uint8_t output = 0;
+                auto [ptr, ec] = std::from_chars(iichars + 2, iichars + bytecount - 1, output, 16);
 
-        return false;
+                outchar = static_cast<char>(output);
+                return ec == std::errc() && (ptr == iichars + bytecount - 1) && isLegalCChar(output);
+            }
         }
     }
 }
