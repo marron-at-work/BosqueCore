@@ -4,6 +4,9 @@
 
 #include "bsqtype.h"
 
+#include "encodings.h"
+#include "builder.h"
+
 namespace ᐸRuntimeᐳ 
 {
     class ByteBufferEntry
@@ -287,6 +290,71 @@ namespace ᐸRuntimeᐳ
             assert(this->bytesize > BUFFER_INLINE_SIZE);
 
             return ByteBufferIterator{nullptr, 0, nullptr, 0, this->bytesize, this->bytesize};
+        }
+    };
+
+    class ByteBufferStreamingBuilder : public BSQStreamingBuilder
+    {
+    public:
+        size_t pendingbytes;
+        std::array<uint8_t, ByteBufferEntry::BUFFER_ENTRY_SIZE> pendingdata;
+
+        size_t bytesize;
+        void* heapbytes;
+
+        ByteBufferStreamingBuilder() : pendingbytes(0), pendingdata{}, bytesize(0), heapbytes(nullptr) {}
+
+        void appendByte(uint8_t byte) override
+        {
+            this->pendingdata[this->pendingbytes++] = byte;
+
+            if(this->pendingbytes == ByteBufferEntry::BUFFER_ENTRY_SIZE) {
+                //flush pending data to heapbytes
+                xxxx;
+
+
+                this->pendingbytes = 0;
+            }
+        }
+
+        void appendChar(char c)
+        {
+            this->appendByte(static_cast<uint8_t>(c));
+        }
+
+        void appendChar(char32_t cchar) override
+        {
+            if(isSingleByteEncoding(cchar)) {
+                this->appendByte(static_cast<uint8_t>(cchar));
+            }
+            else {
+                std::array<char, 64> outbuff;
+                size_t bytes = ucharToMultiByteEncoding(cchar, outbuff);
+
+                for(size_t i = 0; i < bytes; i++) {
+                    this->appendByte(static_cast<uint8_t>(outbuff[i]));
+                }
+            }
+        }
+
+        void appendConstString(const char* str, size_t len)
+        {
+            for(size_t i = 0; i < len; i++) {
+                this->appendByte(static_cast<uint8_t>(str[i]));
+            }
+        }
+
+        void appendConstString(const char* str)
+        {
+            while(*str) {
+                this->appendByte(static_cast<uint8_t>(*str));
+                str++;
+            }
+        }
+
+        XByteBuffer finalize()
+        {
+            xxxx;
         }
     };
 }

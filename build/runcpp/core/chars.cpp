@@ -33,10 +33,24 @@ namespace ᐸRuntimeᐳ
     size_t writeUnicodeCharValue(XUnicodeChar val, std::array<char, 64>& numbuf)
     {
         if(!isMustEscapeUnicodeChar((char32_t)val.value)) {
-            xxxx;            
+            if(isSingleByteEncoding((char32_t)val.value)) {
+                return std::snprintf(numbuf.data(), numbuf.size(), "c\"%c\"", (char)val.value);
+            }
+            else {
+                return ucharToMultiByteEncoding((char32_t)val.value, numbuf);
+            }
         }
         else {
-            xxxx;
+            auto ii = std::find_if(s_escape_names_unicode.begin(), s_escape_names_unicode.end(), [val](const std::pair<uint32_t, std::pair<size_t, const char*>>& p) { 
+                return p.first == (uint32_t)val.value; 
+            });
+
+            if(ii != s_escape_names_unicode.end()) {
+                return std::snprintf(numbuf.data(), numbuf.size(), "c\"%s\"", ii->second.second);
+            }
+            else {
+                return std::snprintf(numbuf.data(), numbuf.size(), "c\"%%x%x;\"", (uint32_t)val.value);
+            }
         }
     }
 
@@ -121,7 +135,7 @@ namespace ᐸRuntimeᐳ
             bsq_validate(isLegalCChar(output), "Parse -> BSQ", 0, nullptr, "Invalid CChar literal");
         }
         else {
-            bool charok = processEncodedCChar(outchars, size, output); //skip c' and '
+            bool charok = processEncodedCChar(outchars, size, output);
             bsq_validate(charok, "Parse -> BSQ", 0, nullptr, "Invalid CChar literal");
         }
 
@@ -177,7 +191,14 @@ namespace ᐸRuntimeᐳ
 
         char32_t output = 0;
         if(isMultibyteEncoding(outchars[2])) {
-            xxxx;
+            size_t mbsize = multibyteCharCount(outchars[2]);
+            bsq_validate(mbsize + 3 == size, "Parse -> BSQ", 0, nullptr, "Invalid multibyte sequence for UnicodeChar"); //should be c" + char bytes + "
+
+            std::array<uint8_t, 4> mbseq;
+            std::copy_n(outchars.data() + 2, mbsize, mbseq.data());
+
+            output = multibyteToUChar(mbseq, mbsize);
+            bsq_validate(isLegalUnicodeChar(output), "Parse -> BSQ", 0, nullptr, "Invalid UnicodeChar literal");
         }
         else {
             if(size == 4) {
@@ -185,8 +206,8 @@ namespace ᐸRuntimeᐳ
                 bsq_validate(isLegalUnicodeChar(output), "Parse -> BSQ", 0, nullptr, "Invalid UnicodeChar literal");
             }
             else {
-                bool charok = processCCharFromEncoding(outchars.data() + 2, outchars.data() + size - 3, &output); //skip c' and '
-                bsq_validate(charok, "Parse -> BSQ", 0, nullptr, "Invalid CChar literal");
+                bool charok = processEncodedUnicodeChar(outchars, size, output);
+                bsq_validate(charok, "Parse -> BSQ", 0, nullptr, "Invalid UnicodeChar literal");
             }
         }
             
@@ -203,11 +224,19 @@ namespace ᐸRuntimeᐳ
     void bsqToBAPI_UnicodeChar(const TypeInfo* tinfo, const void* valptr, BSQStreamingBuilder* builder)
     {
         XUnicodeChar v = *(XUnicodeChar*)valptr;
-        xxxx;
+        
+        std::array<char, 64> numbuf;
+        size_t written = writeUnicodeCharValue(v, numbuf);
+
+        builder->appendConstString(numbuf.data(), written);
     }
 
     void displayValue_UnicodeChar(const TypeInfo* tinfo, const void* valptr, std::ostream& os, std::optional<std::string> indent)
     {
-        xxxx;
+        XUnicodeChar v = *(XUnicodeChar*)valptr;
+
+        std::array<char, 64> numbuf;
+        size_t written = writeUnicodeCharValue(v, numbuf);
+        os << std::string(numbuf.data(), written);
     }
 }

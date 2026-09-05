@@ -14,7 +14,11 @@ namespace ᐸRuntimeᐳ
 
     void jsonParseToBSQ_ByteBuffer(const TypeInfo* tinfo, const json& j, void* resptr)
     {
+        ByteBufferStreamingBuilder builder{};
+
         xxxx;
+
+        *((XByteBuffer*)resptr) = builder.finalize();
     }
 
     void parseToBSQ_ByteBuffer(const TypeInfo* tinfo, BAPILexer* lexer, void* resptr)
