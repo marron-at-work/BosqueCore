@@ -40,27 +40,25 @@ namespace ᐸRuntimeᐳ
         Identifier
     };
 
-    template <typename T>
-    concept BAPITokenIterator = std::forward_iterator<T> && std::same_as<std::iter_value_t<T>, std::uint8_t>;
+    class BAPIIteratorAdaptor
+    {
+    public:
+        virtual uint8_t get() const = 0;
+        virtual void advance() = 0;
+    };
 
-    template <BAPITokenIterator Iter>
     class BAPIToken
     {
     public:
         BAPITokenType tokentype;
 
-        Iter begin;
-        Iter end;
+        BAPIIteratorAdaptor* iter; //This is singleton and is re-used across tokens
         size_t size;
 
         void clear()
         {
             this->tokentype = BAPITokenType::Invalid;
-        }
-
-        size_t size() const
-        {
-            return this->size;
+            this->size = 0;
         }
 
         bool matches(const uint8_t* data, size_t len) const
@@ -69,46 +67,80 @@ namespace ᐸRuntimeᐳ
                 return false;
             }
 
-            return std::equal(this->begin, this->end, data, data + len);
+            for(size_t i = 0; i < this->size; ++i) {
+                if(this->iter->get() != data[i]) {
+                    return false;
+                }
+                this->iter->advance();
+            }
+            return true;
         }
 
         uint8_t extract() const
         {
-            return *(this->begin);
+            return this->iter->get();
         }
 
         size_t extract(std::array<uint8_t, 64>& outchars) const
         {
             assert(this->size < 64);
 
-            std::copy(this->begin, this->end, outchars.begin());
+            auto it = this->iter;
+            for(size_t i = 0; i < this->size; ++i) {
+                outchars[i] = it->get();
+                it->advance();
+            }
             outchars[this->size] = 0;
 
             return this->size;
-        }
-
-        void extract(BSQStreamingBuilder* builder) const
-        {
-            for(auto it = this->begin; it != this->end; ++it) {
-                builder->appendByte(*it);
-            }
         }
     };
 
     class BAPILexer
     {
+    private:
+        BAPIToken ctoken; //This is singleton and is re-used across lex calls
+
     public:
         bool allowSloppyStrings;
 
-        virtual BAPITokenType getCurrentTokenType() const = 0;
-        virtual size_t getCurrentTokenDataSize() const = 0;
-        virtual bool testDataMatches(const uint8_t* data, size_t len) const = 0;
-        
-        virtual uint8_t extractSingleCharToken() const = 0;
-        virtual size_t extractSmallToken(std::array<uint8_t, 64>& outchars) const = 0; //also null terminate the output inbuffer
-        virtual bool extractBuilder(BSQStreamingBuilder* builder) const = 0;
+        BAPITokenType getCurrentTokenType() const
+        {
+            return this->ctoken.tokentype;
+        }
 
-        virtual void consume() = 0;
+        size_t getCurrentTokenDataSize() const
+        {
+            return this->ctoken.size;
+        }
+
+        BAPIIteratorAdaptor* getCurrentTokenIterator() const
+        {
+            return this->ctoken.iter;
+        }
+
+        bool testDataMatches(const uint8_t* data, size_t len) const
+        {
+            return this->ctoken.matches(data, len);
+        }
+        
+        uint8_t extractSingleCharToken() const
+        {
+            return this->ctoken.extract();
+        }
+
+        //also null terminate the output inbuffer
+        size_t extractSmallToken(std::array<uint8_t, 64>& outchars) const
+        {
+            return this->ctoken.extract(outchars);
+        }
+        
+        void consume()
+        {
+            this->ctoken.clear(); //make sure we reset the current token before consuming the next one
+
+            xxxx;
+        }
 
         bool testIsNone() const
         {
@@ -166,22 +198,5 @@ namespace ᐸRuntimeᐳ
             auto [ptr, ec] = std::from_chars(skipPlusSignOpt(reinterpret_cast<char*>(outchars.data())), reinterpret_cast<char*>(outchars.data()) + size - 1, outval);
             return ec == std::errc() && ptr == reinterpret_cast<char*>(outchars.data()) + size - 1;
         }
-    };
-
-    template <BAPITokenIterator Iter>
-    class BAPILexerImpl : public BAPILexer
-    {
-    public:
-        BAPITokenType getCurrentTokenType() const override;
-        size_t getCurrentTokenDataSize() const override;
-        bool testDataMatches(const uint8_t* data, size_t len) const override;
-        
-        uint8_t extractSingleCharToken() const override;
-        size_t extractSmallToken(std::array<uint8_t, 64>& outchars) const override;
-        bool extractBuilder(BSQStreamingBuilder* builder) const override;
-
-        void consume() override;
-
-        xxxx;
     };
 }
