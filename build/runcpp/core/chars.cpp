@@ -22,7 +22,7 @@ namespace ᐸRuntimeᐳ
             });
             
             if(ii != s_escape_names_char_simple.end()) {
-                return std::snprintf(numbuf.data(), numbuf.size(), "c'%s'", ii->second);
+                return std::snprintf(numbuf.data(), numbuf.size(), "c'%s'", ii->second.second);
             }
             else {
                 return std::snprintf(numbuf.data(), numbuf.size(), "c'%%x%x;'", (uint8_t)val.value);
@@ -131,8 +131,8 @@ namespace ᐸRuntimeᐳ
 
         char output = 0;
         if(size == 4) {
+            bsq_validate(isLegalCChar(outchars[2]), "Parse -> BSQ", 0, nullptr, "Invalid CChar literal");
             output = outchars[2]; //just a simple char c'x'
-            bsq_validate(isLegalCChar(output), "Parse -> BSQ", 0, nullptr, "Invalid CChar literal");
         }
         else {
             bool charok = processEncodedCChar(outchars, size, output);

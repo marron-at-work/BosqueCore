@@ -984,6 +984,67 @@ namespace ᐸRuntimeᐳ
     };
     static_assert(std::bidirectional_iterator<XStringIterator>);
 
+    class StringStreamingBuilder : public BSQStreamingBuilder
+    {
+    public:
+        size_t pendingchars;
+        std::array<char32_t, StrRootTreeContent::STR_MAX_LEAF_SIZE> pendingdata;
+
+        size_t bytesize;
+        PosRBTree<char32_t, StrRootTreeContent::STR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_POSRB_TREE_STRING> postree;
+
+        bool failedbuild;
+
+        StringStreamingBuilder() : pendingchars(0), pendingdata{}, bytesize(0), postree{}, failedbuild(false) {}
+
+        void appendChar(char32_t cchar) override
+        {
+            if(!isLegalUnicodeChar(cchar)) {
+                this->failedbuild = true;
+                return;
+            }
+
+            this->pendingdata[this->pendingchars++] = cchar;
+
+            if(this->pendingchars == StrRootTreeContent::STR_MAX_LEAF_SIZE) {
+                //flush pending data to postree
+                xxxx;
+
+                this->pendingchars = 0;
+            }
+        }
+
+        void appendChar(char c)
+        {
+            this->appendChar(static_cast<char32_t>(c));
+        }
+
+        void appendByte(uint8_t byte) override
+        {
+            this->appendChar(static_cast<char32_t>(byte));
+        }
+
+        void appendConstString(const char* str, size_t len)
+        {
+            for(size_t i = 0; i < len; i++) {
+                this->appendChar(str[i]);
+            }
+        }
+
+        void appendConstString(const char* str)
+        {
+            while(*str) {
+                this->appendChar(*str);
+                str++;
+            }
+        }
+
+        StringUnion finalize()
+        {
+            xxxx;
+        }
+    };
+
     class XString
     {
     private:

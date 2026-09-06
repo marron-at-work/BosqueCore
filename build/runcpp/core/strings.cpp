@@ -20,6 +20,21 @@ namespace ᐸRuntimeᐳ
     template<> const TypeInfo* PosRBTree<char32_t, StrRootTreeContent::STR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_POSRB_TREE_STRING>::s_nodetypeinfo = &g_typeinfo_PosRBTreeNode_String;
     template<> thread_local GCAllocator<PosRBTreeNode<char32_t, StrRootTreeContent::STR_MAX_LEAF_SIZE>>* PosRBTree<char32_t, StrRootTreeContent::STR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_POSRB_TREE_STRING>::s_nodeallocator = &PosRBTreeNode_String_allocator;
 
+
+    size_t writeMustEscapeCCharValue(char value, std::array<char, 64>& numbuf)
+    {
+        auto ii = std::find_if(s_escape_names_char_simple.begin(), s_escape_names_char_simple.end(), [value](const std::pair<uint8_t, const char*>& p) { 
+            return p.first == (uint8_t)value; 
+        });
+            
+        if(ii != s_escape_names_char_simple.end()) {
+            return (size_t)std::snprintf(numbuf.data(), numbuf.size(), "%s", ii->second.second);
+        }
+        else {
+            return (size_t)std::snprintf(numbuf.data(), numbuf.size(), "%%x%x", (uint8_t)value);
+        }
+    }
+
     ///////////////////////////////
     //CString
     ///////////////////////////////
@@ -59,8 +74,37 @@ namespace ᐸRuntimeᐳ
 
             CStringStreamingBuilder builder{};
             while(cpos < tlen - 1) { //ignore the closing '
+                uint8_t cbyte = ii->get();
                 
-                xxxx;
+                char output = 0;
+                if(cbyte != '%') {
+                    bsq_validate(isLegalCChar(cbyte), "Parse -> BSQ", 0, nullptr, "Invalid CChar literal");
+
+                    output = cbyte; //just a simple char
+                    cpos++;
+                    ++ii;
+                }
+                else {
+                    std::array<uint8_t, 64> inbuff{}; 
+                    size_t bytecount = 0;
+
+                    while(bytecount < 64 && cpos < tlen - 1) {
+                        uint8_t bb = ii->get();
+                        inbuff[bytecount++] = bb;
+                        cpos++;
+                        ++ii;
+
+                        if(bb == ';') {
+                            break;
+                        }
+                    }
+                    bsq_validate(inbuff[bytecount - 1] == ';', "Parse -> BSQ", 0, nullptr, "Encoded CChar literal missing terminating ';'");
+
+                    bool charok = processEncodedCChar(inbuff, bytecount, output);
+                    bsq_validate(charok, "Parse -> BSQ", 0, nullptr, "Invalid CChar literal");
+                }
+
+                builder.appendChar(output);
             }
 
             bsq_validate(!builder.failedbuild, "JSON -> BSQ", 0, nullptr, "Failed to build CString from JSON");
@@ -72,18 +116,48 @@ namespace ᐸRuntimeᐳ
 
     json bsqToJSON_CString(const TypeInfo* tinfo, const void* valptr)
     {
-        xxxx;
-        json jval = "";
+        XCString v = *(XCString*)valptr;
+
+        json j = std::string(v.begin(), v.end());
+        return j;
     }
 
     void bsqToBAPI_CString(const TypeInfo* tinfo, const void* valptr, BSQStreamingBuilder* builder)
     {
-        xxxx;
+        XCString v = *(XCString*)valptr;
+        std::array<char, 64> numbuf{};
+
+        builder->appendChar('\'');
+        for(auto iter = v.begin(); iter != v.end(); ++iter) {
+            char c = *iter;
+            if(!isMustEscapeCChar(c)) {
+                builder->appendChar(c);
+            }
+            else {
+                size_t written = writeMustEscapeCCharValue(c, numbuf);
+                builder->appendConstString(numbuf.data(), written);
+            }
+        }
+        builder->appendChar('\'');
     }
 
     void displayValue_CString(const TypeInfo* tinfo, const void* valptr, std::ostream& os, std::optional<std::string> indent)
     {
-        xxxx;
+        XCString v = *(XCString*)valptr;
+        std::array<char, 64> numbuf{};
+
+        os << getDisplayIndent(indent) << '\'';
+        for(auto iter = v.begin(); iter != v.end(); ++iter) {
+            char c = *iter;
+            if(!isMustEscapeCChar(c)) {
+                os << c;
+            }
+            else {
+                size_t written = writeMustEscapeCCharValue(c, numbuf);
+                os << std::string(numbuf.data(), written);
+            }
+        }
+        os << '\'';
     }
 
     ///////////////////////////////
@@ -92,7 +166,19 @@ namespace ᐸRuntimeᐳ
 
     void jsonParseToBSQ_String(const TypeInfo* tinfo, const json& j, void* resptr)
     {
-        xxxx;
+        bsq_validate(j.is_string(), "JSON -> BSQ", 0, nullptr, "Expected JSON string for String");
+
+        std::string sstr = j.get<std::string>();
+        size_t jlen = sstr.size();
+        CStringStreamingBuilder builder{};
+        for(size_t i = 0; i < jlen; ++i)
+        {
+            builder.appendChar(sstr[i]);
+        }
+
+        bsq_validate(!builder.failedbuild, "JSON -> BSQ", 0, nullptr, "Failed to build String from JSON");
+
+        *((XCString*)resptr) = XCString{builder.finalize()};
     }
 
     void parseToBSQ_String(const TypeInfo* tinfo, BAPILexer* lexer, void* resptr)
