@@ -56,7 +56,7 @@ namespace ᐸRuntimeᐳ
         0,
         nullptr,
         0,
-        TypeOpDispatchInfo{ (ValidatingConstructorFp)nullptr, (JSONParseToBSQFp)nullptr, (ParseToBSQFp)nullptr, (BSQToJSONFp)nullptr, (BSQToBAPIFp)nullptr, (DisplayValueFp)nullptr },
+        TypeOpDispatchInfo{},
         "ByteBufferEntry",
         true
     };
@@ -73,7 +73,7 @@ namespace ᐸRuntimeᐳ
         0,
         nullptr,
         0,
-        TypeOpDispatchInfo{ (ValidatingConstructorFp)nullptr, (JSONParseToBSQFp)nullptr, (ParseToBSQFp)nullptr, (BSQToJSONFp)nullptr, (BSQToBAPIFp)nullptr, (DisplayValueFp)nullptr },
+        TypeOpDispatchInfo{},
         "ByteBufferBlock",
         false
     };

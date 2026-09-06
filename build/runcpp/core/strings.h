@@ -8,6 +8,9 @@
 #include "chars.h"
 #include "bytebuff.h"
 
+#include "encodings.h"
+#include "builder.h"
+
 namespace ᐸRuntimeᐳ
 {
     class CStrRootInlineContent
@@ -210,7 +213,7 @@ namespace ᐸRuntimeᐳ
         0,
         nullptr,
         0,
-        TypeOpDispatchInfo{ (ValidatingConstructorFp)nullptr, (JSONParseToBSQFp)nullptr, (ParseToBSQFp)nullptr, (BSQToJSONFp)nullptr, (BSQToBAPIFp)nullptr, (DisplayValueFp)nullptr },
+        TypeOpDispatchInfo{},
         "CStringInline",
         false
     };
@@ -227,7 +230,7 @@ namespace ᐸRuntimeᐳ
         0,
         nullptr,
         0,
-        TypeOpDispatchInfo{ (ValidatingConstructorFp)nullptr, (JSONParseToBSQFp)nullptr, (ParseToBSQFp)nullptr, (BSQToJSONFp)nullptr, (BSQToBAPIFp)nullptr, (DisplayValueFp)nullptr },
+        TypeOpDispatchInfo{},
         "CStringTree",
         false
     };
@@ -319,6 +322,78 @@ namespace ᐸRuntimeᐳ
     };
     static_assert(std::bidirectional_iterator<XCStringIterator>);
 
+    class CStringStreamingBuilder : public BSQStreamingBuilder
+    {
+    public:
+        size_t pendingchars;
+        std::array<char, CStrRootTreeContent::CSTR_MAX_LEAF_SIZE> pendingdata;
+
+        size_t bytesize;
+        PosRBTree<char, CStrRootTreeContent::CSTR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_POSRB_TREE_CSTRING> postree;
+
+        bool failedbuild;
+
+        CStringStreamingBuilder() : pendingchars(0), pendingdata{}, bytesize(0), postree{}, failedbuild(false) {}
+
+        void appendChar(char c)
+        {
+            if(!isLegalCChar(static_cast<uint8_t>(c))) {
+                this->failedbuild = true;
+                return;
+            }
+
+            this->pendingdata[this->pendingchars++] = c;
+
+            if(this->pendingchars == CStrRootTreeContent::CSTR_MAX_LEAF_SIZE) {
+                //flush pending data to postree
+                xxxx;
+                
+
+                this->pendingchars = 0;
+            }
+        }
+
+        void appendByte(uint8_t byte) override
+        {
+            if(!isLegalCChar(static_cast<uint8_t>(byte))) {
+                this->failedbuild = true;
+                return;
+            }
+
+            this->appendChar(static_cast<char>(byte));
+        }
+
+        void appendChar(char32_t cchar) override
+        {
+            if(!isSingleByteEncoding(cchar)) {
+                this->failedbuild = true;
+                return;
+            }
+
+            this->appendByte(static_cast<uint8_t>(cchar));
+        }
+
+        void appendConstString(const char* str, size_t len)
+        {
+            for(size_t i = 0; i < len; i++) {
+                this->appendChar(str[i]);
+            }
+        }
+
+        void appendConstString(const char* str)
+        {
+            while(*str) {
+                this->appendChar(*str);
+                str++;
+            }
+        }
+
+        CStringUnion finalize()
+        {
+            xxxx;
+        }
+    };
+
     class XCString
     {
     private:
@@ -326,6 +401,8 @@ namespace ᐸRuntimeᐳ
 
     public:
         XCString() : ucstr{} { ; }
+        XCString(const CStringUnion& c) : ucstr{c} { ; } //just for builder to use
+
         XCString(const CStrRootInlineContent& b) : ucstr{CStringUnion{b}} { ; }
         XCString(const CStrRootTreeContent& n) : ucstr{CStringUnion{n}} { ; }
         XCString(const XCString& other) = default;
@@ -804,7 +881,7 @@ namespace ᐸRuntimeᐳ
         0,
         nullptr,
         0,
-        TypeOpDispatchInfo{ (ValidatingConstructorFp)nullptr, (JSONParseToBSQFp)nullptr, (ParseToBSQFp)nullptr, (BSQToJSONFp)nullptr, (BSQToBAPIFp)nullptr, (DisplayValueFp)nullptr },
+        TypeOpDispatchInfo{},
         "StringInline",
         false
     };
@@ -821,7 +898,7 @@ namespace ᐸRuntimeᐳ
         0,
         nullptr,
         0,
-        TypeOpDispatchInfo{ (ValidatingConstructorFp)nullptr, (JSONParseToBSQFp)nullptr, (ParseToBSQFp)nullptr, (BSQToJSONFp)nullptr, (BSQToBAPIFp)nullptr, (DisplayValueFp)nullptr },
+        TypeOpDispatchInfo{},
         "StringTree",
         false
     };

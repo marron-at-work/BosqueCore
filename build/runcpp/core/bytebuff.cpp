@@ -86,16 +86,65 @@ namespace ᐸRuntimeᐳ
 
     json bsqToJSON_ByteBuffer(const TypeInfo* tinfo, const void* valptr)
     {
-        xxxx;
+        const XByteBuffer* buffer = (const XByteBuffer*)valptr;
+        
+        json result = json::array();
+        if(buffer->isInline()) {
+            const uint8_t* inlinedata = buffer->inlinedata();
+            for(size_t i = 0; i < buffer->bytes(); ++i) {
+                result.push_back(inlinedata[i]);
+            }
+        }
+        else {
+            for(auto ii = buffer->begin(); ii != buffer->end(); ++ii) {
+                result.push_back(*ii);
+            }
+        }
+
+        return result;
     }
 
     void bsqToBAPI_ByteBuffer(const TypeInfo* tinfo, const void* valptr, BSQStreamingBuilder* builder)
     {
-        xxxx;
+        const XByteBuffer* buffer = (const XByteBuffer*)valptr;
+        std::array<char, 64> numbuf;
+
+        builder->appendConstString("0x[");
+        if(buffer->isInline()) {
+            const uint8_t* inlinedata = buffer->inlinedata();
+            for(size_t i = 0; i < buffer->bytes(); ++i) {
+                size_t written = std::snprintf(numbuf.data(), numbuf.size(), "0x%x", inlinedata[i]);
+                builder->appendConstString(numbuf.data(), written);
+            }
+        }
+        else {
+            for(auto ii = buffer->begin(); ii != buffer->end(); ++ii) {
+                size_t written = std::snprintf(numbuf.data(), numbuf.size(), "0x%x", *ii);
+                builder->appendConstString(numbuf.data(), written);
+            }
+        }
+        builder->appendChar(']');
     }
 
     void displayValue_ByteBuffer(const TypeInfo* tinfo, const void* valptr, std::ostream& os, std::optional<std::string> indent)
     {
-        xxxx;
+        const XByteBuffer* buffer = (const XByteBuffer*)valptr;
+        std::array<char, 64> numbuf;
+
+        os << getDisplayIndent(indent) << "0x[";
+        if(buffer->isInline()) {
+            const uint8_t* inlinedata = buffer->inlinedata();
+            for(size_t i = 0; i < buffer->bytes(); ++i) {
+                size_t written = std::snprintf(numbuf.data(), numbuf.size(), "0x%x", inlinedata[i]);
+                os << numbuf.data();
+            }
+        }
+        else {
+            for(auto ii = buffer->begin(); ii != buffer->end(); ++ii) {
+                size_t written = std::snprintf(numbuf.data(), numbuf.size(), "0x%x", *ii);
+                os << numbuf.data();
+            }
+        }
+        os << "]";
     }
 }

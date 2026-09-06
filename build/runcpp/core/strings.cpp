@@ -26,17 +26,54 @@ namespace ᐸRuntimeᐳ
 
     void jsonParseToBSQ_CString(const TypeInfo* tinfo, const json& j, void* resptr)
     {
-        xxxx;
+        bsq_validate(j.is_string(), "JSON -> BSQ", 0, nullptr, "Expected JSON string for CString");
+
+        std::string sstr = j.get<std::string>();
+        size_t jlen = sstr.size();
+        CStringStreamingBuilder builder{};
+        for(size_t i = 0; i < jlen; ++i)
+        {
+            builder.appendChar(sstr[i]);
+        }
+
+        bsq_validate(!builder.failedbuild, "JSON -> BSQ", 0, nullptr, "Failed to build CString from JSON");
+
+        *((XCString*)resptr) = XCString{builder.finalize()};
     }
 
     void parseToBSQ_CString(const TypeInfo* tinfo, BAPILexer* lexer, void* resptr)
     {
-        xxxx;
+        if(lexer->getCurrentTokenType() != BAPITokenType::LiteralCString) {
+            bsq_validate(lexer->allowSloppyStrings && lexer->getCurrentTokenType() == BAPITokenType::LiteralString, "Parse -> BSQ", 0, nullptr, "Expected a CString or String token");
+        }
+     
+        size_t tlen = lexer->getCurrentTokenDataSize();
+        if(tlen == 4) {
+            *((XCString*)resptr) = XCString{};
+        }
+        else {
+            //eat opening '
+            size_t cpos = 1; 
+            BAPIIteratorAdaptor* ii = lexer->getCurrentTokenIterator();
+            ii->advance();
+
+            CStringStreamingBuilder builder{};
+            while(cpos < tlen - 1) { //ignore the closing '
+                
+                xxxx;
+            }
+
+            bsq_validate(!builder.failedbuild, "JSON -> BSQ", 0, nullptr, "Failed to build CString from JSON");
+            *((XCString*)resptr) = XCString{builder.finalize()}; 
+        }
+
+        lexer->consume();
     }
 
     json bsqToJSON_CString(const TypeInfo* tinfo, const void* valptr)
     {
         xxxx;
+        json jval = "";
     }
 
     void bsqToBAPI_CString(const TypeInfo* tinfo, const void* valptr, BSQStreamingBuilder* builder)
