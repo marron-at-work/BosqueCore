@@ -30,11 +30,11 @@ namespace ᐸRuntimeᐳ
         }
     }
 
-    size_t writeUnicodeCharValue(XUnicodeChar val, std::array<char, 64>& numbuf)
+    size_t writeUnicodeCharValue(XUnicodeChar val, std::array<uint8_t, 64>& numbuf)
     {
         if(!isMustEscapeUnicodeChar((char32_t)val.value)) {
             if(isSingleByteEncoding((char32_t)val.value)) {
-                return std::snprintf(numbuf.data(), numbuf.size(), "c\"%c\"", (char)val.value);
+                return std::snprintf((char*)numbuf.data(), numbuf.size(), "c\"%c\"", (char)val.value);
             }
             else {
                 return ucharToMultiByteEncoding((char32_t)val.value, numbuf);
@@ -46,10 +46,10 @@ namespace ᐸRuntimeᐳ
             });
 
             if(ii != s_escape_names_unicode.end()) {
-                return std::snprintf(numbuf.data(), numbuf.size(), "c\"%s\"", ii->second.second);
+                return std::snprintf((char*)numbuf.data(), numbuf.size(), "c\"%s\"", ii->second.second);
             }
             else {
-                return std::snprintf(numbuf.data(), numbuf.size(), "c\"%%x%x;\"", (uint32_t)val.value);
+                return std::snprintf((char*)numbuf.data(), numbuf.size(), "c\"%%x%x;\"", (uint32_t)val.value);
             }
         }
     }
@@ -225,18 +225,18 @@ namespace ᐸRuntimeᐳ
     {
         XUnicodeChar v = *(XUnicodeChar*)valptr;
         
-        std::array<char, 64> numbuf;
+        std::array<uint8_t, 64> numbuf;
         size_t written = writeUnicodeCharValue(v, numbuf);
 
-        builder->appendConstString(numbuf.data(), written);
+        builder->appendConstString((const char*)numbuf.data(), written);
     }
 
     void displayValue_UnicodeChar(const TypeInfo* tinfo, const void* valptr, std::ostream& os, std::optional<std::string> indent)
     {
         XUnicodeChar v = *(XUnicodeChar*)valptr;
 
-        std::array<char, 64> numbuf;
+        std::array<uint8_t, 64> numbuf;
         size_t written = writeUnicodeCharValue(v, numbuf);
-        os << std::string(numbuf.data(), written);
+        os << std::string((const char*)numbuf.data(), written);
     }
 }

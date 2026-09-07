@@ -355,22 +355,12 @@ namespace ᐸRuntimeᐳ
 
         void appendByte(uint8_t byte) override
         {
-            if(!isLegalCChar(static_cast<uint8_t>(byte))) {
-                this->failedbuild = true;
-                return;
-            }
-
-            this->appendChar(static_cast<char>(byte));
+            assert(false); //This is not supported for streaming cstring builders
         }
 
         void appendChar(char32_t cchar) override
         {
-            if(!isSingleByteEncoding(cchar)) {
-                this->failedbuild = true;
-                return;
-            }
-
-            this->appendByte(static_cast<uint8_t>(cchar));
+            assert(false); //This is not supported for streaming cstring builders
         }
 
         void appendConstString(const char* str, size_t len)
@@ -1021,7 +1011,7 @@ namespace ᐸRuntimeᐳ
 
         void appendByte(uint8_t byte) override
         {
-            this->appendChar(static_cast<char32_t>(byte));
+            assert(false); //This is not supported for streaming string builders
         }
 
         void appendConstString(const char* str, size_t len)
@@ -1052,6 +1042,8 @@ namespace ᐸRuntimeᐳ
 
     public:
         XString() : ustr{} { ; }
+        XString(const StringUnion& s) : ustr{s} { ; } //just for builder to use
+        
         XString(const StrRootInlineContent& b) : ustr{b} { ; }
         XString(const StrRootTreeContent& n) : ustr{n} { ; }
         XString(const XString& other) = default;
@@ -1324,7 +1316,4 @@ namespace ᐸRuntimeᐳ
     public:
         size_t regexid;
     };
-
-    std::string fromXCString(const ᐸRuntimeᐳ::XCString& xs);
-    std::string fromXString(const ᐸRuntimeᐳ::XString& xs);
 }

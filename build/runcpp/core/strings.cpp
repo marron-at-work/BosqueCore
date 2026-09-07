@@ -170,34 +170,164 @@ namespace ᐸRuntimeᐳ
 
         std::string sstr = j.get<std::string>();
         size_t jlen = sstr.size();
-        CStringStreamingBuilder builder{};
+        StringStreamingBuilder builder{};
         for(size_t i = 0; i < jlen; ++i)
         {
-            builder.appendChar(sstr[i]);
+            if(isSingleByteEncoding(static_cast<uint8_t>(sstr[i]))) {
+                builder.appendChar(sstr[i]);
+            }
+            else {
+                size_t mbsize = multibyteCharCount(static_cast<uint8_t>(sstr[i]));
+                bsq_validate(i + mbsize <= jlen, "JSON -> BSQ", 0, nullptr, "Invalid multibyte sequence in JSON string");
+
+                std::array<uint8_t, 4> mbseq{};
+                for(size_t j = 0; j < mbsize; j++) {
+                    mbseq[j] = static_cast<uint8_t>(sstr[i + j]);
+                }
+
+                char32_t cchar = multibyteToUChar(mbseq, mbsize);
+                builder.appendChar(cchar);
+                i += mbsize - 1;
+            }
         }
 
         bsq_validate(!builder.failedbuild, "JSON -> BSQ", 0, nullptr, "Failed to build String from JSON");
 
-        *((XCString*)resptr) = XCString{builder.finalize()};
+        *((XString*)resptr) = XString{builder.finalize()};
     }
 
     void parseToBSQ_String(const TypeInfo* tinfo, BAPILexer* lexer, void* resptr)
     {
-        xxxx;
-    }
+        if(lexer->getCurrentTokenType() != BAPITokenType::LiteralString) {
+            bsq_validate(lexer->allowSloppyStrings && lexer->getCurrentTokenType() == BAPITokenType::LiteralCString, "Parse -> BSQ", 0, nullptr, "Expected a CString or String token");
+        }
+     
+        size_t tlen = lexer->getCurrentTokenDataSize();
+        if(tlen == 4) {
+            *((XString*)resptr) = XString{};
+        }
+        else {
+            //eat opening "
+            size_t cpos = 1; 
+            BAPIIteratorAdaptor* ii = lexer->getCurrentTokenIterator();
+            ii->advance();
+
+            StringStreamingBuilder builder{};
+            while(cpos < tlen - 1) { //ignore the closing "
+                uint8_t cbyte = ii->get();
+                
+                char32_t output = 0;
+                if(cbyte != '%') {
+                    if(isSingleByteEncoding(cbyte)) {
+                        output = static_cast<char32_t>(cbyte);
+                        cpos++;
+                        ii->advance();
+                    }
+                    else {
+                        size_t mbsize = multibyteCharCount(cbyte);
+                        bsq_validate(cpos + mbsize <= tlen, "JSON -> BSQ", 0, nullptr, "Invalid multibyte sequence in JSON string");
+
+                        std::array<uint8_t, 4> mbseq{};
+                        for(size_t j = 0; j < mbsize; j++) {
+                            mbseq[j] = ii->get();
+                            cpos++;
+                            ii->advance();
+                        }
+
+                        output = multibyteToUChar(mbseq, mbsize);
+                    }
+                }
+                else {
+                    std::array<uint8_t, 64> inbuff{}; 
+                    size_t bytecount = 0;
+
+                    while(bytecount < 64 && cpos < tlen - 1) {
+                        uint8_t bb = ii->get();
+                        inbuff[bytecount++] = bb;
+                        cpos++;
+                        ii->advance();
+
+                        if(bb == ';') {
+                            break;
+                        }
+                    }
+                    bsq_validate(inbuff[bytecount - 1] == ';', "Parse -> BSQ", 0, nullptr, "Encoded UnicodeChar literal missing terminating ';'");
+
+                    bool charok = processEncodedUnicodeChar(inbuff, bytecount, output);
+                    bsq_validate(charok, "Parse -> BSQ", 0, nullptr, "Invalid UnicodeChar literal");
+                }
+
+                builder.appendChar(output);
+            }
+
+            bsq_validate(!builder.failedbuild, "JSON -> BSQ", 0, nullptr, "Failed to build String from JSON");
+            *((XString*)resptr) = XString{builder.finalize()}; 
+        }
+
+        lexer->consume();
+    }        
 
     json bsqToJSON_String(const TypeInfo* tinfo, const void* valptr)
     {
-        xxxx;
+        std::string jstr;
+        jstr.reserve(((XString*)valptr)->size());
+
+        for(XStringIterator it = ((XString*)valptr)->begin(); it != ((XString*)valptr)->end(); ++it) {
+            char32_t cchar = *it;
+            if(isSingleByteEncoding(cchar)) {
+                jstr.push_back(static_cast<char>(cchar));
+            }
+            else {
+                std::array<uint8_t, 64> outbuff;
+                size_t bytes = ucharToMultiByteEncoding(cchar, outbuff);
+
+                for(size_t i = 0; i < bytes; i++) {
+                    jstr.push_back((char)outbuff[i]);
+                }
+            }
+        }
+
+        json j = std::string(jstr.begin(), jstr.end());
+        return j;
     }
+
     void bsqToBAPI_String(const TypeInfo* tinfo, const void* valptr, BSQStreamingBuilder* builder)
     {
-        xxxx;
+        for(XStringIterator it = ((XString*)valptr)->begin(); it != ((XString*)valptr)->end(); ++it) {
+            char32_t cchar = *it;
+
+            if(isSingleByteEncoding(cchar)) {
+                builder->appendByte(static_cast<uint8_t>(cchar));
+            }
+            else {
+                std::array<uint8_t, 64> outbuff;
+                size_t bytes = ucharToMultiByteEncoding(cchar, outbuff);
+
+                for(size_t i = 0; i < bytes; i++) {
+                    builder->appendByte(outbuff[i]);
+                }
+            }
+        }
     }
 
     void displayValue_String(const TypeInfo* tinfo, const void* valptr, std::ostream& os, std::optional<std::string> indent)
     {
-        xxxx;
+        os << getDisplayIndent(indent) << "\"";
+        for(XStringIterator it = ((XString*)valptr)->begin(); it != ((XString*)valptr)->end(); ++it) {
+            char32_t cchar = *it;
+            if(isSingleByteEncoding(cchar)) {
+                os << static_cast<char>(cchar);
+            }
+            else {
+                std::array<uint8_t, 64> outbuff;
+                size_t bytes = ucharToMultiByteEncoding(cchar, outbuff);
+
+                for(size_t i = 0; i < bytes; i++) {
+                    os << (char)outbuff[i];
+                }
+            }
+        }
+        os << "\"";
     }
 
     ///////////////////////////////////////////
@@ -344,12 +474,14 @@ namespace ᐸRuntimeᐳ
             return XByteBuffer{};
         }
         else {
-            //TODO: this is not the best in terms of memory/compute but is simple for now
-            std::vector<uint8_t> buffer{};
-            buffer.reserve(cstr.size());
-            std::transform(cstr.begin(), cstr.end(), std::back_inserter(buffer), [](uint8_t b) { return static_cast<uint8_t>(b); });
+            ByteBufferStreamingBuilder builder{};
+            std::array<char, 64> numbuf{};
 
-            return XByteBuffer::mk(buffer.data(), buffer.data() + buffer.size(), buffer.size());
+            for(auto iter = cstr.begin(); iter != cstr.end(); ++iter) {
+                builder.appendByte((uint8_t)(*iter));
+            }
+
+            return builder.finalize();
         }
     }
 
@@ -360,36 +492,22 @@ namespace ᐸRuntimeᐳ
             return XTRUE;
         }
         else {
-            //TODO: this is not the best in terms of memory/compute but is simple for now
-            
+            CStringStreamingBuilder builder{};
             if(buffer.isInline()) {
-                bool allok = std::all_of(buffer.inlinedata(), buffer.inlinedata() + buffer.bytes(), [](uint8_t b) { return isLegalCChar(b); });
-                if(!allok) {
-                    return XFALSE;
-                }
-                else {
-                    std::vector<char> cbb{};
-                    cbb.reserve(buffer.bytes());
-                    std::transform(buffer.inlinedata(), buffer.inlinedata() + buffer.bytes(), std::back_inserter(cbb), [](uint8_t b) { return static_cast<char>(b); });
-                    
-                    result = XCString::mk(cbb.begin(), cbb.end(),  cbb.size());
-                    return XTRUE;
+                const uint8_t* inlinebytes = buffer.inlinedata();
+
+                for(auto ii = inlinebytes; ii != inlinebytes + buffer.bytes(); ++ii) {
+                    builder.appendChar((char)*ii);
                 }
             }
             else {
-                bool allok = std::all_of(buffer.begin(), buffer.end(), [](uint8_t b) { return isLegalCChar(b); });
-                if(!allok) {
-                    return XFALSE;
-                }
-                else {
-                    std::vector<char> cbb{};
-                    cbb.reserve(buffer.bytes());
-                    std::transform(buffer.begin(), buffer.end(), std::back_inserter(cbb), [](uint8_t b) { return static_cast<char>(b); });
-                    
-                    result = XCString::mk(cbb.begin(), cbb.end(),  cbb.size());
-                    return XTRUE;
+                for(auto ii = buffer.begin(); ii != buffer.end(); ++ii) {
+                    builder.appendChar((char)*ii);
                 }
             }
+
+            result = XCString{builder.finalize()};
+            return XBool{!builder.failedbuild};
         }
     }
 
@@ -622,12 +740,12 @@ namespace ᐸRuntimeᐳ
             return XString{};
         }
         else {
-            //TODO: this is not the best in terms of memory/compute but is simple for now
-            std::vector<char32_t> buffer{};
-            buffer.reserve(cstr.size());
-            std::transform(cstr.begin(), cstr.end(), std::back_inserter(buffer), [](char c) { return static_cast<char32_t>(c); });
+            StringStreamingBuilder builder{};
+            for(auto ii = cstr.begin(); ii != cstr.end(); ++ii) {
+                builder.appendChar(*ii);
+            }
 
-            return XString::mk(buffer.begin(), buffer.end(), buffer.size());
+            return builder.finalize();
         }
     }
 
@@ -638,20 +756,19 @@ namespace ᐸRuntimeᐳ
             return XTRUE;
         }
         else {
-            //TODO: this is not the best in terms of memory/compute but is simple for now
-            bool allok = std::all_of(str.begin(), str.end(), [](char32_t c) { return c <= 0x7F && isLegalCChar(static_cast<uint8_t>(c)); });
-            
-            if(!allok) {
-                return XFALSE;
+            CStringStreamingBuilder builder{};
+            for(auto ii = str.begin(); ii != str.end(); ++ii) {
+                char32_t cc = *ii;
+
+                if(cc > 127 || !isLegalCChar((uint8_t)cc)) {
+                    return XFALSE;
+                }
+
+                builder.appendChar((char)cc);
             }
-            else {
-                std::vector<char> cbb{};
-                cbb.reserve(str.size());
-                std::transform(str.begin(), str.end(), std::back_inserter(cbb), [](char32_t c) { return static_cast<char>(c); });
-                    
-                cstr = XCString::mk(cbb.begin(), cbb.end(),  cbb.size());
-                return XTRUE;
-            }
+
+            cstr = builder.finalize();
+            return XTRUE;
         }
     }
 
@@ -661,23 +778,23 @@ namespace ᐸRuntimeᐳ
             return XByteBuffer{};
         }
         else {
-            //TODO: this is not the best in terms of memory/compute but is simple for now
-            std::vector<uint8_t> buffer{};
-            buffer.reserve(str.size());
-
-            std::array<uint8_t, 4> outbuff{};
+            ByteBufferStreamingBuilder builder{};
             for(auto ii = str.begin(); ii != str.end(); ++ii) {
                 char32_t cc = *ii;
-                if(cc <= 0x7F) {
-                    buffer.push_back(static_cast<uint8_t>(cc));
+                if(isSingleByteEncoding(cc)) {
+                    builder.appendByte((uint8_t)cc);
                 }
                 else {
-                    size_t count = ucharToMultiByteEncoding(cc, outbuff);
-                    buffer.insert(buffer.end(), outbuff.begin(), outbuff.begin() + count);
+                    std::array<uint8_t, 64> outbuff;
+                    size_t bytes = ucharToMultiByteEncoding(cc, outbuff);
+
+                    for(size_t i = 0; i < bytes; i++) {
+                        builder.appendByte(outbuff[i]);
+                    }
                 }
             }
 
-            return XByteBuffer::mk(buffer.data(), buffer.data() + buffer.size(), buffer.size());
+            return builder.finalize();
         }
     }
 
@@ -688,77 +805,67 @@ namespace ᐸRuntimeᐳ
             return XTRUE;
         }
         else {
-            //TODO: this is not the best in terms of memory/compute but is simple for now
-            std::vector<char32_t> cbb{};
-            cbb.reserve(buffer.bytes());
-
+            StringStreamingBuilder builder{};
             if(buffer.isInline()) {
-                size_t ii = 0;
-                const uint8_t* inlinedata = buffer.inlinedata();
-                while(ii < buffer.bytes()) {
-                    uint8_t cc = inlinedata[ii];
+                const uint8_t* inlinebytes = buffer.inlinedata();
+                const uint8_t* cpos = inlinebytes;
 
-                    if(!isMultibyteEncoding(cc)) {
-                        cbb.push_back(static_cast<char32_t>(cc));
-                        ii++;
+                while(cpos != inlinebytes + buffer.bytes()) {
+                    uint8_t cbyte = *cpos;
+
+                    if(isSingleByteEncoding(cbyte)) {
+                        builder.appendChar((char)cbyte);
+                        ++cpos;
                     }
                     else {
-                        size_t mbcc = multibyteCharCount(cc);
-                        if(mbcc == 0 || buffer.bytes() < ii + mbcc)
-                        {
-                            return XFALSE;
+                        size_t mbsize = multibyteCharCount(cbyte);
+                        std::array<uint8_t, 4> mbseq{};
+                        
+                        for(size_t j = 0; j < mbsize; j++) {
+                            if(cpos == inlinebytes + buffer.bytes()) {
+                                return XFALSE;
+                            }
+
+                            mbseq[j] = *cpos;
+                            ++cpos;
                         }
 
-                        std::array<uint8_t, 4> inbuff{};
-                        std::copy(inlinedata + ii, inlinedata + ii + mbcc, inbuff.begin());
-
-                        char32_t cc = multibyteToUChar(inbuff, mbcc);
-                        if(!isLegalUnicodeChar(cc)) {
-                            return XFALSE;
-                        }
-
-                        cbb.push_back(cc);
-                        ii += mbcc;
+                        char32_t output = multibyteToUChar(mbseq, mbsize);
+                        builder.appendChar(output);
                     }
                 }
-                    
-                result = XString::mk(cbb.begin(), cbb.end(),  cbb.size());
-                return XTRUE;
             }
             else {
-                auto ii = buffer.begin();
-                while(ii != buffer.end()) {
-                    uint8_t cc = *ii;
+                auto cpos = buffer.begin();
 
-                    if(!isMultibyteEncoding(cc)) {
-                        cbb.push_back(static_cast<char32_t>(cc));
-                        ii++;
+                while(cpos != buffer.end()) {
+                    uint8_t cbyte = *cpos;
+
+                    if(isSingleByteEncoding(cbyte)) {
+                        builder.appendChar((char)cbyte);
+                        ++cpos;
                     }
                     else {
-                        size_t mbcc = multibyteCharCount(cc);
-                        if(mbcc == 0 || ii.totalbytes < ii.gindex + mbcc) {
-                            return XFALSE;
+                        size_t mbsize = multibyteCharCount(cbyte);
+                        std::array<uint8_t, 4> mbseq{};
+                        
+                        for(size_t j = 0; j < mbsize; j++) {
+                            if(cpos == buffer.end()) {
+                                return XFALSE;
+                            }
+
+                            mbseq[j] = *cpos;
+                            ++cpos;
                         }
 
-                        std::array<uint8_t, 4> inbuff{};
-                        for(size_t j = 0; j < mbcc; j++) {
-                            inbuff[j] = *ii;
-                            ++ii;
-                        }
-
-                        char32_t cc = multibyteToUChar(inbuff, mbcc);
-                        if(!isLegalUnicodeChar(cc)) {
-                            return XFALSE;
-                        }
-
-                        cbb.push_back(cc);
-                        //ii is advanced during copyt
+                        char32_t output = multibyteToUChar(mbseq, mbsize);
+                        builder.appendChar(output);
                     }
                 }
-
-                result = XString::mk(cbb.begin(), cbb.end(),  cbb.size());
-                return XTRUE;
             }
+
+            result = XString{builder.finalize()};
+            return XBool{!builder.failedbuild};
         }
     }
 
@@ -839,40 +946,5 @@ namespace ᐸRuntimeᐳ
             //TODO: this is expensive -- we want to 1) keep track of deleted whitespace and subtract here 2) implement an string split/slice so this is at least log time (NOT O(N))
             return XString::mk(start, end, std::distance(start, end));
         }
-    }
-
-    std::string fromXCString(const ᐸRuntimeᐳ::XCString& xs)
-    {
-        std::string res;
-        res.reserve(xs.size());
-
-        for(auto iter = xs.begin(); iter != xs.end(); ++iter)
-        {
-            res.push_back(static_cast<char>(*iter));
-        }
-
-        return res;
-    }
-
-    std::string fromXString(const ᐸRuntimeᐳ::XString& xs)
-    {
-        std::string res;
-        res.reserve(xs.size());
-
-        for(auto iter = xs.begin(); iter != xs.end(); ++iter)
-        {
-            char32_t c = *iter;
-            if(c < 0x80)
-                res.push_back(static_cast<char>(c));
-            else {
-                std::array<uint8_t, 4> outbuff;
-                size_t mbcc = ucharToMultiByteEncoding(c, outbuff);
-                for(size_t i = 0; i < mbcc; ++i) {
-                    res.push_back(static_cast<char>(outbuff[i]));
-                }
-            }
-        }
-
-        return res;
     }
 }

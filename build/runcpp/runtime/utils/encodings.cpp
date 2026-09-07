@@ -37,20 +37,20 @@ namespace ᐸRuntimeᐳ
         }
     }
 
-    size_t ucharToMultiByteEncoding(char32_t c, std::array<char, 64>& outbuff)
+    size_t ucharToMultiByteEncoding(char32_t c, std::array<uint8_t, 64>& outbuff)
     {
         assert(c > 0x7F);
         
         if(c <= 0x7FF) {
-            outbuff = { (char)(0xC0 | (c >> 6)), (char)(0x80 | (c & 0x3F)), 0, 0 };
+            outbuff = { (uint8_t)(0xC0 | (c >> 6)), (uint8_t)(0x80 | (c & 0x3F)), 0, 0 };
             return 2;
         }
         else if(c <= 0xFFFF) {
-            outbuff = { (char)(0xE0 | (c >> 12)), (char)(0x80 | ((c >> 6) & 0x3F)), (char)(0x80 | (c & 0x3F)), 0 };
+            outbuff = { (uint8_t)(0xE0 | (c >> 12)), (uint8_t)(0x80 | ((c >> 6) & 0x3F)), (uint8_t)(0x80 | (c & 0x3F)), 0 };
             return 3;
         }
         else {
-            outbuff = { (char)(0xF0 | (c >> 18)), (char)(0x80 | ((c >> 12) & 0x3F)), (char)(0x80 | ((c >> 6) & 0x3F)), (char)(0x80 | (c & 0x3F)) };
+            outbuff = { (uint8_t)(0xF0 | (c >> 18)), (uint8_t)(0x80 | ((c >> 12) & 0x3F)), (uint8_t)(0x80 | ((c >> 6) & 0x3F)), (uint8_t)(0x80 | (c & 0x3F)) };
             return 4;
        }
     }

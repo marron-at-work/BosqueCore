@@ -324,17 +324,7 @@ namespace ᐸRuntimeᐳ
 
         void appendChar(char32_t cchar) override
         {
-            if(isSingleByteEncoding(cchar)) {
-                this->appendByte(static_cast<uint8_t>(cchar));
-            }
-            else {
-                std::array<char, 64> outbuff;
-                size_t bytes = ucharToMultiByteEncoding(cchar, outbuff);
-
-                for(size_t i = 0; i < bytes; i++) {
-                    this->appendByte(static_cast<uint8_t>(outbuff[i]));
-                }
-            }
+            assert(false); //This is not supported for streaming bytebuffer builders
         }
 
         void appendConstString(const char* str, size_t len)

@@ -174,7 +174,7 @@ namespace ᐸRuntimeᐳ
         return c <= 0x7F;
     }
 
-    size_t ucharToMultiByteEncoding(char32_t c, std::array<char, 64>& outbuff);
+    size_t ucharToMultiByteEncoding(char32_t c, std::array<uint8_t, 64>& outbuff);
 
     /* Given a buffer that contains and encoded CChar (either named or numeric) get the char value (or return false if invalid) */
     bool processEncodedCChar(const std::array<uint8_t, 64>& inbuff, size_t bytecount, char& outchar);
