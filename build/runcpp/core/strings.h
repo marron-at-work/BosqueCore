@@ -328,28 +328,28 @@ namespace ᐸRuntimeᐳ
         size_t pendingchars;
         std::array<char, CStrRootTreeContent::CSTR_MAX_LEAF_SIZE> pendingdata;
 
-        size_t bytesize;
+        size_t cstrsize;
         PosRBTree<char, CStrRootTreeContent::CSTR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_POSRB_TREE_CSTRING> postree;
 
-        bool failedbuild;
-
-        CStringStreamingBuilder() : pendingchars(0), pendingdata{}, bytesize(0), postree{}, failedbuild(false) {}
+        CStringStreamingBuilder() : pendingchars(0), pendingdata{}, cstrsize(0), postree{} {}
 
         void appendChar(char c)
         {
-            if(!isLegalCChar(static_cast<uint8_t>(c))) {
-                this->failedbuild = true;
-                return;
-            }
-
             this->pendingdata[this->pendingchars++] = c;
 
             if(this->pendingchars == CStrRootTreeContent::CSTR_MAX_LEAF_SIZE) {
-                //flush pending data to postree
-                xxxx;
-                
+                if(this->cstrsize == 0) {
+                    this->postree = PosRBTree<char, CStrRootTreeContent::CSTR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_POSRB_TREE_CSTRING>::mkinitial(this->pendingdata.begin(), this->pendingdata.begin() + CStrRootTreeContent::CSTR_MAX_LEAF_SIZE);
+                }
+                else {
+                    PosRBTree<char, CStrRootTreeContent::CSTR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_POSRB_TREE_CSTRING> newleaf = PosRBTree<char, CStrRootTreeContent::CSTR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_POSRB_TREE_CSTRING>::mkinitial(this->pendingdata.begin(), this->pendingdata.begin() + CStrRootTreeContent::CSTR_MAX_LEAF_SIZE);
+                    this->postree = PosRBTree<char, CStrRootTreeContent::CSTR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_POSRB_TREE_CSTRING>::append(this->postree, newleaf);
+                }
+
+                this->cstrsize += this->pendingchars;
 
                 this->pendingchars = 0;
+                this->pendingdata.fill(0);
             }
         }
 
@@ -380,7 +380,21 @@ namespace ᐸRuntimeᐳ
 
         CStringUnion finalize()
         {
-            xxxx;
+            if(this->pendingchars == 0) {
+                return CStringUnion{this->postree};
+            }
+            else if(this->cstrsize == 0) {
+                if(this->pendingchars <= CStrRootInlineContent::CSTR_MAX_SIZE) {                    
+                    return CStringUnion(CStrRootInlineContent(this->pendingdata.begin(), this->pendingchars));
+                }
+                else {
+                    return CStrRootTreeContent{PosRBTree<char, CStrRootTreeContent::CSTR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_POSRB_TREE_CSTRING>::mkinitial(this->pendingdata.begin(), this->pendingdata.begin() + this->pendingchars)};
+                }
+            }
+            else {
+                PosRBTree<char, CStrRootTreeContent::CSTR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_POSRB_TREE_CSTRING> newleaf = PosRBTree<char, CStrRootTreeContent::CSTR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_POSRB_TREE_CSTRING>::mkinitial(this->pendingdata.begin(), this->pendingdata.begin() + CStrRootTreeContent::CSTR_MAX_LEAF_SIZE);
+                return CStringUnion(PosRBTree<char, CStrRootTreeContent::CSTR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_POSRB_TREE_CSTRING>::append(this->postree, newleaf));
+            }
         }
     };
 
@@ -980,27 +994,28 @@ namespace ᐸRuntimeᐳ
         size_t pendingchars;
         std::array<char32_t, StrRootTreeContent::STR_MAX_LEAF_SIZE> pendingdata;
 
-        size_t bytesize;
+        size_t strsize;
         PosRBTree<char32_t, StrRootTreeContent::STR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_POSRB_TREE_STRING> postree;
 
-        bool failedbuild;
-
-        StringStreamingBuilder() : pendingchars(0), pendingdata{}, bytesize(0), postree{}, failedbuild(false) {}
+        StringStreamingBuilder() : pendingchars(0), pendingdata{}, strsize(0), postree{} {}
 
         void appendChar(char32_t cchar) override
         {
-            if(!isLegalUnicodeChar(cchar)) {
-                this->failedbuild = true;
-                return;
-            }
-
             this->pendingdata[this->pendingchars++] = cchar;
 
             if(this->pendingchars == StrRootTreeContent::STR_MAX_LEAF_SIZE) {
-                //flush pending data to postree
-                xxxx;
+                if(this->strsize == 0) {
+                    this->postree = PosRBTree<char32_t, StrRootTreeContent::STR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_POSRB_TREE_STRING>::mkinitial(this->pendingdata.begin(), this->pendingdata.begin() + StrRootTreeContent::STR_MAX_LEAF_SIZE);
+                }
+                else {
+                    PosRBTree<char32_t, StrRootTreeContent::STR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_POSRB_TREE_STRING> newleaf = PosRBTree<char32_t, StrRootTreeContent::STR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_POSRB_TREE_STRING>::mkinitial(this->pendingdata.begin(), this->pendingdata.begin() + StrRootTreeContent::STR_MAX_LEAF_SIZE);
+                    this->postree = PosRBTree<char32_t, StrRootTreeContent::STR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_POSRB_TREE_STRING>::append(this->postree, newleaf);
+                }
+
+                this->strsize += this->pendingchars;
 
                 this->pendingchars = 0;
+                this->pendingdata.fill(0);
             }
         }
 
@@ -1031,7 +1046,21 @@ namespace ᐸRuntimeᐳ
 
         StringUnion finalize()
         {
-            xxxx;
+            if(this->pendingchars == 0) {
+                return StringUnion{this->postree};
+            }
+            else if(this->strsize == 0) {
+                if(this->pendingchars <= StrRootInlineContent::STR_MAX_SIZE) {                    
+                    return StringUnion(StrRootInlineContent(this->pendingdata.begin(), this->pendingchars));
+                }
+                else {
+                    return StrRootTreeContent{PosRBTree<char32_t, StrRootTreeContent::STR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_POSRB_TREE_STRING>::mkinitial(this->pendingdata.begin(), this->pendingdata.begin() + this->pendingchars)};
+                }
+            }
+            else {
+                PosRBTree<char32_t, StrRootTreeContent::STR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_POSRB_TREE_STRING> newleaf = PosRBTree<char32_t, StrRootTreeContent::STR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_POSRB_TREE_STRING>::mkinitial(this->pendingdata.begin(), this->pendingdata.begin() + StrRootTreeContent::STR_MAX_LEAF_SIZE);
+                return StringUnion(PosRBTree<char32_t, StrRootTreeContent::STR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_POSRB_TREE_STRING>::append(this->postree, newleaf));
+            }
         }
     };
 

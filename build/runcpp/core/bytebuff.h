@@ -316,7 +316,14 @@ namespace ᐸRuntimeᐳ
                 this->bytesize = this->pendingbytes;
             }
             else {
-                xxxx;
+                ByteBufferBlock* blockl = static_cast<ByteBufferBlock*>(this->heapbytes);
+
+                blockl->entries[this->blockslot++] = XByteBuffer::s_entryallocator->allocate(this->pendingdata.data(), this->pendingdata.data() + this->pendingbytes);
+                if(this->blockslot == ByteBufferBlock::BUFFER_BLOCK_ENTRY_COUNT) {
+                    blockl = XByteBuffer::s_blockallocator->allocate(blockl->entries, blockl);
+                    std::fill(std::begin(blockl->entries), std::end(blockl->entries), nullptr);
+                    this->blockslot = 0;
+                }
             }
 
             this->pendingdata.fill(0);
@@ -360,7 +367,15 @@ namespace ᐸRuntimeᐳ
 
         XByteBuffer finalize()
         {
-            if(this->bytesize == 0) {
+            if(this->pendingbytes == 0) {
+                if(this->bytesize == 0) {
+                    return XByteBuffer{};
+                }
+                else {
+                    return XByteBuffer(this->heapbytes, this->bytesize);
+                }
+            }
+            else if(this->bytesize == 0) {
                 if(this->pendingbytes <= XByteBuffer::BUFFER_INLINE_SIZE) {
                     std::array<uint8_t, XByteBuffer::BUFFER_INLINE_SIZE> inlineData{};
                     std::copy(this->pendingdata.begin(), this->pendingdata.begin() + this->pendingbytes, inlineData.begin());
@@ -376,9 +391,15 @@ namespace ᐸRuntimeᐳ
             else {
                 this->flushPending();
 
-                xxxx; //do reverse here
+                //reverse for flow
+                ByteBufferBlock* blockl = reinterpret_cast<ByteBufferBlock*>(this->heapbytes);
+                ByteBufferBlock* revl = nullptr;
+                while(blockl != nullptr) {
+                    revl = XByteBuffer::s_blockallocator->allocate(blockl->entries, revl);
+                    blockl = blockl->next;
+                }
 
-                return XByteBuffer(this->heapbytes, this->bytesize);
+                return XByteBuffer(revl, this->bytesize);
             }
         }
     };

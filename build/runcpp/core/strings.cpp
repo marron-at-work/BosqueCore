@@ -48,10 +48,9 @@ namespace ᐸRuntimeᐳ
         CStringStreamingBuilder builder{};
         for(size_t i = 0; i < jlen; ++i)
         {
+            bsq_validate(isLegalCChar(static_cast<uint8_t>(sstr[i])), "JSON -> BSQ", 0, nullptr, "Invalid CChar literal");
             builder.appendChar(sstr[i]);
         }
-
-        bsq_validate(!builder.failedbuild, "JSON -> BSQ", 0, nullptr, "Failed to build CString from JSON");
 
         *((XCString*)resptr) = XCString{builder.finalize()};
     }
@@ -107,7 +106,6 @@ namespace ᐸRuntimeᐳ
                 builder.appendChar(output);
             }
 
-            bsq_validate(!builder.failedbuild, "JSON -> BSQ", 0, nullptr, "Failed to build CString from JSON");
             *((XCString*)resptr) = XCString{builder.finalize()}; 
         }
 
@@ -186,12 +184,12 @@ namespace ᐸRuntimeᐳ
                 }
 
                 char32_t cchar = multibyteToUChar(mbseq, mbsize);
+                bsq_validate(isLegalUnicodeChar(cchar), "JSON -> BSQ", 0, nullptr, "Invalid Unicode character in JSON string");
+
                 builder.appendChar(cchar);
                 i += mbsize - 1;
             }
         }
-
-        bsq_validate(!builder.failedbuild, "JSON -> BSQ", 0, nullptr, "Failed to build String from JSON");
 
         *((XString*)resptr) = XString{builder.finalize()};
     }
@@ -225,7 +223,7 @@ namespace ᐸRuntimeᐳ
                     }
                     else {
                         size_t mbsize = multibyteCharCount(cbyte);
-                        bsq_validate(cpos + mbsize <= tlen, "JSON -> BSQ", 0, nullptr, "Invalid multibyte sequence in JSON string");
+                        bsq_validate(cpos + mbsize <= tlen, "Parse -> BSQ", 0, nullptr, "Invalid multibyte sequence in BAPI string");
 
                         std::array<uint8_t, 4> mbseq{};
                         for(size_t j = 0; j < mbsize; j++) {
@@ -235,6 +233,7 @@ namespace ᐸRuntimeᐳ
                         }
 
                         output = multibyteToUChar(mbseq, mbsize);
+                        bsq_validate(isLegalUnicodeChar(output), "Parse -> BSQ", 0, nullptr, "Invalid Unicode character in BAPI string");
                     }
                 }
                 else {
@@ -260,7 +259,6 @@ namespace ᐸRuntimeᐳ
                 builder.appendChar(output);
             }
 
-            bsq_validate(!builder.failedbuild, "JSON -> BSQ", 0, nullptr, "Failed to build String from JSON");
             *((XString*)resptr) = XString{builder.finalize()}; 
         }
 
@@ -497,17 +495,27 @@ namespace ᐸRuntimeᐳ
                 const uint8_t* inlinebytes = buffer.inlinedata();
 
                 for(auto ii = inlinebytes; ii != inlinebytes + buffer.bytes(); ++ii) {
-                    builder.appendChar((char)*ii);
+                    uint8_t byte = *ii;
+                    if(!isLegalCChar(byte)) {
+                        return XFALSE;
+                    }
+
+                    builder.appendChar((char)byte);
                 }
             }
             else {
                 for(auto ii = buffer.begin(); ii != buffer.end(); ++ii) {
-                    builder.appendChar((char)*ii);
+                    uint8_t byte = *ii;
+
+                    if(!isLegalCChar(byte)) {
+                        return XFALSE;
+                    }
+                    builder.appendChar((char)byte);
                 }
             }
 
             result = XCString{builder.finalize()};
-            return XBool{!builder.failedbuild};
+            return XTRUE;
         }
     }
 
@@ -831,6 +839,10 @@ namespace ᐸRuntimeᐳ
                         }
 
                         char32_t output = multibyteToUChar(mbseq, mbsize);
+                        if(!isLegalUnicodeChar(output)) {
+                            return XFALSE;
+                        }
+
                         builder.appendChar(output);
                     }
                 }
@@ -859,13 +871,17 @@ namespace ᐸRuntimeᐳ
                         }
 
                         char32_t output = multibyteToUChar(mbseq, mbsize);
+                        if(!isLegalUnicodeChar(output)) {
+                            return XFALSE;
+                        }
+
                         builder.appendChar(output);
                     }
                 }
             }
 
             result = XString{builder.finalize()};
-            return XBool{!builder.failedbuild};
+            return XTRUE;
         }
     }
 
