@@ -300,9 +300,28 @@ namespace ᐸRuntimeᐳ
         std::array<uint8_t, ByteBufferEntry::BUFFER_ENTRY_SIZE> pendingdata;
 
         size_t bytesize;
+        size_t blockslot;
         void* heapbytes;
 
-        ByteBufferStreamingBuilder() : pendingbytes(0), pendingdata{}, bytesize(0), heapbytes(nullptr) {}
+        ByteBufferStreamingBuilder() : pendingbytes(0), pendingdata{}, bytesize(0), blockslot(0), heapbytes(nullptr) {}
+
+        void flushPending()
+        {
+            if(this->pendingbytes == 0) {
+                return;
+            }
+
+            if(heapbytes == nullptr) {
+                this->heapbytes = XByteBuffer::s_entryallocator->allocate(this->pendingdata.data(), this->pendingdata.data() + this->pendingbytes);
+                this->bytesize = this->pendingbytes;
+            }
+            else {
+                xxxx;
+            }
+
+            this->pendingdata.fill(0);
+            this->pendingbytes = 0;
+        }
 
         void appendByte(uint8_t byte) override
         {
@@ -310,10 +329,7 @@ namespace ᐸRuntimeᐳ
 
             if(this->pendingbytes == ByteBufferEntry::BUFFER_ENTRY_SIZE) {
                 //flush pending data to heapbytes
-                xxxx;
-
-
-                this->pendingbytes = 0;
+                this->flushPending();
             }
         }
 
@@ -344,7 +360,26 @@ namespace ᐸRuntimeᐳ
 
         XByteBuffer finalize()
         {
-            xxxx;
+            if(this->bytesize == 0) {
+                if(this->pendingbytes <= XByteBuffer::BUFFER_INLINE_SIZE) {
+                    std::array<uint8_t, XByteBuffer::BUFFER_INLINE_SIZE> inlineData{};
+                    std::copy(this->pendingdata.begin(), this->pendingdata.begin() + this->pendingbytes, inlineData.begin());
+                    
+                    return XByteBuffer(inlineData, this->pendingbytes);
+                }
+                else {
+                    ByteBufferEntry* bb =  XByteBuffer::s_entryallocator->allocate(this->pendingdata.data(), this->pendingdata.data() + this->pendingbytes);
+
+                    return XByteBuffer(bb, this->pendingbytes);
+                }
+            }
+            else {
+                this->flushPending();
+
+                xxxx; //do reverse here
+
+                return XByteBuffer(this->heapbytes, this->bytesize);
+            }
         }
     };
 }
