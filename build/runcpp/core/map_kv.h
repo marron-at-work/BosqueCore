@@ -196,7 +196,11 @@ namespace ᐸRuntimeᐳ
             }
             
             XMapEntry<K, V> val;
-            ofinfo->opdispatch.parseToBSQFp(ofinfo, lexer, &val);
+            kinfo->opdispatch.parseToBSQFp(kinfo, lexer, &val.key);
+
+            bsq_validate(lexer->testIsSymbol("=>"), "BAPI -> BSQ", 0, nullptr, "Expected '=>' between key and value for MapEntry");
+
+            vinfo->opdispatch.parseToBSQFp(vinfo, lexer, &val.value);
             rres = rres.insert(val);
         }
 
