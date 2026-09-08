@@ -317,27 +317,6 @@ namespace ᐸRuntimeᐳ
             return PosRBData<U, K>(this->color, this->bheight, this->dcount, result);
         }
 
-        template<bool SafeSimpleFn, typename Pred>
-        PosRBData<T, K> filter(Pred p) const
-        {
-            std::array<T, K> result{};
-            auto eiter = std::copy_if(this->data.cbegin(), this->data.cbegin() + this->dcount, result.begin(), p);
-            
-            return PosRBData<T, K>(this->color, this->bheight, std::distance(result.begin(), eiter), result);
-        }
-
-        template<bool BothSafeSimpleFn, typename U, typename Pred, typename Fn>
-        PosRBData<U, K> filtermap(Pred p, Fn f) const
-        {
-            std::array<T, K> fresult{};
-            auto feiter = std::copy_if(this->data.cbegin(), this->data.cbegin() + this->dcount, fresult.begin(), p);
-
-            std::array<U, K> mresult{};
-            auto meiter = std::transform(fresult.begin(), feiter, mresult.begin(), f);
-            
-            return PosRBData<U, K>(this->color, this->bheight, std::distance(mresult.begin(), meiter), mresult);
-        }
-
         template<bool SafeSimpleFn, typename Cmp>
         T minfun(Cmp cmp) const
         {
@@ -2185,32 +2164,6 @@ private:
         PosRBTree<U, K, UTreeID> mapIdx(Fn f) const
         {
             return PosRBTree<U, K, UTreeID>{recmapIdx<SafeSimpleFn, U, UTreeID, Fn>(this->root, 0, f)};
-        }
-
-        template<bool SafeSimpleFn, typename Pred>
-        PosRBNode<T, K>* filter(PosRBData<T, K>& dres, Pred p) const
-        {
-            if(isLeafType(this->root)) {
-                dres = this->root->data.template filter<SafeSimpleFn, Pred>(p);
-                return nullptr;
-            }
-            else {
-                //TODO: iterate over values, batch into full data node and then append atomically onto the tree
-                assert(false);
-            }
-        }
-
-        template<bool BothSafeSimpleFn, typename U, uint32_t UTreeID, typename Pred, typename Fn>
-        PosRBNode<U, K>* filtermap(PosRBData<U, K>& dres, Pred p, Fn f) const
-        {
-            if(isLeafType(this->root)) {
-                dres = this->root->data.template filtermap<BothSafeSimpleFn, U, Pred, Fn>(p, f);
-                return nullptr;
-            }
-            else {
-                //TODO: iterate over values, batch into full data node and then append atomically onto the tree
-                assert(false);
-            }
         }
 
         template <bool SafeSimplePred, typename Cmp>
