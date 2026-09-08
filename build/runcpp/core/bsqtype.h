@@ -137,6 +137,11 @@ namespace ᐸRuntimeᐳ
         //Way to get any typeinfo by its bsqtypeid -- map might be slower than desired (and not static initializable -- maybe evaluate later)
         // This map initialization needs to happen in emitter (otherwise linker error)
         static std::map<uint32_t, TypeInfo*> tinfomap;
+
+        inline static const TypeInfo* getTypeInfoForID(uint32_t id)
+        {
+            return tinfomap.at(id);
+        }
     };
 
     consteval uint32_t byteSizeToSlotCount(size_t bytesize)
