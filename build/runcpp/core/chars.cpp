@@ -1,9 +1,5 @@
 #include "chars.h"
 
-#include "../runtime/utils/encodings.h"
-#include "../runtime/utils/lexer.h"
-#include "../runtime/utils/builder.h"
-
 namespace ᐸRuntimeᐳ 
 {
     size_t writeByteValue(XByte val, std::array<char, 64>& numbuf)

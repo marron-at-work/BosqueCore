@@ -76,6 +76,17 @@ namespace ᐸRuntimeᐳ
             return true;
         }
 
+        bool matchesID(const char* data) const
+        {
+            for(size_t i = 0; i < this->size; ++i) {
+                if(data[i] == '\0' || this->iter->get() != data[i]) {
+                    return false;
+                }
+                this->iter->advance();
+            }
+            return true;
+        }
+
         uint8_t extract() const
         {
             return this->iter->get();
@@ -122,6 +133,11 @@ namespace ᐸRuntimeᐳ
         bool testDataMatches(const uint8_t* data, size_t len) const
         {
             return this->ctoken.matches(data, len);
+        }
+
+        bool testDataMatchesID(const char* data) const
+        {
+            return this->ctoken.matchesID(data);
         }
         
         uint8_t extractSingleCharToken() const
@@ -181,12 +197,20 @@ namespace ᐸRuntimeᐳ
         template<size_t N>
         bool testIsKeyword(char (&sym)[N]) const
         {
-            auto tokentype = this->getCurrentTokenType();
-            if(tokentype != BAPITokenType::LiteralKeyword || this->getCurrentTokenDataSize() != N - 1) {
+            if(this->getCurrentTokenType() != BAPITokenType::LiteralKeyword || this->getCurrentTokenDataSize() != N - 1) {
                 return false;
             }
 
             return this->testDataMatches(reinterpret_cast<const uint8_t*>(sym), N - 1);
+        }
+
+        bool testIsType(const char* tname)
+        {
+            if(this->getCurrentTokenType() != BAPITokenType::Identifier) {
+                return false;
+            }
+
+            return this->testDataMatchesID(tname);
         }
 
         template<typename T>

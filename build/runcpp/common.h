@@ -47,10 +47,6 @@ using json = nlohmann::json;
 
 namespace ᐸRuntimeᐳ
 {
-    //forward decls for simplicity
-    class BSQStreamingBuilder;
-    class BAPILexer;
-
     constexpr int64_t BSQ_NUMERIC_DYNAMIC_RANGE_BASE = 4611686018427387903ll;
     constexpr __int128_t BSQ_NUMERIC_DYNAMIC_RANGE_EXTENDED = ((__int128_t)BSQ_NUMERIC_DYNAMIC_RANGE_BASE * (__int128_t)BSQ_NUMERIC_DYNAMIC_RANGE_BASE);
 

@@ -392,8 +392,7 @@ namespace ᐸRuntimeᐳ
                 }
             }
             else {
-                PosRBTree<char, CStrRootTreeContent::CSTR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_POSRB_TREE_CSTRING> newleaf = PosRBTree<char, CStrRootTreeContent::CSTR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_POSRB_TREE_CSTRING>::mkinitial(this->pendingdata.begin(), this->pendingdata.begin() + CStrRootTreeContent::CSTR_MAX_LEAF_SIZE);
-                return CStringUnion(PosRBTree<char, CStrRootTreeContent::CSTR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_POSRB_TREE_CSTRING>::append(this->postree, newleaf));
+                return CStringUnion(CStrRootTreeContent{this->postree.builderPushBackLeafBlock(this->pendingdata, this->pendingchars)});
             }
         }
     };
@@ -1058,8 +1057,7 @@ namespace ᐸRuntimeᐳ
                 }
             }
             else {
-                PosRBTree<char32_t, StrRootTreeContent::STR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_POSRB_TREE_STRING> newleaf = PosRBTree<char32_t, StrRootTreeContent::STR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_POSRB_TREE_STRING>::mkinitial(this->pendingdata.begin(), this->pendingdata.begin() + StrRootTreeContent::STR_MAX_LEAF_SIZE);
-                return StringUnion(PosRBTree<char32_t, StrRootTreeContent::STR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_POSRB_TREE_STRING>::append(this->postree, newleaf));
+                return StringUnion(StrRootTreeContent{this->postree.builderPushBackLeafBlock(this->pendingdata, this->pendingchars)});
             }
         }
     };

@@ -22,5 +22,11 @@ namespace ᐸRuntimeᐳ
 
         virtual void appendConstString(const char* str, size_t len) = 0;
         virtual void appendConstString(const char* str) = 0;
+
+        template<size_t N>
+        void appendLiteralString(const char(&str)[N])
+        {
+            appendConstString(str, N - 1);
+        }
     };
 }

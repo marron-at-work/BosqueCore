@@ -36,7 +36,26 @@ namespace ᐸRuntimeᐳ
     template<typename K, typename V>
     void parseToBSQ_MapEntry(const TypeInfo* tinfo, BAPILexer* lexer, void* resptr)
     {
-        xxxx;
+        bsq_validate(lexer->testIsType(tinfo->typekey), "BAPI -> BSQ", 0, nullptr, "Expected type for MapEntry");
+        lexer->consume();
+        bsq_validate(lexer->testIsSymbol('{'), "BAPI -> BSQ", 0, nullptr, "Expected '{' for MapEntry");
+        lexer->consume();
+
+        K k;
+        const TypeInfo* kinfo = TypeInfo::getTypeInfoForID(tinfo->ftable[0].fieldbsqtypeid);
+        parseToBSQ_MapEntry(kinfo, lexer, &k);
+
+        bsq_validate(lexer->testIsSymbol(','), "BAPI -> BSQ", 0, nullptr, "Expected ',' in MapEntry");
+        lexer->consume();
+
+        V v;
+        const TypeInfo* vinfo = TypeInfo::getTypeInfoForID(tinfo->ftable[1].fieldbsqtypeid);
+        parseToBSQ_MapEntry(vinfo, lexer, &v);
+
+        bsq_validate(lexer->testIsSymbol('}'), "BAPI -> BSQ", 0, nullptr, "Expected '}' after MapEntry value");
+        lexer->consume();
+
+        *(XMapEntry<K, V>*)resptr = XMapEntry<K, V>{k, v};
     }
 
     template<typename K, typename V>
@@ -50,25 +69,47 @@ namespace ᐸRuntimeᐳ
         const TypeInfo* vinfo = TypeInfo::getTypeInfoForID(tinfo->ftable[1].fieldbsqtypeid);
         json jv = vinfo->opdispatch.bsqToJSONFp(vinfo, &entry->value);
 
-        j.push_back(jk);
-        j.push_back(jv);
-        return j;
+        return json::array({jk, jv});
     }
 
     template<typename K, typename V>
     void bsqToBAPI_MapEntry(const TypeInfo* tinfo, const void* valptr, BSQStreamingBuilder* builder)
     {
-        xxxx;
+        const XMapEntry<K, V>* entry = (const XMapEntry<K, V>*)valptr;
+
+        builder->appendConstString(tinfo->typekey);
+        builder->appendLiteralString("{ ");
+
+        const TypeInfo* kinfo = TypeInfo::getTypeInfoForID(tinfo->ftable[0].fieldbsqtypeid);
+        kinfo->opdispatch.bsqToBAPIFp(kinfo, &entry->key, builder);
+
+        builder->appendLiteralString(", ");
+
+        const TypeInfo* vinfo = TypeInfo::getTypeInfoForID(tinfo->ftable[1].fieldbsqtypeid);
+        vinfo->opdispatch.bsqToBAPIFp(vinfo, &entry->value, builder);
+        builder->appendLiteralString(" }");
     }
 
     template<typename K, typename V>
     void displayValue_MapEntry(const TypeInfo* tinfo, const void* valptr, std::ostream& os, std::optional<std::string> indent)
     {
-        xxxx;
+        const XMapEntry<K, V>* entry = (const XMapEntry<K, V>*)valptr;
+
+        os << getDisplayIndent(indent) << tinfo->typekey << " { ";
+
+        const TypeInfo* kinfo = TypeInfo::getTypeInfoForID(tinfo->ftable[0].fieldbsqtypeid);
+        kinfo->opdispatch.displayValueFp(kinfo, &entry->key, os, indent);
+
+        os << ", ";
+
+        const TypeInfo* vinfo = TypeInfo::getTypeInfoForID(tinfo->ftable[1].fieldbsqtypeid);
+        vinfo->opdispatch.displayValueFp(vinfo, &entry->value, os, indent);
+
+        os << " }";
     }
 
     template<typename K, typename V>
-    consteval TypeInfo g_typeinfo_MapEntry_generate(uint32_t id, const TypeLayoutInfo* layout, const char* mask, const char* name) 
+    inline TypeInfo g_typeinfo_MapEntry_generate(uint32_t id, const TypeLayoutInfo* layout, const char* mask, const char* name) 
     {
         return TypeInfo{
             id,
@@ -82,6 +123,7 @@ namespace ᐸRuntimeᐳ
             2,
             nullptr,
             0,
+            TypeOpDispatchInfo{ (ValidatingConstructorFp)nullptr, (JSONParseToBSQFp)&jsonParseToBSQ_MapEntry<K, V>, (ParseToBSQFp)&parseToBSQ_MapEntry<K, V>, (BSQToJSONFp)&bsqToJSON_MapEntry<K, V>, (BSQToBAPIFp)&bsqToBAPI_MapEntry<K, V>, (DisplayValueFp)&displayValue_MapEntry<K, V> },
             name,
             false
         };

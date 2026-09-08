@@ -1,8 +1,10 @@
 #pragma once
 
 #include "../common.h"
-#include "lexer.h"
-#include "builder.h"
+
+#include "../runtime/utils/lexer.h"
+#include "../runtime/utils/builder.h"
+#include "../runtime/utils/encodings.h"
 
 #define BSQ_PTR_MASK_LEAF nullptr
 

@@ -2007,8 +2007,8 @@ class CPPEmitter {
         `    extern thread_local GCAllocator<PosRBTreeNode<${oftrepr}, ListTTreeContent<${oftrepr}, ${posrb_treeleafid}>::MAX_LEAF_CAPACITY>> PosRBTreeNode_${ctname}_allocator;\n` +
         '\n' +
         `    inline constexpr TypeInfo g_typeinfo_${ctname}Inline = g_typeinfo_ListTInlineContent_generate<${oftrepr}>(${listinlineid}, ${inlinemask !== undefined ? `"${inlinemask}"` : "nullptr"}, "${ctname}Inline");\n` +
-        `    inline constexpr TypeInfo g_typeinfo_${ctname}Tree = g_typeinfo_ListTTreeContent<${oftrepr}, ${posrb_treeid}>(${listtreeid}, "${ctname}TreeContent");\n` +
-        `    inline constexpr TypeInfo g_typeinfo_${ctname} = g_typeinfo_ListT_generate<${oftrepr}, ${posrb_treeid}>(${ttid.bsqtypeid}, ${inlinemask !== undefined ? `"${inlinemask}"` : "nullptr"}, "${ctname}");\n` +
+        `    inline constexpr TypeInfo g_typeinfo_${ctname}Tree = g_typeinfo_ListTTreeContent<${oftrepr}, ${ttid.bsqtypeid}>(${listtreeid}, "${ctname}TreeContent");\n` +
+        `    inline constexpr TypeInfo g_typeinfo_${ctname} = g_typeinfo_ListT_generate<${oftrepr}, ${ttid.bsqtypeid}>(${ttid.bsqtypeid}, ${inlinemask !== undefined ? `"${inlinemask}"` : "nullptr"}, "${ctname}");\n` +
         `}`;
 
         const tidefs = `namespace ᐸRuntimeᐳ {\n` +
