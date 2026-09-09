@@ -40,30 +40,30 @@ namespace ᐸRuntimeᐳ
         else {
             //eat 0x and (the [ gets handled in the loop)
             size_t cpos = 2; 
-            BAPIIteratorAdaptor* ii = lexer->getCurrentTokenIterator();
-            ii->advance();
-            ii->advance();
+            IOBufferIterator ii = lexer->getCurrentTokenIterator();
+            ++ii;
+            ++ii;
 
             ByteBufferStreamingBuilder builder{};
             while(cpos < tlen - 1) { //ignore the closing ']' of the LiteralByteBuffer
-                uint8_t bb = ii->get();
+                uint8_t bb = *ii;
                 bsq_validate(bb == ',' || bb == '[', "BAPI -> BSQ", 0, nullptr, "Expected ',' separator or '[' start in LiteralByteBuffer");
                 ++cpos;
-                ii->advance();
+                ++ii;
                     
-                while(std::isspace(ii->get())) {
+                while(std::isspace(*ii)) {
                     ++cpos;
-                    ii->advance();
+                    ++ii;
                 }
 
                 //read hex value
                 char outbuff[16] = {0};
                 size_t ecount = 0;
-                while(std::isxdigit(ii->get())) {
-                    outbuff[ecount] = ii->get();
+                while(std::isxdigit(*ii)) {
+                    outbuff[ecount] = *ii;
                     ++ecount;
                     ++cpos;
-                    ii->advance();
+                    ++ii;
                 }
 
                 uint8_t output = 0;
@@ -72,9 +72,9 @@ namespace ᐸRuntimeᐳ
                 bsq_validate(ec == std::errc() && (ptr == outbuff + ecount), "BAPI -> BSQ", 0, nullptr, "Failed to parse hex value for LiteralByteBuffer element");
                 builder.appendByte(output);
 
-                while(std::isspace(ii->get())) {
+                while(std::isspace(*ii)) {
                     ++cpos;
-                    ii->advance();
+                    ++ii;
                 }
             }
 

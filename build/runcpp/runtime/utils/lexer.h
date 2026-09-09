@@ -40,19 +40,14 @@ namespace ᐸRuntimeᐳ
         Identifier
     };
 
-    class BAPIIteratorAdaptor
-    {
-    public:
-        virtual uint8_t get() const = 0;
-        virtual void advance() = 0;
-    };
-
     class BAPIToken
     {
     public:
         BAPITokenType tokentype;
 
-        BAPIIteratorAdaptor* iter; //This is singleton and is re-used across tokens
+        IOBufferIterator begin;
+        IOBufferIterator end;
+        
         size_t size;
 
         void clear()
@@ -63,44 +58,25 @@ namespace ᐸRuntimeᐳ
 
         bool matches(const uint8_t* data, size_t len) const
         {
-            if(len != this->size) {
-                return false;
-            }
-
-            for(size_t i = 0; i < this->size; ++i) {
-                if(this->iter->get() != data[i]) {
-                    return false;
-                }
-                this->iter->advance();
-            }
-            return true;
+            return (len == this->size) && std::equal(this->begin, this->end, data, data + len);
         }
 
         bool matchesID(const char* data) const
         {
-            for(size_t i = 0; i < this->size; ++i) {
-                if(data[i] == '\0' || this->iter->get() != data[i]) {
-                    return false;
-                }
-                this->iter->advance();
-            }
-            return true;
+            size_t idlen = strlen(data);
+            return (idlen == this->size) && std::equal(this->begin, this->end, data, data + idlen);
         }
 
         uint8_t extract() const
         {
-            return this->iter->get();
+            return *this->begin;
         }
 
         size_t extract(std::array<uint8_t, 64>& outchars) const
         {
             assert(this->size < 64);
 
-            auto it = this->iter;
-            for(size_t i = 0; i < this->size; ++i) {
-                outchars[i] = it->get();
-                it->advance();
-            }
+            std::copy(this->begin, this->end, outchars.begin());
             outchars[this->size] = 0;
 
             return this->size;
@@ -110,10 +86,44 @@ namespace ᐸRuntimeᐳ
     class BAPILexer
     {
     private:
+        IOBufferIterator iter;
+        IOBufferIterator end;
+
         BAPIToken ctoken; //This is singleton and is re-used across lex calls
+
+        void advanceToken(BAPITokenType tokentype, size_t len)
+        {
+            IOBufferIterator startiter = this->iter;
+            std::advance(this->iter, len);
+
+            this->ctoken = {tokentype, startiter, this->iter, len};
+        }
+
+        bool tryLexWS();
+        bool tryLexComment();
+
+        bool tryLexNat();
+        bool tryLexInt();
+        bool tryLexChkNat();
+        bool tryLexChkInt();
+        bool tryLexFloat();
+
+        bool tryLexByte();
+        bool tryLexCChar();
+        bool tryLexUnicodeChar();
+
+        bool tryLexCString();
+        bool tryLexString();
+        bool tryLexByteBuffer();
+
+        bool tryLexSymbol();
+
+        bool tryLexIdentifierLike();
 
     public:
         bool allowSloppyStrings;
+
+        BAPILexer(IOBufferIterator iter, IOBufferIterator end, bool allowSloppyStrings): iter(iter), end(end), ctoken{BAPITokenType::Invalid, IOBufferIterator{}, IOBufferIterator{}, 0}, allowSloppyStrings(allowSloppyStrings) { ; }
 
         BAPITokenType getCurrentTokenType() const
         {
@@ -125,9 +135,9 @@ namespace ᐸRuntimeᐳ
             return this->ctoken.size;
         }
 
-        BAPIIteratorAdaptor* getCurrentTokenIterator() const
+        IOBufferIterator getCurrentTokenIterator() const
         {
-            return this->ctoken.iter;
+            return this->ctoken.begin;
         }
 
         bool testDataMatches(const uint8_t* data, size_t len) const
@@ -151,12 +161,7 @@ namespace ᐸRuntimeᐳ
             return this->ctoken.extract(outchars);
         }
         
-        void consume()
-        {
-            this->ctoken.clear(); //make sure we reset the current token before consuming the next one
-
-            xxxx;
-        }
+        void consume();
 
         bool testIsNone() const
         {

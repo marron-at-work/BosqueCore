@@ -66,12 +66,12 @@ namespace ᐸRuntimeᐳ
         else {
             //eat opening '
             size_t cpos = 1; 
-            BAPIIteratorAdaptor* ii = lexer->getCurrentTokenIterator();
-            ii->advance();
+            IOBufferIterator ii = lexer->getCurrentTokenIterator();
+            ++ii;
 
             CStringStreamingBuilder builder{};
             while(cpos < tlen - 1) { //ignore the closing '
-                uint8_t cbyte = ii->get();
+                uint8_t cbyte = *ii;
                 
                 char output = 0;
                 if(cbyte != '%') {
@@ -86,7 +86,7 @@ namespace ᐸRuntimeᐳ
                     size_t bytecount = 0;
 
                     while(bytecount < 64 && cpos < tlen - 1) {
-                        uint8_t bb = ii->get();
+                        uint8_t bb = *ii;
                         inbuff[bytecount++] = bb;
                         cpos++;
                         ++ii;
@@ -205,19 +205,19 @@ namespace ᐸRuntimeᐳ
         else {
             //eat opening "
             size_t cpos = 1; 
-            BAPIIteratorAdaptor* ii = lexer->getCurrentTokenIterator();
-            ii->advance();
+            IOBufferIterator ii = lexer->getCurrentTokenIterator();
+            ++ii;
 
             StringStreamingBuilder builder{};
             while(cpos < tlen - 1) { //ignore the closing "
-                uint8_t cbyte = ii->get();
+                uint8_t cbyte = *ii;
                 
                 char32_t output = 0;
                 if(cbyte != '%') {
                     if(isSingleByteEncoding(cbyte)) {
                         output = static_cast<char32_t>(cbyte);
                         cpos++;
-                        ii->advance();
+                        ++ii;
                     }
                     else {
                         size_t mbsize = multibyteCharCount(cbyte);
@@ -225,9 +225,9 @@ namespace ᐸRuntimeᐳ
 
                         std::array<uint8_t, 4> mbseq{};
                         for(size_t j = 0; j < mbsize; j++) {
-                            mbseq[j] = ii->get();
+                            mbseq[j] = *ii;
                             cpos++;
-                            ii->advance();
+                            ++ii;
                         }
 
                         output = multibyteToUChar(mbseq, mbsize);
@@ -239,10 +239,10 @@ namespace ᐸRuntimeᐳ
                     size_t bytecount = 0;
 
                     while(bytecount < 64 && cpos < tlen - 1) {
-                        uint8_t bb = ii->get();
+                        uint8_t bb = *ii;
                         inbuff[bytecount++] = bb;
                         cpos++;
-                        ii->advance();
+                        ++ii;
 
                         if(bb == ';') {
                             break;
