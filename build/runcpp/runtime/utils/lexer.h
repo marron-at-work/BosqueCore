@@ -125,6 +125,16 @@ namespace ᐸRuntimeᐳ
 
         BAPILexer(IOBufferIterator iter, IOBufferIterator end, bool allowSloppyStrings): iter(iter), end(end), ctoken{BAPITokenType::Invalid, IOBufferIterator{}, IOBufferIterator{}, 0}, allowSloppyStrings(allowSloppyStrings) { ; }
 
+        bool allInputConsumed()
+        {
+            while(this->tryLexWS() || this->tryLexComment())
+            {
+                ;// make sure to strip out any trailing whitespace or comments
+            }
+
+            return this->iter == this->end;
+        }
+
         BAPITokenType getCurrentTokenType() const
         {
             return this->ctoken.tokentype;

@@ -3494,7 +3494,7 @@ class CPPEmitter {
         else {
             const argistrs = params.map((p, ii) => {
                 const vname = TransformCPPNameManager.convertIdentifier(p.name);
-                const parsekey = TransformCPPNameManager.convertTypeKey(p.type.tkeystr);
+                const typeinfo = this.typeInfoManager.getTypeInfo(p.type.tkeystr);
 
                 const hhparse = 
                 `    if(argc <= ${ii} + scount) { printf("Missing argument for parameter ${p.name}\\n"); exit(1); }\n` +
@@ -3537,13 +3537,11 @@ class CPPEmitter {
                 `    }\n`;
             
                 const pargs = 
-                `    ᐸRuntimeᐳ::tl_bosque_info.current_task->bsqparser.initialize(std::move(iobb_${vname}), ibytes_${vname});\n` +
-                `    ᐸRuntimeᐳ::tl_bosque_info.current_task->bsqparser.setSloppyStringParsing(true);\n` + 
-                `    auto _${vname} = BSQ_parse${parsekey}(); if(!_${vname}.has_value()) { printf("Error parsing input\\n"); exit(1); }\n`;
+                `    ${this.typeInfoManager.emitTypeAsStd(p.type.tkeystr)} _${vname}{};\n` +
+                `    ᐸRuntimeᐳ::TaskInfo::bapiParseIntoBSQ<${this.typeInfoManager.emitTypeAsStd(p.type.tkeystr)}>(true, iobb_${vname}, ibytes_${vname}, ${typeinfo.bsqtypeid}, _${vname});\n`;
             
                 const finalizeparse = 
-                '    if(!ᐸRuntimeᐳ::tl_bosque_info.current_task->bsqparser.allInputConsumed()) { printf("Error parsing input -- invalid data in tail of input\\n"); exit(1); }\n' +
-                '    ᐸRuntimeᐳ::tl_bosque_info.current_task->bsqparser.release();\n';
+                `    ᐸRuntimeᐳ::g_alloc_info.io_buffer_free_list(iobb_${vname});\n`;
 
                 return [hhparse, initforparse_file, initforparse_stdin, initforparse_arg, pargs, finalizeparse].join("\n");
             });
@@ -3556,7 +3554,7 @@ class CPPEmitter {
         const tsig = this.typeInfoManager.getTypeInfo(rtype.tkeystr);
 
         return '    std::list<uint8_t*> oibb; size_t obytes = 0;\n' +
-            `    obytes = ᐸRuntimeᐳ::tl_bosque_info.current_task->bsqEmitIntoBAPI(true, ${tsig.bsqtypeid}, result, oibb);\n\n` +
+            `    obytes = ᐸRuntimeᐳ::tl_bosque_info.current_task->bsqEmitIntoBAPI<${this.typeInfoManager.emitTypeAsStd(rtype.tkeystr)}>(true, ${tsig.bsqtypeid}, result, oibb);\n\n` +
             '    //TODO assume chars are all printable for now\n' +
             '    size_t ii = 0; auto biter = oibb.begin();\n' +
             '    while(biter != oibb.end()) {\n' +
@@ -3571,7 +3569,7 @@ class CPPEmitter {
     private emitFMain(idecl: IRInvokeDecl): string {
         const parse = this.emitParseArgsMain(idecl.params);
 
-        const invokeargs = idecl.params.map((p) => "_" + TransformCPPNameManager.convertIdentifier(p.name) + ".value()").join(", ");
+        const invokeargs = idecl.params.map((p) => "_" + TransformCPPNameManager.convertIdentifier(p.name)).join(", ");
         const invoke = '    if (setjmp(ᐸRuntimeᐳ::tl_bosque_info.current_task->error_handler) > 0) {\n' +
             '        auto perr = ᐸRuntimeᐳ::tl_bosque_info.current_task->pending_error.value();\n' +
             '        auto pfile = std::string(perr.file);\n' +
@@ -3596,7 +3594,7 @@ class CPPEmitter {
         const idecl = this.irasm.taskactions.find((v) => v.ikey === `${tdecl.tkey}@start`) as IRTaskActionDecl;
         const parse = this.emitParseArgsMain([...idecl.params.slice(1), ...tdecl.fields.map((bf) => new IRInvokeParameterDecl(bf.fname, bf.declaredType, undefined, undefined, undefined))]);
 
-        const consargs = tdecl.fields.map((bf) => "_" + TransformCPPNameManager.convertIdentifier(bf.fname) + ".value()");
+        const consargs = tdecl.fields.map((bf) => "_" + TransformCPPNameManager.convertIdentifier(bf.fname));
         const initialize = `    auto _self = std::make_optional<${this.typeInfoManager.emitTypeAsStd(tdecl.tkey)}>(${consargs.join(", ")});\n` +
             `    // Initialize task runtimes here if needed\n`;
 
