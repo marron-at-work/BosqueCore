@@ -6,7 +6,7 @@
 
 namespace ᐸRuntimeᐳ 
 {
-    char* skipPlusSignOpt(char* ptr)
+    inline char* skipPlusSignOpt(char* ptr)
     {
         if(*ptr == '+') {
             return ptr + 1;
@@ -189,7 +189,7 @@ namespace ᐸRuntimeᐳ
         }
 
         template<size_t N>
-        bool testIsSymbol(char (&sym)[N]) const
+        bool testIsSymbol(const char (&sym)[N]) const
         {
             auto tokentype = this->getCurrentTokenType();
             if(tokentype != BAPITokenType::LiteralSymbol || this->getCurrentTokenDataSize() != N - 1) {
@@ -200,7 +200,7 @@ namespace ᐸRuntimeᐳ
         }
 
         template<size_t N>
-        bool testIsKeyword(char (&sym)[N]) const
+        bool testIsKeyword(const char (&sym)[N]) const
         {
             if(this->getCurrentTokenType() != BAPITokenType::LiteralKeyword || this->getCurrentTokenDataSize() != N - 1) {
                 return false;
@@ -209,7 +209,7 @@ namespace ᐸRuntimeᐳ
             return this->testDataMatches(reinterpret_cast<const uint8_t*>(sym), N - 1);
         }
 
-        bool testIsType(const char* tname)
+        bool testIsType(const char* tname) const
         {
             if(this->getCurrentTokenType() != BAPITokenType::Identifier) {
                 return false;
@@ -219,7 +219,7 @@ namespace ᐸRuntimeᐳ
         }
 
         template<typename T>
-        bool tryExtractNumericValue(T& outval)
+        bool tryExtractNumericValue(T& outval) const
         {
             std::array<uint8_t, 64> outchars;
             size_t size = this->extractSmallToken(outchars);

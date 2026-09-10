@@ -98,12 +98,12 @@ namespace ᐸRuntimeᐳ
         os << getDisplayIndent(indent) << tinfo->typekey << " { ";
 
         const TypeInfo* kinfo = TypeInfo::getTypeInfoForID(tinfo->ftable[0].fieldbsqtypeid);
-        kinfo->opdispatch.displayValueFp(kinfo, &entry->key, os, indent);
+        kinfo->opdispatch.displayFp(kinfo, &entry->key, os, indent);
 
         os << ", ";
-
+        
         const TypeInfo* vinfo = TypeInfo::getTypeInfoForID(tinfo->ftable[1].fieldbsqtypeid);
-        vinfo->opdispatch.displayValueFp(vinfo, &entry->value, os, indent);
+        vinfo->opdispatch.displayFp(vinfo, &entry->value, os, indent);
 
         os << " }";
     }

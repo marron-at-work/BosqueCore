@@ -157,16 +157,16 @@ namespace ᐸRuntimeᐳ
         constexpr static const char* CSTR_NODE_MASK = "00000110";
 
         std::array<char, 8> tags; //store tag in first byte
-        PosRBTree<char, CSTR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_POSRB_TREE_CSTRING> postree;
+        PosRBTree<char, CSTR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_CSTRING> postree;
 
         CStrRootTreeContent() : tags{std::numeric_limits<char>::max(), 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}, postree{} { ; }
-        CStrRootTreeContent(const PosRBTree<char, CSTR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_POSRB_TREE_CSTRING>& postree) : tags{std::numeric_limits<char>::max(), 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}, postree{postree} { ; }
+        CStrRootTreeContent(const PosRBTree<char, CSTR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_CSTRING>& postree) : tags{std::numeric_limits<char>::max(), 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}, postree{postree} { ; }
         CStrRootTreeContent(const CStrRootTreeContent& other) = default;
     };
 
     inline constexpr TypeInfo g_typeinfo_PosRBTreeLeaf_CString = g_typeinfo_PosRBTreeLeaf_generate<char, CStrRootTreeContent::CSTR_MAX_LEAF_SIZE>(WELL_KNOWN_TYPE_ID_POSRB_TREE_LEAF_CSTRING, BSQ_PTR_MASK_LEAF, "PosRBTreeLeaf_CString", true);
     inline constexpr TypeInfo g_typeinfo_PosRBTreeNode_CString = g_typeinfo_PosRBTreeNode_generate<char, CStrRootTreeContent::CSTR_MAX_LEAF_SIZE>(WELL_KNOWN_TYPE_ID_POSRB_TREE_NODE_CSTRING, CStrRootTreeContent::CSTR_NODE_MASK, "PosRBTreeNode_CString");
-    inline constexpr TypeInfo g_typeinfo_PosRBTree_CString = g_typeinfo_PosRBTree_generate<char, CStrRootTreeContent::CSTR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_POSRB_TREE_CSTRING>(WELL_KNOWN_TYPE_ID_POSRB_TREE_CSTRING, "PosRBTree_CString");
+    inline constexpr TypeInfo g_typeinfo_PosRBTree_CString = g_typeinfo_PosRBTree_generate<char, CStrRootTreeContent::CSTR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_CSTRING>(WELL_KNOWN_TYPE_ID_POSRB_TREE_CSTRING, "PosRBTree_CString");
 
     extern thread_local GCAllocator<PosRBTreeLeaf<char, CStrRootTreeContent::CSTR_MAX_LEAF_SIZE>> PosRBTreeLeaf_CString_allocator;
     extern thread_local GCAllocator<PosRBTreeNode<char, CStrRootTreeContent::CSTR_MAX_LEAF_SIZE>> PosRBTreeNode_CString_allocator;
@@ -329,7 +329,7 @@ namespace ᐸRuntimeᐳ
         std::array<char, CStrRootTreeContent::CSTR_MAX_LEAF_SIZE> pendingdata;
 
         size_t cstrsize;
-        PosRBTree<char, CStrRootTreeContent::CSTR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_POSRB_TREE_CSTRING> postree;
+        PosRBTree<char, CStrRootTreeContent::CSTR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_CSTRING> postree;
 
         CStringStreamingBuilder() : pendingchars(0), pendingdata{}, cstrsize(0), postree{} {}
 
@@ -339,11 +339,11 @@ namespace ᐸRuntimeᐳ
 
             if(this->pendingchars == CStrRootTreeContent::CSTR_MAX_LEAF_SIZE) {
                 if(this->cstrsize == 0) {
-                    this->postree = PosRBTree<char, CStrRootTreeContent::CSTR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_POSRB_TREE_CSTRING>::mkinitial(this->pendingdata.begin(), this->pendingdata.begin() + CStrRootTreeContent::CSTR_MAX_LEAF_SIZE);
+                    this->postree = PosRBTree<char, CStrRootTreeContent::CSTR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_CSTRING>::mkinitial(this->pendingdata.begin(), this->pendingdata.begin() + CStrRootTreeContent::CSTR_MAX_LEAF_SIZE);
                 }
                 else {
-                    PosRBTree<char, CStrRootTreeContent::CSTR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_POSRB_TREE_CSTRING> newleaf = PosRBTree<char, CStrRootTreeContent::CSTR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_POSRB_TREE_CSTRING>::mkinitial(this->pendingdata.begin(), this->pendingdata.begin() + CStrRootTreeContent::CSTR_MAX_LEAF_SIZE);
-                    this->postree = PosRBTree<char, CStrRootTreeContent::CSTR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_POSRB_TREE_CSTRING>::append(this->postree, newleaf);
+                    PosRBTree<char, CStrRootTreeContent::CSTR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_CSTRING> newleaf = PosRBTree<char, CStrRootTreeContent::CSTR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_CSTRING>::mkinitial(this->pendingdata.begin(), this->pendingdata.begin() + CStrRootTreeContent::CSTR_MAX_LEAF_SIZE);
+                    this->postree = PosRBTree<char, CStrRootTreeContent::CSTR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_CSTRING>::append(this->postree, newleaf);
                 }
 
                 this->cstrsize += this->pendingchars;
@@ -388,7 +388,7 @@ namespace ᐸRuntimeᐳ
                     return CStringUnion(CStrRootInlineContent(this->pendingdata.begin(), this->pendingchars));
                 }
                 else {
-                    return CStrRootTreeContent{PosRBTree<char, CStrRootTreeContent::CSTR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_POSRB_TREE_CSTRING>::mkinitial(this->pendingdata.begin(), this->pendingdata.begin() + this->pendingchars)};
+                    return CStrRootTreeContent{PosRBTree<char, CStrRootTreeContent::CSTR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_CSTRING>::mkinitial(this->pendingdata.begin(), this->pendingdata.begin() + this->pendingchars)};
                 }
             }
             else {
@@ -423,10 +423,10 @@ namespace ᐸRuntimeᐳ
                     return XCString{CStrRootInlineContent(cstr, len)};
                 }
                 else if(len <= CStrRootTreeContent::CSTR_MAX_LEAF_SIZE) {
-                    return XCString{CStrRootTreeContent{PosRBTree<char, CStrRootTreeContent::CSTR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_POSRB_TREE_CSTRING>::mkinitial(cstr, cstr + len)}};
+                    return XCString{CStrRootTreeContent{PosRBTree<char, CStrRootTreeContent::CSTR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_CSTRING>::mkinitial(cstr, cstr + len)}};
                 }
                 else {
-                    return XCString{CStrRootTreeContent{PosRBTree<char, CStrRootTreeContent::CSTR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_POSRB_TREE_CSTRING>::mklargerec(cstr, cstr + len, len)}};
+                    return XCString{CStrRootTreeContent{PosRBTree<char, CStrRootTreeContent::CSTR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_CSTRING>::mklargerec(cstr, cstr + len, len)}};
                 }
             }
         }
@@ -442,10 +442,10 @@ namespace ᐸRuntimeᐳ
                     return XCString{CStrRootInlineContent(begin, end, len)};
                 }
                 else if(len <= CStrRootTreeContent::CSTR_MAX_LEAF_SIZE) {
-                    return XCString{CStrRootTreeContent{PosRBTree<char, CStrRootTreeContent::CSTR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_POSRB_TREE_CSTRING>::mkinitial(begin, end)}};
+                    return XCString{CStrRootTreeContent{PosRBTree<char, CStrRootTreeContent::CSTR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_CSTRING>::mkinitial(begin, end)}};
                 }
                 else {
-                    return XCString{CStrRootTreeContent{PosRBTree<char, CStrRootTreeContent::CSTR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_POSRB_TREE_CSTRING>::mklargerec(begin, end, len)}};
+                    return XCString{CStrRootTreeContent{PosRBTree<char, CStrRootTreeContent::CSTR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_CSTRING>::mklargerec(begin, end, len)}};
                 }
             }
         }
@@ -822,16 +822,16 @@ namespace ᐸRuntimeᐳ
         constexpr static const char* STR_NODE_MASK = "00000110";
 
         std::array<char32_t, 2> tags; //store tag in first byte
-        PosRBTree<char32_t, STR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_POSRB_TREE_STRING> postree;
+        PosRBTree<char32_t, STR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_STRING> postree;
 
         StrRootTreeContent() : tags{std::numeric_limits<char32_t>::max(), 0x0}, postree{} { ; }
-        StrRootTreeContent(const PosRBTree<char32_t, STR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_POSRB_TREE_STRING>& postree) : tags{std::numeric_limits<char32_t>::max(), 0x0}, postree{postree} { ; }
+        StrRootTreeContent(const PosRBTree<char32_t, STR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_STRING>& postree) : tags{std::numeric_limits<char32_t>::max(), 0x0}, postree{postree} { ; }
         StrRootTreeContent(const StrRootTreeContent& other) = default;
     };
 
     inline constexpr TypeInfo g_typeinfo_PosRBTreeLeaf_String = g_typeinfo_PosRBTreeLeaf_generate<char32_t, StrRootTreeContent::STR_MAX_LEAF_SIZE>(WELL_KNOWN_TYPE_ID_POSRB_TREE_LEAF_STRING, BSQ_PTR_MASK_LEAF, "PosRBTreeLeaf_String", true);
     inline constexpr TypeInfo g_typeinfo_PosRBTreeNode_String = g_typeinfo_PosRBTreeNode_generate<char32_t, StrRootTreeContent::STR_MAX_LEAF_SIZE>(WELL_KNOWN_TYPE_ID_POSRB_TREE_NODE_STRING, StrRootTreeContent::STR_NODE_MASK, "PosRBTreeNode_String");
-    inline constexpr TypeInfo g_typeinfo_PosRBTree_String = g_typeinfo_PosRBTree_generate<char32_t, StrRootTreeContent::STR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_POSRB_TREE_STRING>(WELL_KNOWN_TYPE_ID_POSRB_TREE_STRING, "PosRBTree_String");
+    inline constexpr TypeInfo g_typeinfo_PosRBTree_String = g_typeinfo_PosRBTree_generate<char32_t, StrRootTreeContent::STR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_STRING>(WELL_KNOWN_TYPE_ID_POSRB_TREE_STRING, "PosRBTree_String");
 
     extern thread_local GCAllocator<PosRBTreeLeaf<char32_t, StrRootTreeContent::STR_MAX_LEAF_SIZE>> PosRBTreeLeaf_String_allocator;
     extern thread_local GCAllocator<PosRBTreeNode<char32_t, StrRootTreeContent::STR_MAX_LEAF_SIZE>> PosRBTreeNode_String_allocator;
@@ -994,7 +994,7 @@ namespace ᐸRuntimeᐳ
         std::array<char32_t, StrRootTreeContent::STR_MAX_LEAF_SIZE> pendingdata;
 
         size_t strsize;
-        PosRBTree<char32_t, StrRootTreeContent::STR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_POSRB_TREE_STRING> postree;
+        PosRBTree<char32_t, StrRootTreeContent::STR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_STRING> postree;
 
         StringStreamingBuilder() : pendingchars(0), pendingdata{}, strsize(0), postree{} {}
 
@@ -1004,11 +1004,11 @@ namespace ᐸRuntimeᐳ
 
             if(this->pendingchars == StrRootTreeContent::STR_MAX_LEAF_SIZE) {
                 if(this->strsize == 0) {
-                    this->postree = PosRBTree<char32_t, StrRootTreeContent::STR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_POSRB_TREE_STRING>::mkinitial(this->pendingdata.begin(), this->pendingdata.begin() + StrRootTreeContent::STR_MAX_LEAF_SIZE);
+                    this->postree = PosRBTree<char32_t, StrRootTreeContent::STR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_STRING>::mkinitial(this->pendingdata.begin(), this->pendingdata.begin() + StrRootTreeContent::STR_MAX_LEAF_SIZE);
                 }
                 else {
-                    PosRBTree<char32_t, StrRootTreeContent::STR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_POSRB_TREE_STRING> newleaf = PosRBTree<char32_t, StrRootTreeContent::STR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_POSRB_TREE_STRING>::mkinitial(this->pendingdata.begin(), this->pendingdata.begin() + StrRootTreeContent::STR_MAX_LEAF_SIZE);
-                    this->postree = PosRBTree<char32_t, StrRootTreeContent::STR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_POSRB_TREE_STRING>::append(this->postree, newleaf);
+                    PosRBTree<char32_t, StrRootTreeContent::STR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_STRING> newleaf = PosRBTree<char32_t, StrRootTreeContent::STR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_STRING>::mkinitial(this->pendingdata.begin(), this->pendingdata.begin() + StrRootTreeContent::STR_MAX_LEAF_SIZE);
+                    this->postree = PosRBTree<char32_t, StrRootTreeContent::STR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_STRING>::append(this->postree, newleaf);
                 }
 
                 this->strsize += this->pendingchars;
@@ -1053,7 +1053,7 @@ namespace ᐸRuntimeᐳ
                     return StringUnion(StrRootInlineContent(this->pendingdata.begin(), this->pendingchars));
                 }
                 else {
-                    return StrRootTreeContent{PosRBTree<char32_t, StrRootTreeContent::STR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_POSRB_TREE_STRING>::mkinitial(this->pendingdata.begin(), this->pendingdata.begin() + this->pendingchars)};
+                    return StrRootTreeContent{PosRBTree<char32_t, StrRootTreeContent::STR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_STRING>::mkinitial(this->pendingdata.begin(), this->pendingdata.begin() + this->pendingchars)};
                 }
             }
             else {
@@ -1085,10 +1085,10 @@ namespace ᐸRuntimeᐳ
                     return XString{StrRootInlineContent(str, len)};
                 }
                 else if(len <= StrRootTreeContent::STR_MAX_LEAF_SIZE) {
-                    return XString{StrRootTreeContent{PosRBTree<char32_t, StrRootTreeContent::STR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_POSRB_TREE_STRING>::mkinitial(str, str + len)}};
+                    return XString{StrRootTreeContent{PosRBTree<char32_t, StrRootTreeContent::STR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_STRING>::mkinitial(str, str + len)}};
                 }
                 else {
-                    return XString{StrRootTreeContent{PosRBTree<char32_t, StrRootTreeContent::STR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_POSRB_TREE_STRING>::mklargerec(str, str + len, len)}};
+                    return XString{StrRootTreeContent{PosRBTree<char32_t, StrRootTreeContent::STR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_STRING>::mklargerec(str, str + len, len)}};
                 }
             }
         }
@@ -1104,10 +1104,10 @@ namespace ᐸRuntimeᐳ
                     return XString{StrRootInlineContent(begin, end, len)};
                 }
                 else if(len <= StrRootTreeContent::STR_MAX_LEAF_SIZE) {
-                    return XString{StrRootTreeContent{PosRBTree<char32_t, StrRootTreeContent::STR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_POSRB_TREE_STRING>::mkinitial(begin, end)}};
+                    return XString{StrRootTreeContent{PosRBTree<char32_t, StrRootTreeContent::STR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_STRING>::mkinitial(begin, end)}};
                 }
                 else {
-                    return XString{StrRootTreeContent{PosRBTree<char32_t, StrRootTreeContent::STR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_POSRB_TREE_STRING>::mklargerec(begin, end, len)}};
+                    return XString{StrRootTreeContent{PosRBTree<char32_t, StrRootTreeContent::STR_MAX_LEAF_SIZE, WELL_KNOWN_TYPE_ID_STRING>::mklargerec(begin, end, len)}};
                 }
             }
         }

@@ -279,9 +279,9 @@ namespace ᐸRuntimeᐳ
             }
 
             XMapEntry<K, V> val = *iter;
-            kinfo->opdispatch.displayValueFp(kinfo, &val.key, os, indent);
+            kinfo->opdispatch.displayFp(kinfo, &val.key, os, indent);
             os << " => ";
-            vinfo->opdispatch.displayValueFp(vinfo, &val.value, os, indent);
+            vinfo->opdispatch.displayFp(vinfo, &val.value, os, indent);
         }
         os << " }";
     }
