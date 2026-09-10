@@ -8,20 +8,20 @@ namespace ᐸRuntimeᐳ
     size_t writeNatNumber(XNat val, std::array<char, 64>& numbuf, bool addsuffix)
     {
         if(addsuffix) {
-            return std::snprintf(numbuf.data(), numbuf.size(), "%llun", val.value);
+            return std::snprintf(numbuf.data(), numbuf.size(), "%llin", (long long int)val.value);
         }
         else {
-            return std::snprintf(numbuf.data(), numbuf.size(), "%llu", val.value);
+            return std::snprintf(numbuf.data(), numbuf.size(), "%lli", (long long int)val.value);
         }
     }
 
     size_t writeIntNumber(XInt val, std::array<char, 64>& numbuf, bool addsuffix)
     {
         if(addsuffix) {
-            return std::snprintf(numbuf.data(), numbuf.size(), "%llii", val.value);
+            return std::snprintf(numbuf.data(), numbuf.size(), "%llii", (long long int)val.value);
         }
         else {
-            return std::snprintf(numbuf.data(), numbuf.size(), "%lli", val.value);
+            return std::snprintf(numbuf.data(), numbuf.size(), "%lli", (long long int)val.value);
         }
     }
 

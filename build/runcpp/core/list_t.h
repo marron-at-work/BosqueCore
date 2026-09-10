@@ -227,7 +227,7 @@ namespace ᐸRuntimeᐳ
     class ListStreamingBuilder
     {
     public:
-        using MAX_LEAF_CAPACITY = ListTTreeContent<T, TYPE_ID_LIST_T>::MAX_LEAF_CAPACITY;
+        constexpr static size_t MAX_LEAF_CAPACITY = ListTTreeContent<T, TYPE_ID_LIST_T>::MAX_LEAF_CAPACITY;
 
         using LIST_T_INLINE = ListTInlineContent<T>;
         using LIST_T_TREE = ListTTreeContent<T, TYPE_ID_LIST_T>;
@@ -392,8 +392,8 @@ namespace ᐸRuntimeᐳ
     class XList
     {
     public:
-        using MAX_INLINE_CAPACITY = ListTInlineContent<T>::MAX_INLINE_CAPACITY;
-        using MAX_LEAF_CAPACITY = ListTTreeContent<T, TYPE_ID_LIST_T>::MAX_LEAF_CAPACITY;
+        constexpr static size_t MAX_INLINE_CAPACITY = ListTInlineContent<T>::MAX_INLINE_CAPACITY;
+        constexpr static size_t MAX_LEAF_CAPACITY = ListTTreeContent<T, TYPE_ID_LIST_T>::MAX_LEAF_CAPACITY;
 
         using LIST_T_INLINE = ListTInlineContent<T>;
         using LIST_T_TREE = ListTTreeContent<T, TYPE_ID_LIST_T>;
@@ -1081,7 +1081,7 @@ namespace ᐸRuntimeᐳ
             builder.append(val);
         }
 
-        *(ListT<T, TYPE_ID_LIST_T>*)resptr = XList<T, TYPE_ID_LIST_T>{builder.finalize()};
+        *(XList<T, TYPE_ID_LIST_T>*)resptr = XList<T, TYPE_ID_LIST_T>{builder.finalize()};
     }
 
     template<typename T, uint32_t TYPE_ID_LIST_T>
@@ -1113,7 +1113,7 @@ namespace ᐸRuntimeᐳ
         bsq_validate(lexer->testIsSymbol('}'), "BAPI -> BSQ", 0, nullptr, "Expected '}' for MapEntry");
         lexer->consume();
 
-        *(ListT<T, TYPE_ID_LIST_T>*)resptr = XList<T, TYPE_ID_LIST_T>{builder.finalize()};
+        *(XList<T, TYPE_ID_LIST_T>*)resptr = XList<T, TYPE_ID_LIST_T>{builder.finalize()};
     }
 
     template<typename T, uint32_t TYPE_ID_LIST_T>
@@ -1122,7 +1122,7 @@ namespace ᐸRuntimeᐳ
         const TypeInfo* ofinfo = TypeInfo::getTypeInfoForID(tinfo->ftable[0].fieldbsqtypeid);
 
         json j = json::array();
-        const ListT<T, TYPE_ID_LIST_T>* list = (const ListT<T, TYPE_ID_LIST_T>*)valptr;
+        const XList<T, TYPE_ID_LIST_T>* list = (const XList<T, TYPE_ID_LIST_T>*)valptr;
         for(auto iter = list->begin(); iter != list->end(); ++iter)
         {
             T val = *iter;
@@ -1137,7 +1137,7 @@ namespace ᐸRuntimeᐳ
     void bsqToBAPI_ListT(const TypeInfo* tinfo, const void* valptr, BSQStreamingBuilder* builder)
     {
         const TypeInfo* ofinfo = TypeInfo::getTypeInfoForID(tinfo->ftable[0].fieldbsqtypeid);
-        const ListT<T, TYPE_ID_LIST_T>* list = (const ListT<T, TYPE_ID_LIST_T>*)valptr;
+        const XList<T, TYPE_ID_LIST_T>* list = (const XList<T, TYPE_ID_LIST_T>*)valptr;
         
         builder->appendConstString(tinfo->typekey);
         builder->appendLiteralString("{ ");
@@ -1163,7 +1163,7 @@ namespace ᐸRuntimeᐳ
     void displayValue_ListT(const TypeInfo* tinfo, const void* valptr, std::ostream& os, std::optional<std::string> indent)
     {
         const TypeInfo* ofinfo = TypeInfo::getTypeInfoForID(tinfo->ftable[0].fieldbsqtypeid);
-        const ListT<T, TYPE_ID_LIST_T>* list = (const ListT<T, TYPE_ID_LIST_T>*)valptr;
+        const XList<T, TYPE_ID_LIST_T>* list = (const XList<T, TYPE_ID_LIST_T>*)valptr;
 
         os << getDisplayIndent(indent) << tinfo->typekey << "{ ";
         bool first = true;
@@ -1177,7 +1177,7 @@ namespace ᐸRuntimeᐳ
             }
 
             T val = *iter;
-            ofinfo->opdispatch.displayValueFp(ofinfo, &val, os, indent);
+            ofinfo->opdispatch.displayFp(ofinfo, &val, os, indent);
         }
         os << " }";
     }
@@ -1187,8 +1187,8 @@ namespace ᐸRuntimeᐳ
     {
         return TypeInfo{
             id,
-            sizeof(ListT<T, TYPE_ID_LIST_T>),
-            byteSizeToSlotCount(sizeof(ListT<T, TYPE_ID_LIST_T>)),
+            sizeof(XList<T, TYPE_ID_LIST_T>),
+            byteSizeToSlotCount(sizeof(XList<T, TYPE_ID_LIST_T>)),
             LayoutTag::Value,
             mask,
             nullptr,

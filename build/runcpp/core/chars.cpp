@@ -4,7 +4,7 @@ namespace ᐸRuntimeᐳ
 {
     size_t writeByteValue(XByte val, std::array<char, 64>& numbuf)
     {
-        return std::snprintf(numbuf.data(), numbuf.size(), "0x%x", val.value);
+        return std::snprintf(numbuf.data(), numbuf.size(), "0x%x", (uint8_t)val.value);
     }
 
     size_t writeCCharValue(XCChar val, std::array<char, 64>& numbuf)
@@ -13,7 +13,7 @@ namespace ᐸRuntimeᐳ
             return std::snprintf(numbuf.data(), numbuf.size(), "c'%c'", (char)val.value);            
         }
         else {
-            auto ii = std::find_if(s_escape_names_char_simple.begin(), s_escape_names_char_simple.end(), [val](const std::pair<uint8_t, const char*>& p) { 
+            auto ii = std::find_if(s_escape_names_char_simple.begin(), s_escape_names_char_simple.end(), [val](const std::pair<uint8_t, std::pair<size_t, const char*>>& p) { 
                 return p.first == (uint8_t)val.value; 
             });
             

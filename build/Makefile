@@ -31,7 +31,7 @@ $(OUT_OBJ)common.o: $(HEADERS) $(CPP)
 
 $(OUT_OBJ)encodings.o: $(HEADERS) $(CPP)
 	@mkdir -p $(OUT_OBJ)
-	g++ $(CPPFLAGS) $(JSON_INCLUDES) -o $(OUT_OBJ)encodings.o -c $(SRC_DIR)encodings.cpp $(LINKAGE)
+	g++ $(CPPFLAGS) $(JSON_INCLUDES) -o $(OUT_OBJ)encodings.o -c $(UTILS_SRC_DIR)encodings.cpp $(LINKAGE)
 
 $(OUT_OBJ)lexer.o: $(HEADERS) $(CPP)
 	@mkdir -p $(OUT_OBJ)

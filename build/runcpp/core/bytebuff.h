@@ -4,8 +4,10 @@
 
 #include "bsqtype.h"
 
-#include "encodings.h"
-#include "builder.h"
+#include "../runtime/allocator/alloc.h"
+
+#include "../runtime/utils/encodings.h"
+#include "../runtime/utils/builder.h"
 
 namespace ᐸRuntimeᐳ 
 {

@@ -10,6 +10,9 @@
 
 namespace ᐸRuntimeᐳ
 {
+    //forward declare
+    class TypeInfo;
+
     enum class RColor : uint16_t
     {
         Red,

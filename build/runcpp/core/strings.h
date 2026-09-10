@@ -8,8 +8,8 @@
 #include "chars.h"
 #include "bytebuff.h"
 
-#include "encodings.h"
-#include "builder.h"
+#include "../runtime/utils/encodings.h"
+#include "../runtime/utils/builder.h"
 
 namespace ᐸRuntimeᐳ
 {

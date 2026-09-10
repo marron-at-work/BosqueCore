@@ -1,7 +1,5 @@
 #include "bytebuff.h"
 
-#include "../runtime/allocator/alloc.h"
-
 namespace ᐸRuntimeᐳ
 {
     thread_local GCAllocator<ByteBufferEntry> ByteBufferEntry_allocator(&g_typeinfo_ByteBufferEntry);

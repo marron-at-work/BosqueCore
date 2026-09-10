@@ -6,9 +6,6 @@
 #include "../core/uuids.h"
 #include "../core/strings.h"
 
-#include "./bsqir/parser.h"
-#include "./bsqir/emit.h"
-
 namespace ᐸRuntimeᐳ
 {
     template<ConceptUnionRepr U>
@@ -85,14 +82,11 @@ namespace ᐸRuntimeᐳ
         const TaskInfo* parent;
         TaskPriority priority;
 
-        BSQONParser bsqparser;
-        BSQONEmitter bsqemitter;
-
         std::jmp_buf error_handler;
         std::optional<ErrorInfo> pending_error;
 
-        TaskInfo() : taskid(), parent(nullptr), priority(), bsqparser(), bsqemitter(), error_handler(), pending_error() {}
-        TaskInfo(const XUUIDv4& tId, const TaskInfo* pTask, TaskPriority prio) : taskid(tId), parent(pTask), priority(prio), bsqparser(), bsqemitter(), error_handler(), pending_error() {}
+        TaskInfo() : taskid(), parent(nullptr), priority(), error_handler(), pending_error() {}
+        TaskInfo(const XUUIDv4& tId, const TaskInfo* pTask, TaskPriority prio) : taskid(tId), parent(pTask), priority(prio), error_handler(), pending_error() {}
     };
 
     template<ConceptUnionRepr U> //U must be a union of all possible types stored in the environment

@@ -146,11 +146,12 @@ namespace ᐸRuntimeᐳ
         ++this->iter; //eat opening quote
         IOBufferIterator clquote = std::find(this->iter, this->end, '\'');
         if(clquote == this->end) {
-            this->ctoken = {BAPITokenType::ErrorToken, istart, this->iter};
+            this->ctoken = {BAPITokenType::ErrorToken, istart, this->iter, (size_t)std::distance(istart, this->end)};
+            this->iter = this->end;
         }
         else {
             ++clquote; //eat closing quote
-            this->ctoken = {BAPITokenType::LiteralCString, istart, clquote};
+            this->ctoken = {BAPITokenType::LiteralCString, istart, clquote, (size_t)std::distance(istart, clquote)};
             this->iter = clquote;
         }
         
@@ -168,11 +169,12 @@ namespace ᐸRuntimeᐳ
         ++this->iter; //eat opening quote
         IOBufferIterator clquote = std::find(this->iter, this->end, '"');
         if(clquote == this->end) {
-            this->ctoken = {BAPITokenType::ErrorToken, istart, this->iter};
+            this->ctoken = {BAPITokenType::ErrorToken, istart, this->iter, (size_t)std::distance(istart, this->end)};
+            this->iter = this->end;
         }
         else {
             ++clquote; //eat closing quote
-            this->ctoken = {BAPITokenType::LiteralString, istart, clquote};
+            this->ctoken = {BAPITokenType::LiteralString, istart, clquote, (size_t)std::distance(istart, clquote)};
             this->iter = clquote;
         }
         
@@ -197,11 +199,12 @@ namespace ᐸRuntimeᐳ
 
             IOBufferIterator clquote = std::find(this->iter, this->end, ']');
             if(clquote == this->end) {
-                this->ctoken = {BAPITokenType::ErrorToken, istart, this->iter};
+                this->ctoken = {BAPITokenType::ErrorToken, istart, this->iter, (size_t)std::distance(istart, this->end)};
+                this->iter = this->end;
             }
             else {
                 ++clquote; //eat closing ]
-                this->ctoken = {BAPITokenType::LiteralByteBuffer, istart, clquote};
+                this->ctoken = {BAPITokenType::LiteralByteBuffer, istart, clquote, (size_t)std::distance(istart, clquote)};
                 this->iter = clquote;
             }
             
@@ -233,7 +236,7 @@ namespace ᐸRuntimeᐳ
         else {
             this->advanceToken(BAPITokenType::Identifier, mm[0].length());
         }
-        
+
         return true;
 
 

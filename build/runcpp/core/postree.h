@@ -1992,8 +1992,8 @@ private:
             }
         }
         
-        PosRBNode<T, K>* builderPushBackLeafBlock(const std::array<T, ListTTreeContent<T, TYPE_ID_POS_TREE_T>::MAX_LEAF_SIZE>& pendingdata, size_t count) const {
-            insblacken(PosRBTree<T, K, TreeID>::pushbackrec(l.root, PosRBData<T, K>(RColor::Red, 1, pendingdata.data(), pendingdata.data() + count)));
+        PosRBNode<T, K>* builderPushBackLeafBlock(const std::array<T, K>& pendingdata, size_t count) const {
+            return insblacken(PosRBTree<T, K, TreeID>::pushbackrec(this->root, PosRBData<T, K>(RColor::Red, 1, pendingdata.data(), pendingdata.data() + count)));
         }
 
         int64_t size() const

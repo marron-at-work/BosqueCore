@@ -21,7 +21,7 @@ namespace ᐸRuntimeᐳ
 
     size_t writeMustEscapeCCharValue(char value, std::array<char, 64>& numbuf)
     {
-        auto ii = std::find_if(s_escape_names_char_simple.begin(), s_escape_names_char_simple.end(), [value](const std::pair<uint8_t, const char*>& p) { 
+        auto ii = std::find_if(s_escape_names_char_simple.begin(), s_escape_names_char_simple.end(), [value](const std::pair<uint8_t, std::pair<size_t, const char*>>& p) { 
             return p.first == (uint8_t)value; 
         });
             
@@ -29,7 +29,21 @@ namespace ᐸRuntimeᐳ
             return (size_t)std::snprintf(numbuf.data(), numbuf.size(), "%s", ii->second.second);
         }
         else {
-            return (size_t)std::snprintf(numbuf.data(), numbuf.size(), "%%x%x", (uint8_t)value);
+            return (size_t)std::snprintf(numbuf.data(), numbuf.size(), "%%x%x;", (uint8_t)value);
+        }
+    }
+
+    size_t writeMustEscapeUnicodeCharValue(char32_t value, std::array<char, 64>& numbuf)
+    {
+        auto ii = std::find_if(s_escape_names_unicode.begin(), s_escape_names_unicode.end(), [value](const std::pair<uint32_t, std::pair<size_t, const char*>>& p) { 
+            return p.first == (uint32_t)value; 
+        });
+            
+        if(ii != s_escape_names_unicode.end()) {
+            return (size_t)std::snprintf(numbuf.data(), numbuf.size(), "%s", ii->second.second);
+        }
+        else {
+            return (size_t)std::snprintf(numbuf.data(), numbuf.size(), "%%x%x;", (uint32_t)value);
         }
     }
 
@@ -265,10 +279,13 @@ namespace ᐸRuntimeᐳ
 
     json bsqToJSON_String(const TypeInfo* tinfo, const void* valptr)
     {
+        XString v = *(XString*)valptr;
+        std::array<char, 64> numbuf{};
+
         std::string jstr;
         jstr.reserve(((XString*)valptr)->size());
 
-        for(XStringIterator it = ((XString*)valptr)->begin(); it != ((XString*)valptr)->end(); ++it) {
+        for(XStringIterator it = v.begin(); it != v.end(); ++it) {
             char32_t cchar = *it;
             if(isSingleByteEncoding(cchar)) {
                 jstr.push_back(static_cast<char>(cchar));
@@ -289,11 +306,22 @@ namespace ᐸRuntimeᐳ
 
     void bsqToBAPI_String(const TypeInfo* tinfo, const void* valptr, BSQStreamingBuilder* builder)
     {
-        for(XStringIterator it = ((XString*)valptr)->begin(); it != ((XString*)valptr)->end(); ++it) {
+        XString v = *(XString*)valptr;
+        std::array<char, 64> numbuf{};
+
+        builder->appendChar('"');
+
+        for(XStringIterator it = v.begin(); it != v.end(); ++it) {
             char32_t cchar = *it;
 
             if(isSingleByteEncoding(cchar)) {
-                builder->appendByte(static_cast<uint8_t>(cchar));
+                if(!isMustEscapeUnicodeChar(cchar)) {
+                    builder->appendByte(cchar);
+                }
+                else {
+                    size_t written = writeMustEscapeUnicodeCharValue(cchar, numbuf);
+                    builder->appendConstString(numbuf.data(), written);
+                }
             }
             else {
                 std::array<uint8_t, 64> outbuff;
@@ -304,15 +332,25 @@ namespace ᐸRuntimeᐳ
                 }
             }
         }
+        builder->appendChar('"');
     }
 
     void displayValue_String(const TypeInfo* tinfo, const void* valptr, std::ostream& os, std::optional<std::string> indent)
     {
+        XString v = *(XString*)valptr;
+        std::array<char, 64> numbuf{};
+
         os << getDisplayIndent(indent) << "\"";
-        for(XStringIterator it = ((XString*)valptr)->begin(); it != ((XString*)valptr)->end(); ++it) {
+        for(XStringIterator it = v.begin(); it != v.end(); ++it) {
             char32_t cchar = *it;
             if(isSingleByteEncoding(cchar)) {
-                os << static_cast<char>(cchar);
+                if(!isMustEscapeUnicodeChar(cchar)) {
+                    os << static_cast<char>(cchar);
+                }
+                else {
+                    size_t written = writeMustEscapeUnicodeCharValue(cchar, numbuf);
+                    os << std::string(numbuf.data(), written);
+                }
             }
             else {
                 std::array<uint8_t, 64> outbuff;
