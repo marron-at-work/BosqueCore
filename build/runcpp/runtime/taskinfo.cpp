@@ -7,6 +7,8 @@ namespace ᐸRuntimeᐳ
         const TypeInfo* ofinfo = TypeInfo::getTypeInfoForID(bsqid);
 
         BAPILexer lexer(IOBufferIterator::initializeBegin(iobuffs.cbegin(), totalbytes), IOBufferIterator::initializeEnd(iobuffs.cend(), totalbytes), sloppyinputs);
+        lexer.initialize();
+        
         ofinfo->opdispatch.parseToBSQFp(ofinfo, &lexer, outvalue);
 
         bool allconsumed = lexer.allInputConsumed();

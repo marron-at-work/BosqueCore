@@ -242,6 +242,11 @@ namespace ᐸRuntimeᐳ
 
     }
 
+    void BAPILexer::initialize()
+    {
+        this->consume();
+    }
+
     void BAPILexer::consume()
     {
         while((this->iter != this->end) && (this->tryLexWS() || this->tryLexComment())) {

@@ -3537,6 +3537,11 @@ class CPPEmitter {
                 `    }\n`;
             
                 const pargs = 
+                `    if (setjmp(ᐸRuntimeᐳ::tl_bosque_info.current_task->error_handler) > 0) {\n` +
+                `        auto perr = ᐸRuntimeᐳ::tl_bosque_info.current_task->pending_error.value();\n` +
+                `        if(perr.message != nullptr) { printf("Parsing error: %s\\n", perr.message); }\n` +
+                `        exit(1);\n` +
+                `    }\n\n` +
                 `    ${this.typeInfoManager.emitTypeAsStd(p.type.tkeystr)} _${vname}{};\n` +
                 `    ᐸRuntimeᐳ::TaskInfo::bapiParseIntoBSQ<${this.typeInfoManager.emitTypeAsStd(p.type.tkeystr)}>(true, iobb_${vname}, ibytes_${vname}, ${typeinfo.bsqtypeid}, _${vname});\n`;
             

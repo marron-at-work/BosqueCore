@@ -74,7 +74,7 @@ namespace ᐸRuntimeᐳ
         }
      
         size_t tlen = lexer->getCurrentTokenDataSize();
-        if(tlen == 4) {
+        if(tlen == 2) {
             *((XCString*)resptr) = XCString{};
         }
         else {
@@ -213,7 +213,7 @@ namespace ᐸRuntimeᐳ
         }
      
         size_t tlen = lexer->getCurrentTokenDataSize();
-        if(tlen == 4) {
+        if(tlen == 2) {
             *((XString*)resptr) = XString{};
         }
         else {

@@ -171,6 +171,8 @@ namespace ᐸRuntimeᐳ
             return this->ctoken.extract(outchars);
         }
         
+        void initialize();
+        
         void consume();
 
         bool testIsNone() const
