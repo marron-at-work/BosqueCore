@@ -1950,6 +1950,7 @@ class CPPEmitter {
         `        0,\n` +
         `        nullptr,\n` +
         `        0,` +
+        `        TypeOpDispatchInfo{ (ValidatingConstructorFp)nullptr, (JSONParseToBSQFp)&jsonParseToBSQ_Enum, (ParseToBSQFp)&parseToBSQ_Enum, (BSQToJSONFp)&bsqToJSON_Enum, (BSQToBAPIFp)&bsqToBAPI_Enum, (DisplayValueFp)&displayValue_Enum },\n` +
         `        "${tdecl.tkey}",\n` +
         `        true\n` +
         `    };\n` +
@@ -2279,11 +2280,10 @@ class CPPEmitter {
         `    friend Bool operator!=(const ${ctname}& lhs, const ${ctname}& rhs) { return ᐸRuntimeᐳ::XBool::from(!(lhs.value == rhs.value)); }\n` +
         `    friend Bool operator<=(const ${ctname}& lhs, const ${ctname}& rhs) { return ᐸRuntimeᐳ::XBool::from(!(rhs.value < lhs.value)); }\n` +
         `    friend Bool operator>=(const ${ctname}& lhs, const ${ctname}& rhs) { return ᐸRuntimeᐳ::XBool::from(!(lhs.value < rhs.value)); }\n` +
+        '\n' +
+        `    inline constexpr std::array<const char*, ${eenum.members.length}> BSQ_enum_values_${ctname} = { ${eenum.members.map((mem) => `"${mem}"`).join(", ")} };\n` +
         `};`;
-        const bsqparsedecl = `std::optional<${ctname}> BSQ_parse${ctname}();`;
-        const bsqemitdecl = `void BSQ_emit${ctname}(${ctname} vv);`;
         
-        const mmarray = `inline constexpr std::array<const char*, ${eenum.members.length}> BSQ_enum_values_${ctname} = { ${eenum.members.map((mem) => `"${mem}"`).join(", ")} };`;
         const mdecls = `${eenum.members.map((mem, ii) => `${ctname} ${ctname}::${TransformCPPNameManager.convertIdentifier(mem)} = ${ctname}{${ii}};`).join("\n")}\n`;
         const bsqparsedef = `std::optional<${ctname}> BSQ_parse${ctname}() {\n` + 
         `    if(!ᐸRuntimeᐳ::tl_bosque_info.current_task->bsqparser.ensureAndConsumeType("${eenum.tkey}")) { return std::nullopt; };\n` +
@@ -2303,8 +2303,8 @@ class CPPEmitter {
         `}`;
 
         return [
-            [edecl,  this.emitEnumTypeInfoDecl(eenum), bsqparsedecl, bsqemitdecl].join("\n"), 
-            [mmarray, mdecls, bsqparsedef, bsqemitdef].join("\n")
+            [edecl,  this.emitEnumTypeInfoDecl(eenum)].join("\n"), 
+            [mdecls, bsqparsedef, bsqemitdef].join("\n")
         ];
     }
 
@@ -3469,20 +3469,23 @@ class CPPEmitter {
 
     //Emit the initialization operations needed
     private emitStaticInitializationOps(): string {
-        const stringunion = 'union StdEnvUnion { ᐸRuntimeᐳ::XCString strval; };';
+        const stringunion = 'union StdEnvUnion { ᐸRuntimeᐳ::XCString strval; };\n';
 
         const constlayoutbytes = this.irasm.constants.map((cc) => this.typeInfoManager.getLayoutInfo(cc.declaredType.tkeystr).bytesize).reduce((acc, v) => acc + v, 0);
-        const globalbuff = `void* BSQ_g_globaldata[${constlayoutbytes}];`
+        const globalbuff = `void* BSQ_g_globaldata[${constlayoutbytes}];\n`;
 
         const infoentries = this.irasm.typedeporder.map((tkey) => {
             const ctname = TransformCPPNameManager.convertTypeKey(tkey.tkeystr);
             const tinfo = this.typeInfoManager.getTypeInfo(tkey.tkeystr);
             return `{ ${tinfo.bsqtypeid}, &g_typeinfo_${ctname} }`;
         });
-        const typeinfomap = `namespace ᐸRuntimeᐳ { std::unordered_map<uint32_t, const TypeInfo*> TypeInfo::tinfomap = { ${infoentries.join(", ")} }; }`;
+        const typeinfomap = `namespace ᐸRuntimeᐳ { std::unordered_map<uint32_t, const TypeInfo*> TypeInfo::tinfomap = { ${infoentries.join(", ")} }; }\n`;
 
+        const enuminfomap = `namespace ᐸRuntimeᐳ { std::unordered_map<uint32_t, std::pair<size_t, const char**>> Typeinfo::enuminfomap = { ${this.irasm.enums.map((e) => {
+            xxxx;;
+        }).join(", ")} }; }`; 
 
-        return [stringunion, globalbuff, typeinfomap].join("\n") + "\n";
+        return [stringunion, globalbuff, typeinfomap, enuminfomap].join("\n") + "\n";
     }
 
     ////

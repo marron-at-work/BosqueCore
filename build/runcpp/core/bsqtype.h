@@ -147,6 +147,9 @@ namespace ᐸRuntimeᐳ
         {
             return tinfomap.at(id);
         }
+
+        //For enum types, this map provides quick access to enum names
+        static std::unordered_map<uint32_t, std::pair<size_t, const char**>> enuminfomap;
     };
 
     consteval uint32_t byteSizeToSlotCount(size_t bytesize)
@@ -158,4 +161,13 @@ namespace ᐸRuntimeᐳ
     {
         return slotcount * sizeof(uint64_t);
     }
+
+    ////////////////////////////////
+    //Standard processing functions for Enum types
+    ////////////////////////////////
+    void jsonParseToBSQ_Enum(const TypeInfo* tinfo, const json& j, void* resptr);
+    void parseToBSQ_Enum(const TypeInfo* tinfo, BAPILexer* lexer, void* resptr);
+    json bsqToJSON_Enum(const TypeInfo* tinfo, const void* valptr);
+    void bsqToBAPI_Enum(const TypeInfo* tinfo, const void* valptr, BSQStreamingBuilder* builder);
+    void displayValue_Enum(const TypeInfo* tinfo, const void* valptr, std::ostream& os, std::optional<std::string> indent);
 }
