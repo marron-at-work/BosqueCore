@@ -4,27 +4,26 @@ namespace ᐸRuntimeᐳ
 {
     constexpr auto s_regexflags = boost::regex_constants::ECMAScript | boost::regex_constants::nosubs | boost::regex_constants::optimize;
 
-    static boost::regex s_ws_re("^\\s+", s_regexflags);
+    static boost::regex s_ws_re("\\s+", s_regexflags);
     static boost::regex s_line_comment_re("^%%[^\\n]*", s_regexflags);
 
-    static boost::regex s_nat_re("^(0|[+-]?[1-9][0-9]*)n", s_regexflags);
-    static boost::regex s_int_re("^(0|[+-]?[1-9][0-9]*)i", s_regexflags);
-    static boost::regex s_chknat_re("^(ChkNat::npos|((0|[+-]?[1-9][0-9]*)N))", s_regexflags);
-    static boost::regex s_chkint_re("^(ChkInt::npos|((0|[+-]?[1-9][0-9]*)I))", s_regexflags);
-    static boost::regex s_float_re("^[+-]?(0|[1-9][0-9]*)(\\.[0-9]+)([eE][+-]?[0-9]+)?f", s_regexflags);
+    static boost::regex s_nat_re("(0|[+-]?[1-9][0-9]*)n", s_regexflags);
+    static boost::regex s_int_re("(0|[+-]?[1-9][0-9]*)i", s_regexflags);
+    static boost::regex s_chknat_re("(ChkNat::npos|((0|[+-]?[1-9][0-9]*)N))", s_regexflags);
+    static boost::regex s_chkint_re("(ChkInt::npos|((0|[+-]?[1-9][0-9]*)I))", s_regexflags);
+    static boost::regex s_float_re("[+-]?(0|[1-9][0-9]*)(\\.[0-9]+)([eE][+-]?[0-9]+)?f", s_regexflags);
 
-    static boost::regex s_byte_re("^0x[0-9a-fA-F]{1,2}", s_regexflags);
-    static boost::regex s_cchar_re("^c'[^']{1,16}'", s_regexflags);
-    static boost::regex s_uchar_re("^c\"[^\"]{1,16}\"", s_regexflags);
+    static boost::regex s_byte_re("0x[0-9a-fA-F]{1,2}", s_regexflags);
+    static boost::regex s_cchar_re("c'[^']{1,16}'", s_regexflags);
+    static boost::regex s_uchar_re("c\"[^\"]{1,16}\"", s_regexflags);
 
-    static boost::regex s_bytebuffer_prefix_re("^0x\\[", s_regexflags);
-    static boost::regex s_bytebuffer_empty_re("^0x\\[\\]", s_regexflags);
+    static boost::regex s_bytebuffer_prefix_re("0x\\[", s_regexflags);
+    static boost::regex s_bytebuffer_empty_re("0x\\[\\]", s_regexflags);
     
-    //constexpr std::array<char, 11> s_symbol_tokens = { '(', ')', '{', '}', '[', ']', '<', '>', ',', '#', '|' };
-    
-    constexpr std::array<const char*, 6> s_keyword_tokens = { "none", "true", "false", "some", "ok", "fail" };
+    static boost::regex s_symbol_re("([(){}\\[\\]<>,#|])|(=>)|(\\(]\\|)|(\\|\\))", s_regexflags);
 
-    static boost::regex s_identifierlike_re("^([a-zA-Z_][a-zA-Z0-9_]*)", s_regexflags);
+    static boost::regex s_identifierlike_re("([a-zA-Z_][a-zA-Z0-9_]*(<.*>)?)(::([a-zA-Z_][a-zA-Z0-9_]*(<.*>)?))*", s_regexflags);
+    static boost::regex s_keyword_re("(none|true|false|some|ok|fail)", s_regexflags);
 
     bool BAPILexer::tryLexWS()
     {
@@ -39,81 +38,214 @@ namespace ᐸRuntimeᐳ
 
     bool BAPILexer::tryLexComment()
     {
-        xxxx;
+        boost::match_results<IOBufferIterator> mm;
+        if(!boost::regex_search(this->iter, this->end, mm, s_line_comment_re, boost::match_continuous)) {
+            return false;
+        }
+
+        std::advance(this->iter, mm[0].length());
+        return true;
     }
 
     bool BAPILexer::tryLexNat()
     {
-        xxxx;
+        boost::match_results<IOBufferIterator> mm;
+        if(!boost::regex_search(this->iter, this->end, mm, s_nat_re, boost::match_continuous)) {
+            return false;
+        }
+
+        this->advanceToken(BAPITokenType::LiteralNat, mm[0].length());
+        return true;
     }
 
     bool BAPILexer::tryLexInt()
     {
-        xxxx;
+        boost::match_results<IOBufferIterator> mm;
+        if(!boost::regex_search(this->iter, this->end, mm, s_int_re, boost::match_continuous)) {
+            return false;
+        }
+
+        this->advanceToken(BAPITokenType::LiteralInt, mm[0].length());
+        return true;
     }
 
     bool BAPILexer::tryLexChkNat()
     {
-        xxxx;
+        boost::match_results<IOBufferIterator> mm;
+        if(!boost::regex_search(this->iter, this->end, mm, s_chknat_re, boost::match_continuous)) {
+            return false;
+        }
+
+        this->advanceToken(BAPITokenType::LiteralChkNat, mm[0].length());
+        return true;
     }
 
     bool BAPILexer::tryLexChkInt()
     {
-        xxxx;
+        boost::match_results<IOBufferIterator> mm;
+        if(!boost::regex_search(this->iter, this->end, mm, s_chkint_re, boost::match_continuous)) {
+            return false;
+        }
+
+        this->advanceToken(BAPITokenType::LiteralChkInt, mm[0].length());
+        return true;
     }
 
     bool BAPILexer::tryLexFloat()
     {
-        xxxx;
+        boost::match_results<IOBufferIterator> mm;
+        if(!boost::regex_search(this->iter, this->end, mm, s_float_re, boost::match_continuous)) {
+            return false;
+        }
+
+        this->advanceToken(BAPITokenType::LiteralFloat, mm[0].length());
+        return true;
     }
 
     bool BAPILexer::tryLexByte()
     {
-        xxxx;
+        boost::match_results<IOBufferIterator> mm;
+        if(!boost::regex_search(this->iter, this->end, mm, s_byte_re, boost::match_continuous)) {
+            return false;
+        }
+
+        this->advanceToken(BAPITokenType::LiteralByte, mm[0].length());
+        return true;
     }
 
     bool BAPILexer::tryLexCChar()
     {
-        xxxx;
+        boost::match_results<IOBufferIterator> mm;
+        if(!boost::regex_search(this->iter, this->end, mm, s_cchar_re, boost::match_continuous)) {
+            return false;
+        }
+
+        this->advanceToken(BAPITokenType::LiteralCChar, mm[0].length());
+        return true;
     }
 
     bool BAPILexer::tryLexUnicodeChar()
     {
-        xxxx;
+        boost::match_results<IOBufferIterator> mm;
+        if(!boost::regex_search(this->iter, this->end, mm, s_uchar_re, boost::match_continuous)) {
+            return false;
+        }
+
+        this->advanceToken(BAPITokenType::LiteralUnicodeChar, mm[0].length());
+        return true;
     }
 
     bool BAPILexer::tryLexCString()
     {
-        xxxx;
+        if(*this->iter != '\'') {
+            return false;
+        }
+
+        IOBufferIterator istart = this->iter;
+
+        ++this->iter; //eat opening quote
+        IOBufferIterator clquote = std::find(this->iter, this->end, '\'');
+        if(clquote == this->end) {
+            this->ctoken = {BAPITokenType::ErrorToken, istart, this->iter};
+        }
+        else {
+            ++clquote; //eat closing quote
+            this->ctoken = {BAPITokenType::LiteralCString, istart, clquote};
+            this->iter = clquote;
+        }
+        
+        return true;
     }
 
     bool BAPILexer::tryLexString()
     {
-        xxxx;
+        if(*this->iter != '"') {
+            return false;
+        }
+
+        IOBufferIterator istart = this->iter;
+
+        ++this->iter; //eat opening quote
+        IOBufferIterator clquote = std::find(this->iter, this->end, '"');
+        if(clquote == this->end) {
+            this->ctoken = {BAPITokenType::ErrorToken, istart, this->iter};
+        }
+        else {
+            ++clquote; //eat closing quote
+            this->ctoken = {BAPITokenType::LiteralString, istart, clquote};
+            this->iter = clquote;
+        }
+        
+        return true;
     }
 
     bool BAPILexer::tryLexByteBuffer()
     {
-        xxxx;
+        boost::match_results<IOBufferIterator> mmprefix;
+        if(!boost::regex_search(this->iter, this->end, mmprefix, s_bytebuffer_prefix_re, boost::match_continuous)) {
+            return false;
+        }
+
+        boost::match_results<IOBufferIterator> mmempty;
+        if(boost::regex_search(this->iter, this->end, mmempty, s_bytebuffer_empty_re, boost::match_continuous)) {
+            this->advanceToken(BAPITokenType::LiteralByteBuffer, 4);
+            return true;
+        }
+        else {
+            IOBufferIterator istart = this->iter;
+            std::advance(this->iter, 3); //eat opening 0x[
+
+            IOBufferIterator clquote = std::find(this->iter, this->end, ']');
+            if(clquote == this->end) {
+                this->ctoken = {BAPITokenType::ErrorToken, istart, this->iter};
+            }
+            else {
+                ++clquote; //eat closing ]
+                this->ctoken = {BAPITokenType::LiteralByteBuffer, istart, clquote};
+                this->iter = clquote;
+            }
+            
+            return true;
+        }
     }
 
     bool BAPILexer::tryLexSymbol()
     {
-        xxxx;
+        boost::match_results<IOBufferIterator> mm;
+        if(!boost::regex_search(this->iter, this->end, mm, s_symbol_re, boost::match_continuous)) {
+            return false;
+        }
+
+        this->advanceToken(BAPITokenType::LiteralSymbol, mm[0].length());
+        return true;
     }
 
     bool BAPILexer::tryLexIdentifierLike()
     {
-        xxxx;
+        boost::match_results<IOBufferIterator> mm;
+        if(!boost::regex_search(this->iter, this->end, mm, s_identifierlike_re, boost::match_continuous)) {
+            return false;
+        }
+
+        if(boost::regex_match(mm[0].begin(), mm[0].end(), s_keyword_re)) {
+            this->advanceToken(BAPITokenType::LiteralKeyword, mm[0].length());
+        }
+        else {
+            this->advanceToken(BAPITokenType::Identifier, mm[0].length());
+        }
+        
+        return true;
+
+
     }
 
     void BAPILexer::consume()
     {
-        while(!this->iter->isEOF() && (this->tryLexWS() || this->tryLexComment())) {
+        while((this->iter != this->end) && (this->tryLexWS() || this->tryLexComment())) {
             ;
         }
 
-        if(this->iter->isEOF()) {
+        if(this->iter == this->end) {
             this->ctoken.tokentype = BAPITokenType::EOFToken;
             return;
         }
