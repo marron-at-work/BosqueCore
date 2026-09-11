@@ -98,7 +98,7 @@ namespace ᐸRuntimeᐳ
     class TypeLayoutInfo
     {
     public:
-        uint32_t fieldid;
+        int32_t fieldid;
         uint32_t fieldbsqtypeid;
         uint32_t byteoffset;
         uint32_t slotoffset;
@@ -140,16 +140,21 @@ namespace ᐸRuntimeᐳ
         bool quickrelease;
 
         //Way to get any typeinfo by its bsqtypeid -- map might be slower than desired (and not static initializable -- maybe evaluate later)
-        // This map initialization needs to happen in emitter (otherwise linker error)
+        static std::unordered_map<std::string, uint32_t> tkeytoidmap;
         static std::unordered_map<uint32_t, const TypeInfo*> tinfomap;
+
+        //For enum types, this map provides quick access to enum names
+        static std::unordered_map<uint32_t, std::pair<size_t, const char**>> enuminfomap;
+
+        inline static const TypeInfo* getTypeInfoForKey(const std::string& key)
+        {
+            return tinfomap.at(tkeytoidmap.at(key));
+        }
 
         inline static const TypeInfo* getTypeInfoForID(uint32_t id)
         {
             return tinfomap.at(id);
         }
-
-        //For enum types, this map provides quick access to enum names
-        static std::unordered_map<uint32_t, std::pair<size_t, const char**>> enuminfomap;
     };
 
     consteval uint32_t byteSizeToSlotCount(size_t bytesize)

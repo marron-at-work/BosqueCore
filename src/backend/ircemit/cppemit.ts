@@ -1957,6 +1957,46 @@ class CPPEmitter {
         `}`;
     }
 
+    private emitSomeTypeInfoDecl(tdecl: IRSomeTypeDecl): string {
+        const ctname = TransformCPPNameManager.convertTypeKey(tdecl.tkey);
+        const ttid = this.typeInfoManager.getTypeInfo(tdecl.tkey);
+
+        const oftt = this.typeInfoManager.emitTypeAsStd(tdecl.ttype.tkeystr);
+        const fttid = this.typeInfoManager.getTypeInfo(tdecl.ttype.tkeystr);
+
+        const superlist = (this.irasm.concretesupertypes.get(tdecl.tkey) as IRTypeSignature[]).map((tt) => this.typeInfoManager.getTypeInfo(tt.tkeystr).bsqtypeid).sort();
+        let superdecl = "";
+        let supertable = "nullptr";
+        if(superlist.length !== 0) {
+            superdecl = `    inline constexpr uint32_t g_supertypes_${ctname}[${superlist.length}] = { ${superlist.join(", ")} };\n`;
+            supertable = `g_supertypes_${ctname}`;
+        }
+        
+        const ftdecl = `    inline constexpr TypeLayoutInfo g_ftable_${ctname}[1] = { { -1, ${fttid.bsqtypeid}, 0, 0, "value", "value" } };\n`;
+        const ftable = `g_ftable_${ctname}`;
+
+        return `namespace ᐸRuntimeᐳ {\n` +
+            superdecl +
+            ftdecl +
+            `    inline constexpr TypeInfo g_typeinfo_${ctname} = {\n` +
+            `        ${ttid.bsqtypeid},\n` +
+            `        ${ttid.bytesize},\n` +
+            `        ${ttid.slotcount},\n` +
+            `        LayoutTag::${ttid.tag},\n` +
+            `        ${ttid.ptrmask !== undefined ? ('"' + ttid.ptrmask + '"') : "nullptr"},\n` +
+            `        ${supertable},\n` +
+            `        ${superlist.length},\n` +
+            `        ${ftable},\n` +
+            `        1,\n` +
+            `        nullptr,\n` +
+            `        0,\n` +
+            `        TypeOpDispatchInfo{ (ValidatingConstructorFp)nullptr, (JSONParseToBSQFp)&jsonParseToBSQ_Some<${oftt}>, (ParseToBSQFp)&parseToBSQ_Some<${oftt}>, (BSQToJSONFp)&bsqToJSON_Some<${oftt}>, (BSQToBAPIFp)&bsqToBAPI_Some<${oftt}>, (DisplayValueFp)&displayValue_Some<${oftt}> },\n` +
+            `        "${tdecl.tkey}",\n` +
+            `        ${ttid.quickrelease}\n` +
+            `    };\n` +
+            `}`;
+    }
+
     private emitListTypeInfoDecl(tdecl: IRListTypeDecl): [string, string] {
         const ctname = TransformCPPNameManager.convertTypeKey(tdecl.tkey);
         const ttid = this.typeInfoManager.getTypeInfo(tdecl.tkey);
@@ -2223,6 +2263,38 @@ class CPPEmitter {
                 `namespace ᐸRuntimeᐳ { thread_local GCAllocator<${ctname}> ${ctname}_allocator(&g_typeinfo_${ctname}); }`
             ];
         }
+    }
+
+    private emitOptionTypeInfoDecl(tdecl: IROptionTypeDecl): string {
+        const ctname = TransformCPPNameManager.convertTypeKey(tdecl.tkey);
+        const ttid = this.typeInfoManager.getTypeInfo(tdecl.tkey);
+
+        const oftt = this.typeInfoManager.emitTypeAsStd(tdecl.ttype.tkeystr);
+        const fttid = this.typeInfoManager.getTypeInfo(tdecl.ttype.tkeystr);
+        const somettid = this.typeInfoManager.getTypeInfo(tdecl.sometype.tkeystr);
+
+        const ftdecl = `    inline constexpr TypeLayoutInfo g_ftable_${ctname}[2] = { { -1, ${fttid.bsqtypeid}, 0, 0, "value", "value" }, { -2, ${somettid.bsqtypeid}, 0, 0, "somevalue", "somevalue" } };\n`;
+        const ftable = `g_ftable_${ctname}`;
+
+        return `namespace ᐸRuntimeᐳ { \n` +
+            ftdecl +
+            `    inline constexpr TypeInfo g_typeinfo_${ctname} = {\n` +
+            `        ${ttid.bsqtypeid},\n` +
+            `        ${ttid.bytesize},\n` +
+            `        ${ttid.slotcount},\n` +
+            `        LayoutTag::Value,\n` +
+            `        ${ttid.ptrmask !== undefined ? ('"' + ttid.ptrmask + '"') : "nullptr"},\n` +
+            `        nullptr,\n` +
+            `        0,\n` +
+            `        ${ftable},\n` +
+            `        2,\n` +
+            `        nullptr,\n` +
+            `        0,\n` +
+            `        TypeOpDispatchInfo{ (ValidatingConstructorFp)nullptr, (JSONParseToBSQFp)&jsonParseToBSQ_Option<${oftt}>, (ParseToBSQFp)&parseToBSQ_Option<${oftt}>, (BSQToJSONFp)&bsqToJSON_Option<${oftt}>, (BSQToBAPIFp)&bsqToBAPI_Option<${oftt}>, (DisplayValueFp)&displayValue_Option<${oftt}> },\n` +
+            `        "${tdecl.tkey}",\n` +
+            `        ${ttid.quickrelease}\n` +
+            `    };\n` +
+            `}`;
     }
 
     private emitConceptTypeInfoDecl(tdecl: IRAbstractConceptTypeDecl): string {
@@ -2543,21 +2615,14 @@ class CPPEmitter {
 
     private emitSomeTypeInfo(tdecl: IRSomeTypeDecl): [string, string] {
         const ctname = TransformCPPNameManager.convertTypeKey(tdecl.tkey);
-
-        const voptttname = TransformCPPNameManager.convertTypeKey(tdecl.ttype.tkeystr);
         const voptt = this.typeInfoManager.emitTypeAsStd(tdecl.ttype.tkeystr);
         
         const declusing = `using ${ctname} = ${RUNTIME_NAMESPACE}::XSome<${voptt}>;`;
-        const decltypeinfo = this.emitEntityTypeInfoDecl(tdecl);
-        const declbsqparse = `std::optional<${ctname}> BSQ_parse${ctname}();`;
-        const declbsqemit = `void BSQ_emit${ctname}(const ${ctname}& vv);`;
-
-        const defbsqparse = `std::optional<${ctname}> BSQ_parse${ctname}() { if(!ᐸRuntimeᐳ::tl_bosque_info.current_task->bsqparser.ensureAndConsumeKeyword("some")) { return std::nullopt; } if(!ᐸRuntimeᐳ::tl_bosque_info.current_task->bsqparser.ensureAndConsumeSymbol('(')) { return std::nullopt; } auto vval = BSQ_parse${voptttname}(); if(!vval.has_value()) { return std::nullopt; } if(!ᐸRuntimeᐳ::tl_bosque_info.current_task->bsqparser.ensureAndConsumeSymbol(')')) { return std::nullopt; } return ${TransformCPPNameManager.generateNameForConstructor(ctname)}{vval.value()}; }`;
-        const defbsqemit = `void BSQ_emit${ctname}(const ${ctname}& vv) { ᐸRuntimeᐳ::tl_bosque_info.current_task->bsqemitter.emitLiteralContent("some"); ᐸRuntimeᐳ::tl_bosque_info.current_task->bsqemitter.emitSymbol('('); BSQ_emit${voptttname}(vv.value); ᐸRuntimeᐳ::tl_bosque_info.current_task->bsqemitter.emitSymbol(')'); }`;
+        const decltypeinfo = this.emitSomeTypeInfoDecl(tdecl);
 
         return [
-            [declusing, decltypeinfo, declbsqparse, declbsqemit].join("\n"),
-            [defbsqparse, defbsqemit].join("\n")
+            [declusing, decltypeinfo].join("\n"),
+            ""
         ];
     }
 
@@ -2753,35 +2818,19 @@ class CPPEmitter {
 
     private emitOptionTypeInfo(tdecl: IROptionTypeDecl): [string, string] {
         const ctname = TransformCPPNameManager.convertTypeKey(tdecl.tkey);
-
-        const voptttname = TransformCPPNameManager.convertTypeKey(tdecl.ttype.tkeystr);
         const voptt = this.typeInfoManager.emitTypeAsStd(tdecl.ttype.tkeystr);
         
         const declusing = `using ${ctname} = ${RUNTIME_NAMESPACE}::XOption<${voptt}>;`;
-        const decltypeinfo = this.emitConceptTypeInfoDecl(tdecl);
-        const declbsqparse = `std::optional<${ctname}> BSQ_parse${ctname}();`;
-        const declbsqemit = `void BSQ_emit${ctname}(const ${ctname}& vv);`;
+        const decltypeinfo = this.emitOptionTypeInfoDecl(tdecl);
         
         const sometypeinfo = TransformCPPNameManager.generateTypeInfoNameForTypeKey(tdecl.sometype.tkeystr);
         const defstatic = `namespace ᐸRuntimeᐳ {\n` +
         `    template<> const TypeInfo* XOption<${voptt}>::s_someTypeInfo = &${sometypeinfo};\n` +
         `}`;
 
-        const defbsqparse = `std::optional<${ctname}> BSQ_parse${ctname}() {\n` +
-        `    if(ᐸRuntimeᐳ::tl_bosque_info.current_task->bsqparser.testAndConsumeTokenIf(ᐸRuntimeᐳ::BSQONTokenType::LiteralNone)) { return ${ctname}::none; }\n` +
-        `    auto somev = BSQ_parseSomeᐸ${voptttname}ᐳ();\n` +
-        `    if(!somev.has_value()) { return std::nullopt; }\n` +
-        `    return ${TransformCPPNameManager.generateNameForConstructor(ctname)}(somev.value());\n` +
-        `}`;
-        
-        const defbsqemit = `void BSQ_emit${ctname}(const ${ctname}& vv) {\n` +
-        `    if(vv.isNone()) { ᐸRuntimeᐳ::tl_bosque_info.current_task->bsqemitter.writeImmediate("none"); }\n` +
-        `    else { BSQ_emitSomeᐸ${voptttname}ᐳ(vv.asSome()); }\n` +
-        `}`;
-
         return [
-            [declusing, decltypeinfo, declbsqparse, declbsqemit].join("\n"),
-            [defstatic, defbsqparse, defbsqemit].join("\n")
+            [declusing, decltypeinfo].join("\n"),
+            defstatic
         ];
     }
 
@@ -3460,6 +3509,11 @@ class CPPEmitter {
         const constlayoutbytes = this.irasm.constants.map((cc) => this.typeInfoManager.getLayoutInfo(cc.declaredType.tkeystr).bytesize).reduce((acc, v) => acc + v, 0);
         const globalbuff = `void* BSQ_g_globaldata[${constlayoutbytes}];\n`;
 
+        const tkeytoidentries = this.irasm.typedeporder.map((tkey) => {
+            const tinfo = this.typeInfoManager.getTypeInfo(tkey.tkeystr);
+            return `{ std::string("${tkey.tkeystr}"), ${tinfo.bsqtypeid} }`;
+        });
+
         const infoentries = this.irasm.typedeporder.map((tkey) => {
             const ctname = TransformCPPNameManager.convertTypeKey(tkey.tkeystr);
             const tinfo = this.typeInfoManager.getTypeInfo(tkey.tkeystr);
@@ -3473,6 +3527,7 @@ class CPPEmitter {
         });
 
         const typeinfomaps = `namespace ᐸRuntimeᐳ {\n` +
+        `    std::unordered_map<std::string, uint32_t> TypeInfo::tkeytoidmap = { ${tkeytoidentries.join(", ")} };\n` +
         `    std::unordered_map<uint32_t, const TypeInfo*> TypeInfo::tinfomap = { ${infoentries.join(", ")} };\n` +
         `    std::unordered_map<uint32_t, std::pair<size_t, const char**>> TypeInfo::enuminfomap = { ${enuminfoentries.join(", ")} };\n` +
         '}';

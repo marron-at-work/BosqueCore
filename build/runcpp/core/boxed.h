@@ -32,6 +32,75 @@ namespace ᐸRuntimeᐳ
         friend XBool operator!=(const T& lhs, const XSome<T>& rhs) { return lhs != rhs.value; }
     };
 
+    template<typename T>
+    void jsonParseToBSQ_Some(const TypeInfo* tinfo, const json& j, void* resptr)
+    {
+        bsq_validate(j.is_array() && j.size() == 2, "JSON -> BSQ", 0, nullptr, "Expected JSON envelope for some<T>");
+        bsq_validate(j[0] == "some" || j[0] == tinfo->typekey, "JSON -> BSQ", 0, nullptr, "Expected 'some' keyword or full type in JSON envelope for some<T>");
+
+        const TypeInfo* ofinfo = TypeInfo::getTypeInfoForID(tinfo->ftable[0].fieldbsqtypeid);
+
+        T val;
+        ofinfo->opdispatch.jsonParseToBSQFp(ofinfo, j[1], &val);
+
+        *(XSome<T>*)resptr = XSome<T>{val};
+    }
+
+    template<typename T>
+    void parseToBSQ_Some(const TypeInfo* tinfo, BAPILexer* lexer, void* resptr)
+    {
+        bool isisome = lexer->testIsKeyword("some");
+        bsq_validate(lexer->testIsKeyword("some") || lexer->testDataMatchesID(tinfo->typekey), "BAPI -> BSQ", 0, nullptr, "Expected 'some' keyword or full type for some<T>");
+        lexer->consume();
+
+        bsq_validate((isisome && lexer->testIsSymbol('(')) || (!isisome && lexer->testIsSymbol('{')), "BAPI -> BSQ", 0, nullptr, "Missing open paren (or wrong paren) in some<T>");
+        lexer->consume();
+
+        const TypeInfo* ofinfo = TypeInfo::getTypeInfoForID(tinfo->ftable[0].fieldbsqtypeid);
+
+        T val;
+        ofinfo->opdispatch.parseToBSQFp(ofinfo, lexer, &val);
+
+        bsq_validate((isisome && lexer->testIsSymbol(')')) || (!isisome && lexer->testIsSymbol('}')), "BAPI -> BSQ", 0, nullptr, "Missing close paren (or wrong paren) in some<T>");
+        lexer->consume();
+
+        *(XSome<T>*)resptr = XSome<T>{val};
+    }
+
+    template<typename T>
+    json bsqToJSON_Some(const TypeInfo* tinfo, const void* valptr)
+    {
+        const TypeInfo* ofinfo = TypeInfo::getTypeInfoForID(tinfo->ftable[0].fieldbsqtypeid);
+        const XSome<T>* some = (const XSome<T>*)valptr;
+        
+        return json::array({ "some", ofinfo->opdispatch.bsqToJSONFp(ofinfo, &some->value) });
+    }
+
+    template<typename T>
+    void bsqToBAPI_Some(const TypeInfo* tinfo, const void* valptr, BSQStreamingBuilder* builder)
+    {
+        //void BSQ_emit${ctname}(const ${ctname}& vv) { ᐸRuntimeᐳ::tl_bosque_info.current_task->bsqemitter.emitLiteralContent("some"); ᐸRuntimeᐳ::tl_bosque_info.current_task->bsqemitter.emitSymbol('('); BSQ_emit${voptttname}(vv.value); ᐸRuntimeᐳ::tl_bosque_info.current_task->bsqemitter.emitSymbol(')'); }
+        
+        const TypeInfo* ofinfo = TypeInfo::getTypeInfoForID(tinfo->ftable[0].fieldbsqtypeid);
+        const XSome<T>* some = (const XSome<T>*)valptr;
+        
+        builder->appendLiteralString("some");
+        builder->appendChar('(');
+        ofinfo->opdispatch.bsqToBAPIFp(ofinfo, &some->value, builder);
+        builder->appendChar(')');
+    }
+    
+    template<typename T>
+    void displayValue_Some(const TypeInfo* tinfo, const void* valptr, std::ostream& os, std::optional<std::string> indent)
+    {
+        const TypeInfo* ofinfo = TypeInfo::getTypeInfoForID(tinfo->ftable[0].fieldbsqtypeid);
+        const XSome<T>* some = (const XSome<T>*)valptr;
+
+        os << "some(";
+        ofinfo->opdispatch.displayFp(ofinfo, &some->value, os, indent);
+        os << ")";
+    }
+
     template <typename T>
     class XOption 
     {
@@ -73,6 +142,89 @@ namespace ᐸRuntimeᐳ
         friend XBool operator!=(const XOption<T>& lhs, const T& rhs) { return lhs.isNone() | (lhs.data != rhs); }
         friend XBool operator!=(const T& lhs, const XOption<T>& rhs) { return rhs.isNone() | (lhs != rhs.data); }
     };
+
+    template<typename T>
+    void jsonParseToBSQ_Option(const TypeInfo* tinfo, const json& j, void* resptr)
+    {
+        if(j.is_string() && j.get<std::string>() == "none") {
+            *(XOption<T>*)resptr = XOption<T>::none;
+        }
+        else {
+            const TypeInfo* someinfo = TypeInfo::getTypeInfoForID(tinfo->ftable[1].fieldbsqtypeid);
+
+            bsq_validate(j.is_array() && j.size() == 2, "JSON -> BSQ", 0, nullptr, "Expected JSON envelope for some<T>");
+            bsq_validate(j[0] == "some" || j[0] == someinfo->typekey, "JSON -> BSQ", 0, nullptr, "Expected 'some' keyword or full type in JSON envelope for some<T>");
+
+            XSome<T> val;
+            someinfo->opdispatch.jsonParseToBSQFp(someinfo, j, &val);
+
+            *(XOption<T>*)resptr = XOption<T>{val};
+        }
+    }
+
+    template<typename T>
+    void parseToBSQ_Option(const TypeInfo* tinfo, BAPILexer* lexer, void* resptr)
+    {
+        const TypeInfo* ofinfo = TypeInfo::getTypeInfoForID(tinfo->ftable[0].fieldbsqtypeid);
+
+        if(lexer->testIsKeyword("none"))
+        {
+            *(XOption<T>*)resptr = XOption<T>::none;
+            return;
+        }
+        else {
+            const TypeInfo* sominfo = TypeInfo::getTypeInfoForID(tinfo->ftable[1].fieldbsqtypeid);
+
+            XSome<T> val;
+            sominfo->opdispatch.parseToBSQFp(sominfo, lexer, &val);
+
+            *(XOption<T>*)resptr = XOption<T>{val};
+        }
+    }
+
+    template<typename T>
+    json bsqToJSON_Option(const TypeInfo* tinfo, const void* valptr)
+    {
+        const XOption<T>* opt = (const XOption<T>*)valptr;
+        if(opt->isNone()) {
+            return "none";
+        }
+        else {
+            const TypeInfo* ofinfo = TypeInfo::getTypeInfoForID(tinfo->ftable[0].fieldbsqtypeid);
+            return json::array({ "some", ofinfo->opdispatch.bsqToJSONFp(ofinfo, &opt->data) });
+        }
+    }
+
+    template<typename T>
+    void bsqToBAPI_Option(const TypeInfo* tinfo, const void* valptr, BSQStreamingBuilder* builder)
+    {
+        const XOption<T>* opt = (const XOption<T>*)valptr;
+        if(opt->isNone()) {
+            builder->appendConstString("none");
+        }
+        else {
+            const TypeInfo* ofinfo = TypeInfo::getTypeInfoForID(tinfo->ftable[0].fieldbsqtypeid);
+            builder->appendConstString("some");
+            builder->appendChar('(');
+            ofinfo->opdispatch.bsqToBAPIFp(ofinfo, &opt->data, builder);
+            builder->appendChar(')');
+        }
+    }
+    
+    template<typename T>
+    void displayValue_Option(const TypeInfo* tinfo, const void* valptr, std::ostream& os, std::optional<std::string> indent)
+    {
+        const XOption<T>* opt = (const XOption<T>*)valptr;
+        if(opt->isNone()) {
+            os << "none";
+        }
+        else {
+            const TypeInfo* ofinfo = TypeInfo::getTypeInfoForID(tinfo->ftable[0].fieldbsqtypeid);
+            os << "some(";
+            ofinfo->opdispatch.displayFp(ofinfo, &opt->data, os, indent);
+            os << ")";
+        }
+    }
 
     //
     //TODO: probably want to specialize for option bool, nat/int where we can steal a indicator bit
