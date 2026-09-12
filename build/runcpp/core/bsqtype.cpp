@@ -2,6 +2,10 @@
 
 namespace ᐸRuntimeᐳ
 {
+    ////////////////////////////////
+    //Standard processing functions for Enum types
+    ////////////////////////////////
+
     void jsonParseToBSQ_Enum(const TypeInfo* tinfo, const json& j, void* resptr)
     {
         bsq_validate(j.is_string(), "JSON -> BSQ", 0, nullptr, "Expected string for enum type");
@@ -26,7 +30,7 @@ namespace ᐸRuntimeᐳ
 
     void parseToBSQ_Enum(const TypeInfo* tinfo, BAPILexer* lexer, void* resptr)
     {
-        bsq_validate(lexer->getCurrentTokenType() == BAPITokenType::Identifier && lexer->testDataMatchesID(tinfo->typekey), "BAPI -> BSQ", 0, nullptr, "Expected identifier for enum type");
+        bsq_validate(lexer->testIsType(tinfo->typekey), "BAPI -> BSQ", 0, nullptr, "Expected identifier for enum type");
         lexer->consume();
 
         bsq_validate(lexer->getCurrentTokenType() == BAPITokenType::LiteralSymbol && lexer->testIsSymbol('#'), "BAPI -> BSQ", 0, nullptr, "Expected '#' symbol for enum type");
@@ -66,5 +70,62 @@ namespace ᐸRuntimeᐳ
         std::pair<size_t, const char**> members = TypeInfo::enuminfomap.at(tinfo->bsqtypeid);
 
         os << getDisplayIndent(indent) << tinfo->typekey << '#' << members.second[vv];
+    }
+
+    ////////////////////////////////
+    //Standard processing functions for Typedecl types
+    ////////////////////////////////
+    void jsonParseToBSQ_Typedecl(const TypeInfo* tinfo, const json& j, void* resptr)
+    {
+        const TypeInfo* ofinfo = TypeInfo::getTypeInfoForID(tinfo->ftable[0].fieldbsqtypeid);
+
+        void* val = alloca(ofinfo->bytesize);
+        ofinfo->opdispatch.jsonParseToBSQFp(ofinfo, j, val);
+
+        tinfo->opdispatch.validatingConstructorFp(&val, resptr);
+    }
+
+    void parseToBSQ_Typedecl(const TypeInfo* tinfo, BAPILexer* lexer, void* resptr)
+    {
+        const TypeInfo* ofinfo = TypeInfo::getTypeInfoForID(tinfo->ftable[0].fieldbsqtypeid);
+
+        void* val = alloca(ofinfo->bytesize);
+        ofinfo->opdispatch.parseToBSQFp(ofinfo, lexer, val);
+
+        tinfo->opdispatch.validatingConstructorFp(&val, resptr);
+
+        if(lexer->testIsSymbol('<')) {
+            lexer->consume();
+    
+            bsq_validate(lexer->testIsType(tinfo->typekey), "BAPI -> BSQ", 0, nullptr, "Expected type for typedecl");
+            lexer->consume();
+            bsq_validate(lexer->testIsSymbol('>'), "BAPI -> BSQ", 0, nullptr, "Expected symbol '>'");
+            lexer->consume();
+        }
+    }
+
+    json bsqToJSON_Typedecl(const TypeInfo* tinfo, const void* valptr)
+    {
+        const TypeInfo* ofinfo = TypeInfo::getTypeInfoForID(tinfo->ftable[0].fieldbsqtypeid);
+        return ofinfo->opdispatch.bsqToJSONFp(ofinfo, valptr);
+    }
+
+    void bsqToBAPI_Typedecl(const TypeInfo* tinfo, const void* valptr, BSQStreamingBuilder* builder)
+    {
+        const TypeInfo* ofinfo = TypeInfo::getTypeInfoForID(tinfo->ftable[0].fieldbsqtypeid);
+        ofinfo->opdispatch.bsqToBAPIFp(ofinfo, valptr, builder);
+
+        builder->appendChar('<');
+        builder->appendConstString(tinfo->typekey);
+        builder->appendChar('>');
+    }
+
+    void displayValue_Typedecl(const TypeInfo* tinfo, const void* valptr, std::ostream& os, std::optional<std::string> indent)
+    {
+        const TypeInfo* ofinfo = TypeInfo::getTypeInfoForID(tinfo->ftable[0].fieldbsqtypeid);
+
+        os << getDisplayIndent(indent);
+        ofinfo->opdispatch.displayFp(ofinfo, valptr, os, indent);
+        os << '<' << tinfo->typekey << '>';
     }
 }

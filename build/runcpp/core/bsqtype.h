@@ -175,4 +175,13 @@ namespace ᐸRuntimeᐳ
     json bsqToJSON_Enum(const TypeInfo* tinfo, const void* valptr);
     void bsqToBAPI_Enum(const TypeInfo* tinfo, const void* valptr, BSQStreamingBuilder* builder);
     void displayValue_Enum(const TypeInfo* tinfo, const void* valptr, std::ostream& os, std::optional<std::string> indent);
+
+    ////////////////////////////////
+    //Standard processing functions for Typedecl types
+    ////////////////////////////////
+    void jsonParseToBSQ_Typedecl(const TypeInfo* tinfo, const json& j, void* resptr);
+    void parseToBSQ_Typedecl(const TypeInfo* tinfo, BAPILexer* lexer, void* resptr);
+    json bsqToJSON_Typedecl(const TypeInfo* tinfo, const void* valptr);
+    void bsqToBAPI_Typedecl(const TypeInfo* tinfo, const void* valptr, BSQStreamingBuilder* builder);
+    void displayValue_Typedecl(const TypeInfo* tinfo, const void* valptr, std::ostream& os, std::optional<std::string> indent);
 }

@@ -1997,6 +1997,45 @@ class CPPEmitter {
             `}`;
     }
 
+    private emitTypeDeclTypeInfoDecl(tdecl: IRTypedeclTypeDecl): string {
+        const ctname = TransformCPPNameManager.convertTypeKey(tdecl.tkey);
+        const ttid = this.typeInfoManager.getTypeInfo(tdecl.tkey);
+
+        const fttid = this.typeInfoManager.getTypeInfo(tdecl.valuetype.tkeystr);
+
+        const superlist = (this.irasm.concretesupertypes.get(tdecl.tkey) as IRTypeSignature[]).map((tt) => this.typeInfoManager.getTypeInfo(tt.tkeystr).bsqtypeid).sort();
+        let superdecl = "";
+        let supertable = "nullptr";
+        if(superlist.length !== 0) {
+            superdecl = `    inline constexpr uint32_t g_supertypes_${ctname}[${superlist.length}] = { ${superlist.join(", ")} };\n`;
+            supertable = `g_supertypes_${ctname}`;
+        }
+        
+        const ftdecl = `    inline constexpr TypeLayoutInfo g_ftable_${ctname}[1] = { { -1, ${fttid.bsqtypeid}, 0, 0, "value", "value" } };\n`;
+        const ftable = `g_ftable_${ctname}`;
+
+        return `namespace ᐸRuntimeᐳ {\n` +
+            superdecl +
+            ftdecl +
+            `    inline constexpr TypeInfo g_typeinfo_${ctname} = {\n` +
+            `        ${ttid.bsqtypeid},\n` +
+            `        ${ttid.bytesize},\n` +
+            `        ${ttid.slotcount},\n` +
+            `        LayoutTag::${ttid.tag},\n` +
+            `        ${ttid.ptrmask !== undefined ? ('"' + ttid.ptrmask + '"') : "nullptr"},\n` +
+            `        ${supertable},\n` +
+            `        ${superlist.length},\n` +
+            `        ${ftable},\n` +
+            `        1,\n` +
+            `        ${ttid.itable.length !== 0 ? "xxx" : "nullptr"},\n` +
+            `        ${ttid.itable.length},\n` +
+            `        TypeOpDispatchInfo{ (ValidatingConstructorFp)validatingConstructor_${ctname}, (JSONParseToBSQFp)&jsonParseToBSQ_Typedecl, (ParseToBSQFp)&parseToBSQ_Typedecl, (BSQToJSONFp)&bsqToJSON_Typedecl, (BSQToBAPIFp)&bsqToBAPI_Typedecl, (DisplayValueFp)&displayValue_Typedecl },\n` +
+            `        "${tdecl.tkey}",\n` +
+            `        ${ttid.quickrelease}\n` +
+            `    };\n` +
+            `}`;
+    }
+
     private emitListTypeInfoDecl(tdecl: IRListTypeDecl): [string, string] {
         const ctname = TransformCPPNameManager.convertTypeKey(tdecl.tkey);
         const ttid = this.typeInfoManager.getTypeInfo(tdecl.tkey);
@@ -2370,7 +2409,6 @@ class CPPEmitter {
         const ctname = TransformCPPNameManager.convertTypeKey(tdecl.tkey);
         const ctrepr = this.typeInfoManager.emitTypeAsStd(tdecl.tkey);
 
-        const voptttname = TransformCPPNameManager.convertTypeKey(tdecl.valuetype.tkeystr);
         const voptt = this.typeInfoManager.emitTypeAsStd(tdecl.valuetype.tkeystr);
         const valuetype = this.typeInfoManager.emitTypeAsMemberField(tdecl.valuetype.tkeystr);
 
@@ -2391,33 +2429,14 @@ class CPPEmitter {
             "") +
             `};`;
 
-        const typeinfodecl = this.emitEntityTypeInfoDecl(tdecl);
-
-        const bsqparsedecl = `std::optional<${ctrepr}> BSQ_parse${ctname}();`;
-        
-        const bsqemitdecl = `void BSQ_emit${ctname}(${ctrepr} vv);`;
-        const bsqemitdef = `void BSQ_emit${ctname}(${ctrepr} vv) {\n` +
-        `    ᐸRuntimeᐳ::tl_bosque_info.current_task->bsqemitter.emit${voptttname}(vv.value);\n` +
-        `    ᐸRuntimeᐳ::tl_bosque_info.current_task->bsqemitter.emitSymbol('<'); \n` +
-        `    ᐸRuntimeᐳ::tl_bosque_info.current_task->bsqemitter.emitLiteralContent("${tdecl.tkey}"); \n` +
-        `    ᐸRuntimeᐳ::tl_bosque_info.current_task->bsqemitter.emitSymbol('>'); \n` +
-        `}`;
+        const typeinfodecl = this.emitTypeDeclTypeInfoDecl(tdecl);
 
         if(vfuncinfo.length === 0 && valfuncinfo.length === 0 && chkextra === undefined) {
-            const bsqparsedef = `std::optional<${ctrepr}> BSQ_parse${ctname}() {\n` +
-            `    std::optional<${voptt}> cc = ᐸRuntimeᐳ::tl_bosque_info.current_task->bsqparser.parse${voptttname}();\n` +
-            `    if(!cc.has_value()) { return std::nullopt; }\n` +
-            `    if(ᐸRuntimeᐳ::tl_bosque_info.current_task->bsqparser.peekSymbol('<')) {\n` +
-            `        if(!ᐸRuntimeᐳ::tl_bosque_info.current_task->bsqparser.ensureAndConsumeSymbol('<')) { return std::nullopt; };\n` +
-            `        if(!ᐸRuntimeᐳ::tl_bosque_info.current_task->bsqparser.ensureAndConsumeType("${tdecl.tkey}")) { return std::nullopt; };\n` +
-            `        if(!ᐸRuntimeᐳ::tl_bosque_info.current_task->bsqparser.ensureAndConsumeSymbol('>')) { return std::nullopt; };\n` +
-            '    }\n' +
-            `    return std::make_optional<${ctrepr}>(${ctname}{ cc.value() });\n` +
-            '}';
+            const consdecl = `inline void validatingConstructor_${ctname}(void** args, void* trgt) { *(${ctname}*)trgt = ${ctname}{*((${voptt}*)args[0])}; }\n`;
 
             return [
-                [tclass, typeinfodecl, bsqparsedecl, bsqemitdecl].join("\n"), 
-                [bsqparsedef, bsqemitdef].join("\n")
+                [tclass, consdecl, typeinfodecl].join("\n"), 
+                ""
             ];
         }
         else {
@@ -2428,30 +2447,23 @@ class CPPEmitter {
                 ...(chkextra || []),
                 ...tdecl.allInvariants.map((inv) => {
                     const ifname = TransformCPPNameManager.generateNameForInvariantFunction(inv.containingtype.tkeystr, inv.ii);
-                    return `if(!((bool)${ifname}(vv))) { return std::nullopt; };`;
+                    return `${RUNTIME_NAMESPACE}::bsq_validate((bool)${ifname}(vv), "BAPI -> BSQ", 0, nullptr, "Invariant check failed");`;
                 }),
                 ...tdecl.allValidates.map((val) => {
                     const vfname = TransformCPPNameManager.generateNameForValidateFunction(val.containingtype.tkeystr, val.ii);
-                    return `if(!((bool)${vfname}(vv))) { return std::nullopt; };`;
+                    return `${RUNTIME_NAMESPACE}::bsq_validate((bool)${vfname}(vv), "BAPI -> BSQ", 0, nullptr, "Validation check failed");`;
                 })
             ].join("\n    ");
 
-            const bsqparsedef = `std::optional<${ctrepr}> BSQ_parse${ctname}() {\n` +
-            `    std::optional<${voptt}> cc = ᐸRuntimeᐳ::tl_bosque_info.current_task->bsqparser.parse${voptttname}();\n` +
-            `    if(!cc.has_value()) { return std::nullopt; }\n` +
-            `    if(ᐸRuntimeᐳ::tl_bosque_info.current_task->bsqparser.peekSymbol('<')) {\n` +
-            `        if(!ᐸRuntimeᐳ::tl_bosque_info.current_task->bsqparser.ensureAndConsumeSymbol('<')) { return std::nullopt; };\n` +
-            `        if(!ᐸRuntimeᐳ::tl_bosque_info.current_task->bsqparser.ensureAndConsumeType("${tdecl.tkey}")) { return std::nullopt; };\n` +
-            `        if(!ᐸRuntimeᐳ::tl_bosque_info.current_task->bsqparser.ensureAndConsumeSymbol('>')) { return std::nullopt; };\n` +
-            '    }\n\n' +
-            `    ${voptt} vv = cc.value();\n` +
+            const consdecl = `inline void validatingConstructor_${ctname}(void** args, void* trgt) {\n` +
+            `    ${voptt} vv = *((${voptt}*)args[0]);\n` +
             `    ${allchks}\n\n` +
-            `    return std::make_optional<${ctrepr}>(${ctname}{ vv });\n` +
-            '}';
+            `    *(${ctname}*)trgt = ${ctname}{vv};\n` +
+            `}\n`;
 
             return [
-                [tclass, typeinfodecl, ivdecls, bsqparsedecl, bsqemitdecl].join("\n"), 
-                [ivdefs, bsqparsedef, bsqemitdef].join("\n")
+                [tclass, ivdecls, consdecl, typeinfodecl].join("\n"), 
+                [ivdefs].join("\n")
             ];
         }
     }
@@ -2460,13 +2472,13 @@ class CPPEmitter {
         const echks: string[] = [];
         if(tdecl.rngchk !== undefined) {
             if(tdecl.rngchk.min === undefined) {
-                echks.push(`if(${this.emitIRImmediateExpression(tdecl.rngchk.max as IRImmediateExpression)} < vv) { return std::nullopt; };`);
+                echks.push(`${RUNTIME_NAMESPACE}::bsq_validate((bool)(vv <= ${this.emitIRImmediateExpression(tdecl.rngchk.max as IRImmediateExpression)}), "BAPI -> BSQ", 0, nullptr, "Range check failed");`);
             }
             else if(tdecl.rngchk.max === undefined) {
-                echks.push(`if(vv < ${this.emitIRImmediateExpression(tdecl.rngchk.min as IRImmediateExpression)}) { return std::nullopt; };`);
+                echks.push(`${RUNTIME_NAMESPACE}::bsq_validate((bool)(${this.emitIRImmediateExpression(tdecl.rngchk.min as IRImmediateExpression)} <= vv), "BAPI -> BSQ", 0, nullptr, "Range check failed");`);
             }
             else {
-                echks.push(`if((vv < ${this.emitIRImmediateExpression(tdecl.rngchk.min)}) || (${this.emitIRImmediateExpression(tdecl.rngchk.max)} < vv)) { return std::nullopt; };`);
+                echks.push(`${RUNTIME_NAMESPACE}::bsq_validate((bool)(${this.emitIRImmediateExpression(tdecl.rngchk.min)} <= vv) & (bool)(vv <= ${this.emitIRImmediateExpression(tdecl.rngchk.max)}), "BAPI -> BSQ", 0, nullptr, "Range check failed");`);
             }
         }
 
@@ -2477,17 +2489,17 @@ class CPPEmitter {
         let echks: string[] = [];
         if(tcstr.rngchk !== undefined) {
             if(tcstr.rngchk.min === undefined) {
-                echks.push(`if(${this.emitIRImmediateExpression(tcstr.rngchk.max as IRImmediateExpression)} < ᐸRuntimeᐳ::XNat{vv.size()}) { return std::nullopt; };`);
+                echks.push(`${RUNTIME_NAMESPACE}::bsq_validate((bool)(ᐸRuntimeᐳ::XNat{vv.size()} <= ${this.emitIRImmediateExpression(tcstr.rngchk.max as IRImmediateExpression)}), "BAPI -> BSQ", 0, nullptr, "Range check failed");`);
             }
             else if(tcstr.rngchk.max === undefined) {
-                echks.push(`if(ᐸRuntimeᐳ::XNat{vv.size()} < ${this.emitIRImmediateExpression(tcstr.rngchk.min as IRImmediateExpression)}) { return std::nullopt; };`);
+                echks.push(`${RUNTIME_NAMESPACE}::bsq_validate((bool)(${this.emitIRImmediateExpression(tcstr.rngchk.min as IRImmediateExpression)} <= ᐸRuntimeᐳ::XNat{vv.size()}), "BAPI -> BSQ", 0, nullptr, "Range check failed");`);
             }
             else {
-                echks.push(`if((ᐸRuntimeᐳ::XNat{vv.size()} < ${this.emitIRImmediateExpression(tcstr.rngchk.min)}) || (${this.emitIRImmediateExpression(tcstr.rngchk.max)} < ᐸRuntimeᐳ::XNat{vv.size()})) { return std::nullopt; };`);
+                echks.push(`${RUNTIME_NAMESPACE}::bsq_validate((bool)(${this.emitIRImmediateExpression(tcstr.rngchk.min)} <= ᐸRuntimeᐳ::XNat{vv.size()}) & (bool)(ᐸRuntimeᐳ::XNat{vv.size()} <= ${this.emitIRImmediateExpression(tcstr.rngchk.max)}), "BAPI -> BSQ", 0, nullptr, "Range check failed");`);
             }
         }
         if(tcstr.rechk !== undefined) {
-            echks.push(`if(!boost::regex_match(vv.begin(), vv.end(), ᐸRuntimeᐳ::g_cregexs[${tcstr.rechk.regexID}])) { return std::nullopt; };`);
+            echks.push(`${RUNTIME_NAMESPACE}::bsq_validate(boost::regex_match(vv.begin(), vv.end(), ᐸRuntimeᐳ::g_cregexs[${tcstr.rechk.regexID}]), "BAPI -> BSQ", 0, nullptr, "Regex check failed");`);
         }
 
         return this.emitGeneralTypeDeclInfo(tcstr, echks);
@@ -2497,17 +2509,17 @@ class CPPEmitter {
         let echks: string[] = [];
         if(tstr.rngchk !== undefined) {
             if(tstr.rngchk.min === undefined) {
-                echks.push(`if(${this.emitIRImmediateExpression(tstr.rngchk.max as IRImmediateExpression)} < ᐸRuntimeᐳ::XNat{vv.size()}) { return std::nullopt; };`);
+                echks.push(`${RUNTIME_NAMESPACE}::bsq_validate((bool)(ᐸRuntimeᐳ::XNat{vv.size()} <= ${this.emitIRImmediateExpression(tstr.rngchk.max as IRImmediateExpression)}), "BAPI -> BSQ", 0, nullptr, "Range check failed");`);
             }
             else if(tstr.rngchk.max === undefined) {
-                echks.push(`if(ᐸRuntimeᐳ::XNat{vv.size()} < ${this.emitIRImmediateExpression(tstr.rngchk.min as IRImmediateExpression)}) { return std::nullopt; };`);
+                echks.push(`${RUNTIME_NAMESPACE}::bsq_validate((bool)(${this.emitIRImmediateExpression(tstr.rngchk.min as IRImmediateExpression)} <= ᐸRuntimeᐳ::XNat{vv.size()}), "BAPI -> BSQ", 0, nullptr, "Range check failed");`);
             }
             else {
-                echks.push(`if((ᐸRuntimeᐳ::XNat{vv.size()} < ${this.emitIRImmediateExpression(tstr.rngchk.min)}) || (${this.emitIRImmediateExpression(tstr.rngchk.max)} < ᐸRuntimeᐳ::XNat{vv.size()})) { return std::nullopt; };`);
+                echks.push(`${RUNTIME_NAMESPACE}::bsq_validate((bool)(${this.emitIRImmediateExpression(tstr.rngchk.min)} <= ᐸRuntimeᐳ::XNat{vv.size()}) & (bool)(ᐸRuntimeᐳ::XNat{vv.size()} <= ${this.emitIRImmediateExpression(tstr.rngchk.max)}), "BAPI -> BSQ", 0, nullptr, "Range check failed");`);
             }
         }
         if(tstr.rechk !== undefined) {
-            echks.push(`if(!boost::regex_match(vv.begin(), vv.end(), ᐸRuntimeᐳ::g_uregexs[${tstr.rechk.regexID}])) { return std::nullopt; };`);
+            echks.push(`${RUNTIME_NAMESPACE}::bsq_validate(boost::regex_match(vv.begin(), vv.end(), ᐸRuntimeᐳ::g_uregexs[${tstr.rechk.regexID}]), "BAPI -> BSQ", 0, nullptr, "Regex check failed");`);
         }
 
         return this.emitGeneralTypeDeclInfo(tstr, echks);

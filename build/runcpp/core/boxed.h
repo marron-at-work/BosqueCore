@@ -50,7 +50,7 @@ namespace ᐸRuntimeᐳ
     void parseToBSQ_Some(const TypeInfo* tinfo, BAPILexer* lexer, void* resptr)
     {
         bool isisome = lexer->testIsKeyword("some");
-        bsq_validate(lexer->testIsKeyword("some") || lexer->testDataMatchesID(tinfo->typekey), "BAPI -> BSQ", 0, nullptr, "Expected 'some' keyword or full type for some<T>");
+        bsq_validate(lexer->testIsKeyword("some") || lexer->testIsType(tinfo->typekey), "BAPI -> BSQ", 0, nullptr, "Expected 'some' keyword or full type for some<T>");
         lexer->consume();
 
         bsq_validate((isisome && lexer->testIsSymbol('(')) || (!isisome && lexer->testIsSymbol('{')), "BAPI -> BSQ", 0, nullptr, "Missing open paren (or wrong paren) in some<T>");
