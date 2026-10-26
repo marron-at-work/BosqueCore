@@ -30,8 +30,17 @@ entity SourceInfo {
     field column: Nat;
 }
 
-entity CRegexDecl
-{
+entity IRCodeFileInfo {
+    field srcpath: string;
+    field filename: string;
+    field contents: string;
+
+    invariant $srcpath != "";
+    invariant $filename != "";
+    invariant $srcpath.endsWith($filename);
+}
+
+entity CRegexDecl {
     field regexID: Nat;
 
     %%All regex representations are stored as utf8 ByteBuffers
@@ -40,8 +49,7 @@ entity CRegexDecl
     field cppregex: ByteBuffer;
 }
 
-entity URegexDecl
-{
+entity URegexDecl {
     field regexID: Nat;
 
     %%All regex representations are stored as utf8 ByteBuffers

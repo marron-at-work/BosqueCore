@@ -2,8 +2,6 @@ import { IRCRegex, IRURegex, IRSourceInfo, emitTypeKey, parseTypeKey, emitString
 import { IRDashResultTypeSignature, IREListTypeSignature, IRFormatTypeSignature, IRLambdaParameterPackTypeSignature, IRNominalTypeSignature, IRTypeSignature } from "./irtype.js";
 import { IRBody, IRImmediateExpression, IRLiteralCRegexExpression, IRLiteralFormatCStringExpression, IRLiteralFormatStringExpression, IRLiteralUnicodeRegexExpression, IRSimpleExpression, IRStatement } from "./irbody.js";
 
-import { BAPILexer, BAPITokenKind, parseListOf } from "./irlexer.js";
-
 import assert from "node:assert";
 
 abstract class IRConditionDecl {

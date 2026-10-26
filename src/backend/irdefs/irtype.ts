@@ -1,6 +1,3 @@
-import { BAPITokenKind, BAPILexer, parseListOf } from "./irlexer.js";
-import { parseTypeKey, emitTypeKey } from "./irsupport.js";
-
 import assert from "node:assert";
 
 abstract class IRTypeSignature {

@@ -1,8 +1,6 @@
 import { emitConstKey, emitUTF8BytesAsByteBufferLiteral, emitUTF32BytesAsByteBufferLiteral, IRSourceInfo, parseConstKey, parseUTF8BytesAsByteBufferLiteral, parseUTF32BytesAsByteBufferLiteral } from "./irsupport.js";
 import { IREListTypeSignature, IRLambdaParameterPackTypeSignature, IRNominalTypeSignature, IRTypeSignature } from "./irtype.js";
 
-import { BAPILexer, BAPITokenKind } from "./irlexer.js";
-
 import assert from "node:assert";
 
 enum IRExpressionTag {
