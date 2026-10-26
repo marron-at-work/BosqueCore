@@ -1,4 +1,4 @@
-import { emitConstKey, emitUTF8BytesAsByteBufferLiteral, emitUTF32BytesAsByteBufferLiteral, IRSourceInfo, parseConstKey, parseUTF8BytesAsByteBufferLiteral, parseUTF32BytesAsByteBufferLiteral } from "./irsupport.js";
+import { IRSourceInfo } from "./irsupport.js";
 import { IREListTypeSignature, IRLambdaParameterPackTypeSignature, IRNominalTypeSignature, IRTypeSignature } from "./irtype.js";
 
 import assert from "node:assert";
@@ -175,7 +175,13 @@ abstract class IRExpression {
 
     abstract isSimpleExpression(): boolean;
 
-    abstract toBAPI(): string;
+    static jsonEmit_IRExpression(expr: IRExpression): object {
+        xxxx;
+    }
+
+    static jsonParse_IRExpression(obj: any): IRExpression {
+        xxxx;
+    }
 
     static parseBAPI(lexer: BAPILexer): IRExpression {
         const tok = lexer.peekToken();
@@ -267,16 +273,12 @@ abstract class IRInvokeExpression extends IRExpression {
         return false;
     }
 
-    toBAPI_IRInvokeExpression(): string {
-        assert(false, "IRInvokeExpression.toBAPI__IRInvokeExpression not implemented");
+    static jsonEmit_IRInvokeExpression(expr: IRInvokeExpression): object {
+        return IRExpression.jsonEmit_IRExpression(expr);
     }
 
-    static parseBAPI_IRInvokeExpression(lexer: BAPILexer): {ikey: string, args: IRSimpleExpression[]} {
-        assert(false, "IRInvokeExpression.parseBAPI_IRInvokeExpression not implemented");
-    }
-
-    static parseBAPIAsIRInvokeExpression(lexer: BAPILexer): IRInvokeExpression {
-        return IRExpression.parseBAPI(lexer) as IRInvokeExpression;
+    static jsonParse_IRInvokeExpression(obj: any): IRInvokeExpression {
+        return IRExpression.jsonParse_IRExpression(obj) as IRInvokeExpression;
     }
 }
 
@@ -284,6 +286,14 @@ abstract class IRInvokeExpression extends IRExpression {
 abstract class IRInvokeDirectExpression extends IRInvokeExpression {
     constructor(tag: IRExpressionTag, ikey: string, args: IRSimpleExpression[]) {
         super(tag, ikey, args);
+    }
+
+    static jsonEmit_IRInvokeDirectExpression(expr: IRInvokeDirectExpression): object {
+        return IRExpression.jsonEmit_IRExpression(expr);
+    }
+
+    static jsonParse_IRInvokeDirectExpression(obj: any): IRInvokeDirectExpression {
+        return IRExpression.jsonParse_IRExpression(obj) as IRInvokeDirectExpression;
     }
 }
 
@@ -301,6 +311,14 @@ abstract class IRInvokeImplicitsExpression extends IRInvokeExpression {
         this.ivartype = ivartype;
         this.passkind = passkind;
     }
+
+    static jsonEmit_IRInvokeImplicitsExpression(expr: IRInvokeImplicitsExpression): object {
+        return IRExpression.jsonEmit_IRExpression(expr);
+    }
+
+    static jsonParse_IRInvokeImplicitsExpression(obj: any): IRInvokeImplicitsExpression {
+        return IRExpression.jsonParse_IRExpression(obj) as IRInvokeImplicitsExpression;
+    }
 }
 
 /* This class represents expressions that construct composite (maybe allocating) values -- can only OOM (otherwise semantically safe) but we want to keep them ordered strongly */
@@ -316,16 +334,12 @@ abstract class IRConstructExpression extends IRExpression {
         return true;
     }
 
-    toBAPI_IRConstructExpression(): string {
-        assert(false, "IRConstructExpression.toBAPI__IRConstructExpression not implemented");
+    static jsonEmit_IRConstructExpression(expr: IRConstructExpression): object {
+        return IRExpression.jsonEmit_IRExpression(expr);
     }
 
-    static parseBAPI_IRConstructExpression(lexer: BAPILexer): {constype: IRNominalTypeSignature} {
-        assert(false, "IRConstructExpression.parseBAPI_IRConstructExpression not implemented");
-    }
-
-    static parseBAPIAsIRConstructExpression(lexer: BAPILexer): IRConstructExpression {
-        return IRExpression.parseBAPI(lexer) as IRConstructExpression;
+    static jsonParse_IRConstructExpression(obj: any): IRConstructExpression {
+        return IRExpression.jsonParse_IRExpression(obj) as IRConstructExpression;
     }
 }
 
@@ -339,8 +353,12 @@ abstract class IRSimpleExpression extends IRExpression {
         return true;
     }
 
-    static parseBAPIAsIRSimpleExpression(lexer: BAPILexer): IRSimpleExpression {
-        return IRExpression.parseBAPI(lexer) as IRSimpleExpression;
+    static jsonEmit_IRSimpleExpression(expr: IRSimpleExpression): object {
+        return IRExpression.jsonEmit_IRExpression(expr);
+    }
+
+    static jsonParse_IRSimpleExpression(obj: any): IRSimpleExpression {
+        return IRExpression.jsonParse_IRExpression(obj) as IRSimpleExpression;
     }
 }
 
@@ -350,8 +368,12 @@ abstract class IRImmediateExpression extends IRSimpleExpression {
         super(tag);
     }
 
-    static parseBAPIAsIRImmediateExpression(lexer: BAPILexer): IRImmediateExpression {
-        return IRExpression.parseBAPI(lexer) as IRImmediateExpression;
+    static jsonEmit_IRImmediateExpression(expr: IRImmediateExpression): object {
+        return IRExpression.jsonEmit_IRExpression(expr);
+    }
+
+    static jsonParse_IRImmediateExpression(obj: any): IRImmediateExpression {
+        return IRExpression.jsonParse_IRExpression(obj) as IRImmediateExpression;
     }
 }
 
@@ -361,8 +383,12 @@ abstract class IRLiteralExpression extends IRImmediateExpression {
         super(tag);
     }
 
-    static parseBAPIAsIRLiteralExpression(lexer: BAPILexer): IRLiteralExpression {
-        return IRExpression.parseBAPI(lexer) as IRLiteralExpression;
+    static jsonEmit_IRLiteralExpression(expr: IRLiteralExpression): object {
+        return IRExpression.jsonEmit_IRExpression(expr);
+    }
+
+    static jsonParse_IRLiteralExpression(obj: any): IRLiteralExpression {
+        return IRExpression.jsonParse_IRExpression(obj) as IRLiteralExpression;
     }
 }
 
@@ -383,12 +409,12 @@ abstract class IRAccessFieldExpression extends IRSimpleExpression {
         this.fieldtype = fieldtype;
     }
 
-    toBAPI_IRAccessFieldExpression(): string {
-        assert(false, "IRAccessFieldExpression.toBAPI__IRAccessFieldExpression not implemented");
+    static jsonEmit_IRAccessFieldExpression(expr: IRAccessFieldExpression): object {
+        return IRExpression.jsonEmit_IRExpression(expr);
     }
 
-    static parseBAPI_IRAccessFieldExpression(lexer: BAPILexer): {eexptype: IRNominalTypeSignature, eexp: IRSimpleExpression, intype: IRNominalTypeSignature, fieldname: string, fieldtype: IRTypeSignature} {
-        assert(false, "IRAccessFieldExpression.parseBAPI_IRAccessFieldExpression not implemented");
+    static jsonParse_IRAccessFieldExpression(obj: any): IRAccessFieldExpression {
+        return IRExpression.jsonParse_IRExpression(obj) as IRAccessFieldExpression;
     }
 }
 
@@ -1235,17 +1261,12 @@ class IRLiteralUnicodeRegexExpression extends IRLiteralExpression {
         this.regexID = regexID;
     }
 
-    override toBAPI(): string {
-        return `Assembly::LiteralUnicodeRegexExpression{${this.regexID}}`;
+    static jsonEmit_IRLiteralUnicodeRegexExpression(expr: IRLiteralUnicodeRegexExpression): object {
+        xxxx;
     }
 
-    static parseBAPIAsIRLiteralUnicodeRegexExpression(lexer: BAPILexer): IRLiteralUnicodeRegexExpression {
-        lexer.ensureAndConsumeToken(BAPITokenKind.TypeIdentifier);
-        lexer.ensureAndConsumeSymbol("{");
-        const regexID = parseInt(lexer.ensureAndConsumeToken(BAPITokenKind.NatLiteral));
-        lexer.ensureAndConsumeSymbol("}");
-
-        return new IRLiteralUnicodeRegexExpression(regexID);
+    static jsonParse_IRLiteralUnicodeRegexExpression(obj: any): IRLiteralUnicodeRegexExpression {
+        xxxx;
     }
 }
 
@@ -1257,17 +1278,12 @@ class IRLiteralCRegexExpression extends IRLiteralExpression {
         this.regexID = regexID;
     }
 
-    override toBAPI(): string {
-        return `Assembly::LiteralCRegexExpression{${this.regexID}}`;
+    static jsonEmit_IRLiteralCRegexExpression(expr: IRLiteralCRegexExpression): object {
+        xxxx;
     }
 
-    static parseBAPIAsIRLiteralCRegexExpression(lexer: BAPILexer): IRLiteralCRegexExpression {
-        lexer.ensureAndConsumeToken(BAPITokenKind.TypeIdentifier);
-        lexer.ensureAndConsumeSymbol("{");
-        const regexID = parseInt(lexer.ensureAndConsumeToken(BAPITokenKind.NatLiteral));
-        lexer.ensureAndConsumeSymbol("}");
-
-        return new IRLiteralCRegexExpression(regexID);
+    static jsonParse_IRLiteralCRegexExpression(obj: any): IRLiteralCRegexExpression {
+        xxxx;
     }
 }
 

@@ -1,4 +1,4 @@
-import { IRCRegex, IRURegex, IRSourceInfo, emitTypeKey, parseTypeKey, emitStringAsByteBufferLiteral, parseStringAsByteBufferLiteral, IRCodeFileInfo } from "./irsupport.js";
+import { IRCRegex, IRURegex, IRSourceInfo, IRCodeFileInfo } from "./irsupport.js";
 import { IRDashResultTypeSignature, IREListTypeSignature, IRFormatTypeSignature, IRLambdaParameterPackTypeSignature, IRNominalTypeSignature, IRTypeSignature } from "./irtype.js";
 import { IRBody, IRImmediateExpression, IRLiteralCRegexExpression, IRLiteralFormatCStringExpression, IRLiteralFormatStringExpression, IRLiteralUnicodeRegexExpression, IRSimpleExpression, IRStatement } from "./irbody.js";
 
@@ -300,41 +300,9 @@ abstract class IRAbstractNominalTypeDecl {
 
     abstract getDeclDependencyTypes(alltypes: Map<string, IRAbstractNominalTypeDecl>): IRTypeSignature[];
 
-    abstract toBAPI(): string;
-
-    static parseBAPI(lexer: BAPILexer): IRAbstractNominalTypeDecl {
-        const tok = lexer.peekToken();
-        if(tok.kind !== BAPITokenKind.TypeIdentifier) {
-            throw new Error(`Unexpected token ${tok.value} when parsing IRAbstractNominalTypeDecl`);
-        }
-
-        const ttypekey = tok.value;
-        if(ttypekey === 'Assembly::EnumTypeDecl') {
-            return IREnumTypeDecl.parseBAPIAsIREnumTypeDecl(lexer);
-        }
-        else if(ttypekey === 'Assembly::TypedeclSimpleTypeDecl') {
-            return IRTypedeclTypeDecl.parseBAPIAsIRTypedeclTypeDecl(lexer);
-        }
-        else if(ttypekey === 'Assembly::TypedeclBoundedTypeDecl') {
-            return IRTypedeclTypeDecl.parseBAPIAsIRTypedeclTypeDecl(lexer);
-        }
-        else if(ttypekey === 'Assembly::TypedeclCStringTypeDecl') {
-            return IRTypedeclCStringDecl.parseBAPIAsIRTypedeclCStringDecl(lexer);
-        }
-        else if(ttypekey === 'Assembly::TypedeclStringTypeDecl') {
-            return IRTypedeclStringDecl.parseBAPIAsIRTypedeclStringDecl(lexer);
-        }
-        else if(ttypekey === 'Assembly::PrimitiveEntityTypeDecl') {
-            return IRPrimitiveEntityTypeDecl.parseBAPIAsIRPrimitiveEntityTypeDecl(lexer);
-        }
-        else {
-            throw new Error(`Unexpected token ${tok.value} when parsing IRAbstractNominalTypeDecl`);
-        }
-    }
-
-    toBAPI_IRAbstractNominalTypeDecl(): string {
-        return [
-            emitTypeKey(this.tkey),
+    static jsonEmitMeta_IRAbstractNominalTypeDecl(tsig: IRAbstractNominalTypeDecl): object {
+        return { 
+            tkey: tsig.tkey, 
 
             //readonly invariants: IRInvariantDecl[];
             //readonly validates: IRValidateDecl[];
@@ -350,36 +318,81 @@ abstract class IRAbstractNominalTypeDecl {
     
             //TODO vtable info here
 
-            this.docstr !== undefined ? `some(${emitStringAsByteBufferLiteral(this.docstr.text)})` : "none",
+            docstr: tsig.docstr == undefined ? null : ["some", tsig.docstr.text],
             //readonly metatags: IRDeclarationMetaTag[];
 
-            `'${this.file}'`,
-            this.sinfo.toBAPI()
-        ].join(", ");
+            file: tsig.file,
+            sinfo: tsig.sinfo.jsonEmit()
+        };
     }
 
-    static parseBAPI_IRAbstractNominalTypeDecl(lexer: BAPILexer): { tkey: string, invariants: IRInvariantDecl[], validates: IRValidateDecl[], fields: IRMemberFieldDecl[], etag: "std" | "status" | "event", saturatedProvides: IRTypeSignature[], saturatedBFieldInfo: { containingtype: IRNominalTypeSignature, fkey: string, fname: string, ftype: IRTypeSignature }[], allInvariants: { containingtype: IRNominalTypeSignature, ii: number }[], allValidates: { containingtype: IRNominalTypeSignature, ii: number }[], docstr: IRDeclarationDocString | undefined, metatags: IRDeclarationMetaTag[], file: string, sinfo: IRSourceInfo } {
-        const tkey = lexer.parseTypeIdentifier();
-        lexer.ensureAndConsumeSymbol(',');
+    static jsonParseMeta_IRAbstractNominalTypeDecl(obj: any): [string, IRInvariantDecl[], IRValidateDecl[], IRMemberFieldDecl[], "std" | "status" | "event", IRTypeSignature[], { containingtype: IRNominalTypeSignature, fkey: string, fname: string, ftype: IRTypeSignature }[], { containingtype: IRNominalTypeSignature, ii: number }[], { containingtype: IRNominalTypeSignature, ii: number }[], IRDeclarationDocString | undefined, IRDeclarationMetaTag[], string, IRSourceInfo] {
+        return [
+            obj.tkey,
+            [], //obj.invariants,
+            [], //obj.validates,
+            [], //obj.fields,
+            "std", //obj.etag,
+            [], //obj.saturatedProvides,
+            [], //obj.saturatedBFieldInfo,
+            [], //obj.allInvariants,
+            [], //obj.allValidates,
+            obj.docstr == null ? undefined : new IRDeclarationDocString(obj.docstr[1]),
+            [], //obj.metatags,
+            obj.file,
+            IRSourceInfo.jsonParse(obj.sinfo)
+        ]
+    }
 
-        let docstr: IRDeclarationDocString | undefined = undefined;
-        if (lexer.peekTokenKind() === BAPITokenKind.NoneLiteral) {
-            lexer.consumeToken();
+    static jsonEmit_IRAbstractNominalTypeDecl(tsig: IRAbstractNominalTypeDecl): object {
+        if(tsig instanceof IREnumTypeDecl) {
+            return ["Assembly::EnumTypeDecl", IREnumTypeDecl.jsonEmit_IREnumTypeDecl(tsig)];
+        }
+        else if(tsig instanceof IRTypedeclSimpleTypeDecl) {
+            return ["Assembly::TypedeclSimpleTypeDecl", IRTypedeclSimpleTypeDecl.jsonEmit_IRTypedeclSimpleTypeDecl(tsig)];
+        }
+        else if(tsig instanceof IRTypedeclBoundedTypeDecl) {
+            return ["Assembly::TypedeclBoundedTypeDecl", IRTypedeclBoundedTypeDecl.jsonEmit_IRTypedeclBoundedTypeDecl(tsig)];
+        }
+        else if(tsig instanceof IRTypedeclCStringTypeDecl) {
+            return ["Assembly::TypedeclCStringTypeDecl", IRTypedeclCStringTypeDecl.jsonEmit_IRTypedeclCStringTypeDecl(tsig)];
+        }
+        else if(tsig instanceof IRTypedeclStringTypeDecl) {
+            return ["Assembly::TypedeclStringTypeDecl", IRTypedeclStringTypeDecl.jsonEmit_IRTypedeclStringTypeDecl(tsig)];
+        }
+        else if(tsig instanceof IRPrimitiveEntityTypeDecl) {
+            return ["Assembly::PrimitiveEntityTypeDecl", IRPrimitiveEntityTypeDecl.jsonEmit_IRPrimitiveEntityTypeDecl(tsig)];
         }
         else {
-            lexer.consumeToken();
-            lexer.ensureAndConsumeSymbol('(');
-            const bbytes = parseStringAsByteBufferLiteral(lexer);
-            lexer.ensureAndConsumeSymbol(')');
-
-            docstr = new IRDeclarationDocString(bbytes);
+            assert(false, "Unknown IRAbstractNominalTypeDecl subclass");
         }
-        lexer.ensureAndConsumeSymbol(',');
+    }
 
-        const file = lexer.ensureAndConsumeToken(BAPITokenKind.CStringLiteral).slice(1, -1);
-        lexer.ensureAndConsumeSymbol(',');
-        const sinfo = IRSourceInfo.parseBAPI(lexer);
-        return { tkey, invariants: [], validates: [], fields: [], etag: "std", saturatedProvides: [], saturatedBFieldInfo: [], allInvariants: [], allValidates: [], docstr, metatags: [], file, sinfo };
+    static jsonParse_IRAbstractNominalTypeDecl(obj: any): IRAbstractNominalTypeDecl {
+        const kind = (obj as any[])[0] as string;
+        const data = (obj as any[])[1];
+
+        if(kind === "Assembly::EnumTypeDecl") {
+            return IREnumTypeDecl.jsonParse_IREnumTypeDecl(data);
+        }
+        else if(kind === "Assembly::TypedeclSimpleTypeDecl") {
+            return IRTypedeclSimpleTypeDecl.jsonParse_IRTypedeclSimpleTypeDecl(data);
+        }
+        else if(kind === "Assembly::TypedeclBoundedTypeDecl") {
+            return IRTypedeclBoundedTypeDecl.jsonParse_IRTypedeclBoundedTypeDecl(data);
+        }
+        else if(kind === "Assembly::TypedeclCStringTypeDecl") {
+            return IRTypedeclCStringTypeDecl.jsonParse_IRTypedeclCStringTypeDecl(data);
+        }
+        else if(kind === "Assembly::TypedeclStringTypeDecl") {
+            return IRTypedeclStringTypeDecl.jsonParse_IRTypedeclStringTypeDecl(data);
+        }
+        else if(kind === "Assembly::PrimitiveEntityTypeDecl") {
+            return IRPrimitiveEntityTypeDecl.jsonParse_IRPrimitiveEntityTypeDecl(data);
+        }
+        else {
+            assert(false, "Unknown IRAbstractNominalTypeDecl kind");
+        }
     }
 }
 
@@ -388,12 +401,12 @@ abstract class IRAbstractEntityTypeDecl extends IRAbstractNominalTypeDecl {
         super(tkey, invariants, validates, fields, etag, saturatedProvides, saturatedBFieldInfo, allInvariants, allValidates, docstr, metatags, file, sinfo);
     }
 
-    toBAPI_IRAbstractEntityTypeDecl(): string {
-        return this.toBAPI_IRAbstractNominalTypeDecl();
+    static jsonEmit_IRAbstractEntityTypeDecl(tsig: IRAbstractEntityTypeDecl): object {
+        return IRAbstractNominalTypeDecl.jsonEmit_IRAbstractNominalTypeDecl(tsig);
     }
 
-    static parseBAPI_IRAbstractEntityTypeDecl(lexer: BAPILexer): { tkey: string, invariants: IRInvariantDecl[], validates: IRValidateDecl[], fields: IRMemberFieldDecl[], etag: "std" | "status" | "event", saturatedProvides: IRTypeSignature[], saturatedBFieldInfo: { containingtype: IRNominalTypeSignature, fkey: string, fname: string, ftype: IRTypeSignature }[], allInvariants: { containingtype: IRNominalTypeSignature, ii: number }[], allValidates: { containingtype: IRNominalTypeSignature, ii: number }[], docstr: IRDeclarationDocString | undefined, metatags: IRDeclarationMetaTag[], file: string, sinfo: IRSourceInfo } {
-        return IRAbstractNominalTypeDecl.parseBAPI_IRAbstractNominalTypeDecl(lexer);
+    static jsonParse_IRAbstractEntityTypeDecl(obj: any): IRAbstractEntityTypeDecl {
+        return IRAbstractNominalTypeDecl.jsonParse_IRAbstractNominalTypeDecl(obj) as IRAbstractEntityTypeDecl;
     }
 }
 
@@ -409,213 +422,201 @@ class IREnumTypeDecl extends IRAbstractEntityTypeDecl {
         return [];
     }
 
-    override toBAPI(): string {
-        return `Assembly::IREnumTypeDecl{${this.toBAPI_IRAbstractEntityTypeDecl()}, List<CString>{${this.members.map(m => `'${m}'`).join(", ")}}}`;
+    static jsonEmit_IREnumTypeDecl(tsig: IREnumTypeDecl): object {
+        return {
+            ...IRAbstractEntityTypeDecl.jsonEmit_IRAbstractEntityTypeDecl(tsig),
+            members: tsig.members
+        };
     }
 
-    static parseBAPIAsIREnumTypeDecl(lexer: BAPILexer): IREnumTypeDecl {
-        lexer.consumeToken(); //Assembly::IREnumTypeDecl
-        lexer.ensureAndConsumeSymbol("{");
-        const etdfields = IRAbstractEntityTypeDecl.parseBAPI_IRAbstractEntityTypeDecl(lexer);
-        const members = parseListOf<string>(lexer, '{', '}', ',', (ll) => ll.ensureAndConsumeToken(BAPITokenKind.CStringLiteral).slice(1, -1));
-        lexer.ensureAndConsumeSymbol("}");
-
-        return new IREnumTypeDecl(etdfields.tkey, etdfields.docstr, etdfields.file, etdfields.sinfo, members);
+    static jsonParse_IREnumTypeDecl(obj: any): IREnumTypeDecl {
+        const base = IRAbstractEntityTypeDecl.jsonParse_IRAbstractEntityTypeDecl(obj);
+        return new IREnumTypeDecl(base.tkey, base.docstr, base.file, base.sinfo, obj.members);
     }
 }
 
-class IRTypedeclTypeDecl extends IRAbstractEntityTypeDecl {
+class IRTypedeclRngCheck {
+    readonly min: IRImmediateExpression | undefined;
+    readonly max: IRImmediateExpression | undefined;
+
+    constructor(min: IRImmediateExpression | undefined, max: IRImmediateExpression | undefined) {
+        this.min = min;
+        this.max = max;
+    }
+
+    static jsonEmit_IRTypedeclRngCheck(rngchk: IRTypedeclRngCheck): object {
+        return {
+            min: rngchk.min === undefined ? null : ["some", IRImmediateExpression.jsonEmit_IRImmediateExpression(rngchk.min)],
+            max: rngchk.max === undefined ? null : ["some", IRImmediateExpression.jsonEmit_IRImmediateExpression(rngchk.max)]
+        };
+    }
+
+    static jsonParse_IRTypedeclRngCheck(obj: any): IRTypedeclRngCheck {
+        return new IRTypedeclRngCheck(
+            obj.min !== null ? IRImmediateExpression.jsonParse_IRImmediateExpression(obj.min[1]) : undefined,
+            obj.max !== null ? IRImmediateExpression.jsonParse_IRImmediateExpression(obj.max[1]) : undefined
+        );
+    }
+}
+
+abstract class IRTypedeclAbstractTypeDecl extends IRAbstractEntityTypeDecl {
     readonly valuetype: IRTypeSignature;
     readonly iskeytype: boolean;
     readonly isnumerictype: boolean;
-   
-    readonly rngchk: {min: IRImmediateExpression | undefined, max: IRImmediateExpression | undefined} | undefined;
 
-    constructor(tkey: string, invariants: IRInvariantDecl[], validates: IRValidateDecl[], saturatedProvides: IRTypeSignature[], allInvariants: { containingtype: IRNominalTypeSignature, ii: number }[], allValidates: { containingtype: IRNominalTypeSignature, ii: number }[], docstr: IRDeclarationDocString | undefined, metatags: IRDeclarationMetaTag[], file: string, sinfo: IRSourceInfo, valuetype: IRTypeSignature, iskeytype: boolean, isnumerictype: boolean, rngchk: {min: IRImmediateExpression | undefined, max: IRImmediateExpression | undefined} | undefined) {
+    constructor(tkey: string, invariants: IRInvariantDecl[], validates: IRValidateDecl[], saturatedProvides: IRTypeSignature[], allInvariants: { containingtype: IRNominalTypeSignature, ii: number }[], allValidates: { containingtype: IRNominalTypeSignature, ii: number }[], docstr: IRDeclarationDocString | undefined, metatags: IRDeclarationMetaTag[], file: string, sinfo: IRSourceInfo, valuetype: IRTypeSignature, iskeytype: boolean, isnumerictype: boolean) {
         super(tkey, invariants, validates, [], "std", saturatedProvides, [], allInvariants, allValidates, docstr, metatags, file, sinfo);
         this.valuetype = valuetype;
         this.iskeytype = iskeytype;
         this.isnumerictype = isnumerictype;
-        this.rngchk = rngchk;
     }
 
     override getDeclDependencyTypes(alltypes: Map<string, IRAbstractNominalTypeDecl>): IRTypeSignature[] {
         return [];
     }
 
-    toBAPI_RNGCheck(): string {
-        assert(this.rngchk !== undefined, "RNGCheck is undefined");
-
-        const minstr = this.rngchk.min !== undefined ? `some(${this.rngchk.min.toBAPI()})` : 'none';
-        const maxstr = this.rngchk.max !== undefined ? `some(${this.rngchk.max.toBAPI()})` : 'none';
-
-        return `Assembly::TypedeclRangeCheck{${minstr}, ${maxstr}}`;
+    static jsonEmit_IRTypedeclAbstractTypeDecl(tsig: IRTypedeclAbstractTypeDecl): object {
+        return IRAbstractNominalTypeDecl.jsonEmit_IRAbstractNominalTypeDecl(tsig);
     }
 
-    static parseBAPI_RNGCheck(lexer: BAPILexer): {min: IRImmediateExpression | undefined, max: IRImmediateExpression | undefined} {
-        lexer.consumeToken(); //Assembly::TypedeclRangeCheck
-        lexer.ensureAndConsumeSymbol("{");
-        
-        let minexpr: IRImmediateExpression | undefined = undefined;
-        const mintok = lexer.consumeToken();
-        if(mintok.kind !== BAPITokenKind.NoneLiteral) {
-            lexer.ensureAndConsumeSymbol("(");
-            minexpr = IRImmediateExpression.parseBAPIAsIRImmediateExpression(lexer);
-            lexer.ensureAndConsumeSymbol(")");
-        }
-
-        lexer.ensureAndConsumeSymbol(",");
-
-        let maxexpr: IRImmediateExpression | undefined = undefined;
-        const maxtok = lexer.consumeToken();
-        if(maxtok.kind !== BAPITokenKind.NoneLiteral) {
-            lexer.ensureAndConsumeSymbol("(");
-            maxexpr = IRImmediateExpression.parseBAPIAsIRImmediateExpression(lexer);
-            lexer.ensureAndConsumeSymbol(")");
-        }
-
-        lexer.ensureAndConsumeSymbol("}");
-
-        return {min: minexpr, max: maxexpr};
+    static jsonParse_IRTypedeclAbstractTypeDecl(obj: any): IRTypedeclAbstractTypeDecl {
+        return IRAbstractNominalTypeDecl.jsonParse_IRAbstractNominalTypeDecl(obj) as IRTypedeclAbstractTypeDecl;
     }
 
-    override toBAPI(): string {
-        if(this.rngchk === undefined) {
-            return `Assembly::TypedeclSimpleTypeDecl{${this.toBAPI_IRAbstractEntityTypeDecl()}, ${this.valuetype.toBAPI()}, ${this.iskeytype}, ${this.isnumerictype}}`;
-        }
-        else {
-            return `Assembly::TypedeclBoundedTypeDecl{${this.toBAPI_IRAbstractEntityTypeDecl()}, ${this.valuetype.toBAPI()}, ${this.iskeytype}, ${this.isnumerictype}, ${this.toBAPI_RNGCheck()}}`;
+    static jsonEmitMeta_IRTypedeclAbstractTypeDecl(tsig: IRTypedeclAbstractTypeDecl): object {
+        return {
+            valuetype: IRTypeSignature.jsonEmit_IRTypeSignature(tsig.valuetype),
+            iskeytype: tsig.iskeytype,
+            isnumerictype: tsig.isnumerictype
         }
     }
 
-    static parseBAPIAsIRTypedeclTypeDecl(lexer: BAPILexer): IRTypedeclTypeDecl {
-        const tok = lexer.consumeToken();
-
-        const etdfields = IRAbstractEntityTypeDecl.parseBAPI_IRAbstractEntityTypeDecl(lexer);
-        lexer.ensureAndConsumeSymbol(",");
-        const valuetype = IRTypeSignature.parseBAPI(lexer);
-        lexer.ensureAndConsumeSymbol(",");
-        const ikeytype = lexer.consumeToken().kind === BAPITokenKind.TrueLiteral;
-        lexer.ensureAndConsumeSymbol(",");
-        const inumerictype = lexer.consumeToken().kind === BAPITokenKind.TrueLiteral;
-
-        if(tok.value === 'Assembly::TypedeclSimpleTypeDecl') {
-            lexer.ensureAndConsumeSymbol("}");
-
-            return new IRTypedeclTypeDecl(etdfields.tkey, etdfields.invariants, etdfields.validates, etdfields.saturatedProvides, etdfields.allInvariants, etdfields.allValidates, etdfields.docstr, etdfields.metatags, etdfields.file, etdfields.sinfo, valuetype, ikeytype, inumerictype, undefined);
-        }
-        else if(tok.value === 'Assembly::TypedeclBoundedTypeDecl') {
-            lexer.ensureAndConsumeSymbol(",");
-            const rngchk = IRTypedeclTypeDecl.parseBAPI_RNGCheck(lexer);
-            lexer.ensureAndConsumeSymbol("}");
-
-            return new IRTypedeclTypeDecl(etdfields.tkey, etdfields.invariants, etdfields.validates, etdfields.saturatedProvides, etdfields.allInvariants, etdfields.allValidates, etdfields.docstr, etdfields.metatags, etdfields.file, etdfields.sinfo, valuetype, ikeytype, inumerictype, rngchk);
-        }
-        else {
-            assert(false, `Unexpected token ${tok.value} when parsing IRTypedeclTypeDecl`);
-        }
+    static jsonParseMeta_IRTypedeclAbstractTypeDecl(obj: any): [IRTypeSignature, boolean, boolean] {
+        return [
+            IRTypeSignature.jsonParse_IRTypeSignature(obj.valuetype),
+            obj.iskeytype,
+            obj.isnumerictype
+        ];
     }
 }
 
-class IRTypedeclCStringDecl extends IRTypedeclTypeDecl {
+class IRTypedeclSimpleTypeDecl extends IRTypedeclAbstractTypeDecl {
+    constructor(tkey: string, invariants: IRInvariantDecl[], validates: IRValidateDecl[], saturatedProvides: IRTypeSignature[], allInvariants: { containingtype: IRNominalTypeSignature, ii: number }[], allValidates: { containingtype: IRNominalTypeSignature, ii: number }[], docstr: IRDeclarationDocString | undefined, metatags: IRDeclarationMetaTag[], file: string, sinfo: IRSourceInfo, valuetype: IRTypeSignature, iskeytype: boolean, isnumerictype: boolean) {
+        super(tkey, invariants, validates, saturatedProvides, allInvariants, allValidates, docstr, metatags, file, sinfo, valuetype, iskeytype, isnumerictype);
+    }
+
+    static jsonEmit_IRTypedeclSimpleTypeDecl(tsig: IRTypedeclSimpleTypeDecl): object {
+        const ntdv = IRAbstractNominalTypeDecl.jsonParseMeta_IRAbstractNominalTypeDecl(tsig);
+        const stt = {
+            valuetype: IRTypeSignature.jsonEmit_IRTypeSignature(tsig.valuetype),
+            iskeytype: tsig.iskeytype,
+            isnumerictype: tsig.isnumerictype
+        };
+
+        return { ...ntdv, ...stt };
+    }
+
+    static jsonParse_IRTypedeclSimpleTypeDecl(obj: any): IRTypedeclSimpleTypeDecl {
+        const ntv = IRAbstractNominalTypeDecl.jsonParseMeta_IRAbstractNominalTypeDecl(obj);
+        const stv = IRTypedeclAbstractTypeDecl.jsonParseMeta_IRTypedeclAbstractTypeDecl(obj);
+        
+        return new IRTypedeclSimpleTypeDecl(
+            ntv[0], ntv[1], ntv[2], ntv[5], ntv[7], ntv[8], ntv[9], ntv[10], ntv[11], ntv[12], 
+            ...stv
+        );
+    }
+}
+
+class IRTypedeclBoundedTypeDecl extends IRTypedeclAbstractTypeDecl {
+    readonly rngchk: IRTypedeclRngCheck;
+    
+    constructor(tkey: string, invariants: IRInvariantDecl[], validates: IRValidateDecl[], saturatedProvides: IRTypeSignature[], allInvariants: { containingtype: IRNominalTypeSignature, ii: number }[], allValidates: { containingtype: IRNominalTypeSignature, ii: number }[], docstr: IRDeclarationDocString | undefined, metatags: IRDeclarationMetaTag[], file: string, sinfo: IRSourceInfo, valuetype: IRTypeSignature, iskeytype: boolean, isnumerictype: boolean, rngchk: IRTypedeclRngCheck) {
+        super(tkey, invariants, validates, saturatedProvides, allInvariants, allValidates, docstr, metatags, file, sinfo, valuetype, iskeytype, isnumerictype);
+        this.rngchk = rngchk;
+    }
+
+    static jsonEmit_IRTypedeclBoundedTypeDecl(tsig: IRTypedeclBoundedTypeDecl): object {
+        const ntdv = IRAbstractNominalTypeDecl.jsonEmit_IRAbstractNominalTypeDecl(tsig);
+        const stt = IRTypedeclAbstractTypeDecl.jsonEmit_IRTypedeclAbstractTypeDecl(tsig);
+        const rngchk = IRTypedeclRngCheck.jsonEmit_IRTypedeclRngCheck(tsig.rngchk);
+        
+        return { ...ntdv, ...stt, rngchk };
+    }
+
+    static jsonParse_IRTypedeclBoundedTypeDecl(obj: any): IRTypedeclBoundedTypeDecl {
+        const ntv = IRAbstractNominalTypeDecl.jsonParseMeta_IRAbstractNominalTypeDecl(obj);
+        const stv = IRTypedeclAbstractTypeDecl.jsonParseMeta_IRTypedeclAbstractTypeDecl(obj);
+        const rngchk = IRTypedeclRngCheck.jsonParse_IRTypedeclRngCheck(obj); 
+
+        return new IRTypedeclBoundedTypeDecl(
+            ntv[0], ntv[1], ntv[2], ntv[5], ntv[7], ntv[8], ntv[9], ntv[10], ntv[11], ntv[12], 
+            ...stv,
+            rngchk
+        );
+    }
+}
+
+class IRTypedeclCStringTypeDecl extends IRTypedeclAbstractTypeDecl {
+    readonly rngchk: IRTypedeclRngCheck | undefined;
     readonly rechk: IRLiteralCRegexExpression | undefined;
     
-    constructor(tkey: string, invariants: IRInvariantDecl[], validates: IRValidateDecl[], saturatedProvides: IRTypeSignature[], allInvariants: { containingtype: IRNominalTypeSignature, ii: number }[], allValidates: { containingtype: IRNominalTypeSignature, ii: number }[], docstr: IRDeclarationDocString | undefined, metatags: IRDeclarationMetaTag[], file: string, sinfo: IRSourceInfo, rngchk: {min: IRImmediateExpression | undefined, max: IRImmediateExpression | undefined} | undefined, rechk: IRLiteralCRegexExpression | undefined) {
-        super(tkey, invariants, validates, saturatedProvides, allInvariants, allValidates, docstr, metatags, file, sinfo, new IRNominalTypeSignature("CString"), true, false, rngchk);
+    constructor(tkey: string, invariants: IRInvariantDecl[], validates: IRValidateDecl[], saturatedProvides: IRTypeSignature[], allInvariants: { containingtype: IRNominalTypeSignature, ii: number }[], allValidates: { containingtype: IRNominalTypeSignature, ii: number }[], docstr: IRDeclarationDocString | undefined, metatags: IRDeclarationMetaTag[], file: string, sinfo: IRSourceInfo, rngchk: IRTypedeclRngCheck | undefined, rechk: IRLiteralCRegexExpression | undefined) {
+        super(tkey, invariants, validates, saturatedProvides, allInvariants, allValidates, docstr, metatags, file, sinfo, new IRNominalTypeSignature("CString"), true, false);
+        this.rngchk = rngchk;
         this.rechk = rechk;
     }
 
-    override toBAPI(): string {
-        const rngchkstr = this.rngchk !== undefined ? this.toBAPI_RNGCheck() : 'none';
-        const rechkstr = this.rechk !== undefined ? `some(${this.rechk.regexID}n)` : 'none';
+    static jsonEmit_IRTypedeclCStringTypeDecl(tsig: IRTypedeclCStringTypeDecl): object {
+        const ntdv = IRAbstractNominalTypeDecl.jsonEmit_IRAbstractNominalTypeDecl(tsig);
+        const stt = IRTypedeclAbstractTypeDecl.jsonEmit_IRTypedeclAbstractTypeDecl(tsig);
+        const rngchk = tsig.rngchk === undefined ? null : ["some", IRTypedeclRngCheck.jsonEmit_IRTypedeclRngCheck(tsig.rngchk)];
+        const rechk = tsig.rechk === undefined ? null : IRLiteralCRegexExpression.jsonEmit_IRLiteralCRegexExpression(tsig.rechk);
 
-        return `Assembly::TypedeclCStringTypeDecl{${this.toBAPI_IRAbstractEntityTypeDecl()}, ${this.iskeytype}, ${this.isnumerictype}, ${rngchkstr}, ${rechkstr}}`;
+        return { ...ntdv, ...stt, rngchk, rechk };
     }
 
-    static parseBAPIAsIRTypedeclCStringDecl(lexer: BAPILexer): IRTypedeclCStringDecl {
-        lexer.consumeToken();
+    static jsonParse_IRTypedeclCStringTypeDecl(obj: any): IRTypedeclCStringTypeDecl {
+        const ntv = IRAbstractNominalTypeDecl.jsonParseMeta_IRAbstractNominalTypeDecl(obj);
+        const rngchk = obj.rngchk === null ? undefined : IRTypedeclRngCheck.jsonParse_IRTypedeclRngCheck(obj.rngchk[1]);
+        const rechk = obj.rechk === null ? undefined : IRLiteralCRegexExpression.jsonParse_IRLiteralCRegexExpression(obj.rechk);
 
-        const etdfields = IRAbstractEntityTypeDecl.parseBAPI_IRAbstractEntityTypeDecl(lexer);
-        lexer.ensureAndConsumeSymbol(",");
-        IRTypeSignature.parseBAPI(lexer);
-        lexer.ensureAndConsumeSymbol(",");
-        lexer.consumeToken().kind === BAPITokenKind.TrueLiteral;
-        lexer.ensureAndConsumeSymbol(",");
-        lexer.consumeToken().kind === BAPITokenKind.TrueLiteral;
-        lexer.ensureAndConsumeSymbol(",");
-        let rngchk: {min: IRImmediateExpression | undefined, max: IRImmediateExpression | undefined} | undefined = undefined;
-        if(lexer.peekTokenKind() === BAPITokenKind.NoneLiteral) {
-            lexer.consumeToken();
-        }
-        else {
-            lexer.ensureAndConsumeSymbol("some");
-            lexer.ensureAndConsumeSymbol("(");
-            rngchk = IRTypedeclTypeDecl.parseBAPI_RNGCheck(lexer);
-            lexer.ensureAndConsumeSymbol(")");
-        }
-        lexer.ensureAndConsumeSymbol(",");
-        let rechk: IRLiteralCRegexExpression | undefined = undefined;
-        const rechktok = lexer.consumeToken();
-        if(rechktok.kind !== BAPITokenKind.NoneLiteral) {
-            lexer.ensureAndConsumeSymbol("(");
-            const id = lexer.ensureAndConsumeToken(BAPITokenKind.NatLiteral);
-            rechk = new IRLiteralCRegexExpression(Number(id.slice(0, -1)));
-            lexer.ensureAndConsumeSymbol(")");
-        }
-
-        lexer.ensureAndConsumeSymbol("}");
-        return new IRTypedeclCStringDecl(etdfields.tkey, etdfields.invariants, etdfields.validates, etdfields.saturatedProvides, etdfields.allInvariants, etdfields.allValidates, etdfields.docstr, etdfields.metatags, etdfields.file, etdfields.sinfo, rngchk, rechk);
+        return new IRTypedeclCStringTypeDecl(
+            ntv[0], ntv[1], ntv[2], ntv[5], ntv[7], ntv[8], ntv[9], ntv[10], ntv[11], ntv[12], 
+            rngchk,
+            rechk
+        );
     }
 }
 
-class IRTypedeclStringDecl extends IRTypedeclTypeDecl {
+class IRTypedeclStringTypeDecl extends IRTypedeclAbstractTypeDecl {
+    readonly rngchk: IRTypedeclRngCheck | undefined;
     readonly rechk: IRLiteralUnicodeRegexExpression | undefined;
     
-    constructor(tkey: string, invariants: IRInvariantDecl[], validates: IRValidateDecl[], saturatedProvides: IRTypeSignature[], allInvariants: { containingtype: IRNominalTypeSignature, ii: number }[], allValidates: { containingtype: IRNominalTypeSignature, ii: number }[], docstr: IRDeclarationDocString | undefined, metatags: IRDeclarationMetaTag[], file: string, sinfo: IRSourceInfo, rngchk: {min: IRImmediateExpression | undefined, max: IRImmediateExpression | undefined} | undefined, rechk: IRLiteralUnicodeRegexExpression | undefined) {
-        super(tkey, invariants, validates, saturatedProvides, allInvariants, allValidates, docstr, metatags, file, sinfo, new IRNominalTypeSignature("String"), true, false, rngchk);
+    constructor(tkey: string, invariants: IRInvariantDecl[], validates: IRValidateDecl[], saturatedProvides: IRTypeSignature[], allInvariants: { containingtype: IRNominalTypeSignature, ii: number }[], allValidates: { containingtype: IRNominalTypeSignature, ii: number }[], docstr: IRDeclarationDocString | undefined, metatags: IRDeclarationMetaTag[], file: string, sinfo: IRSourceInfo, rngchk: IRTypedeclRngCheck | undefined, rechk: IRLiteralUnicodeRegexExpression | undefined) {
+        super(tkey, invariants, validates, saturatedProvides, allInvariants, allValidates, docstr, metatags, file, sinfo, new IRNominalTypeSignature("String"), true, false);
+        this.rngchk = rngchk;
         this.rechk = rechk;
     }
 
-    override toBAPI(): string {
-        const rngchkstr = this.rngchk !== undefined ? this.toBAPI_RNGCheck() : 'none';
-        const rechkstr = this.rechk !== undefined ? `some(${this.rechk.regexID}n)` : 'none';
-        
-        return `Assembly::TypedeclStringTypeDecl{${this.toBAPI_IRAbstractEntityTypeDecl()}, ${this.iskeytype}, ${this.isnumerictype}, ${rngchkstr}, ${rechkstr}}`;
+    static jsonEmit_IRTypedeclStringTypeDecl(tsig: IRTypedeclStringTypeDecl): object {
+        const ntdv = IRAbstractNominalTypeDecl.jsonEmit_IRAbstractNominalTypeDecl(tsig);
+        const stt = IRTypedeclAbstractTypeDecl.jsonEmit_IRTypedeclAbstractTypeDecl(tsig);
+        const rngchk = tsig.rngchk === undefined ? null : ["some", IRTypedeclRngCheck.jsonEmit_IRTypedeclRngCheck(tsig.rngchk)];
+        const rechk = tsig.rechk === undefined ? null : IRLiteralUnicodeRegexExpression.jsonEmit_IRLiteralUnicodeRegexExpression(tsig.rechk);
+
+        return { ...ntdv, ...stt, rngchk, rechk };
     }
 
-    static parseBAPIAsIRTypedeclStringDecl(lexer: BAPILexer): IRTypedeclStringDecl {
-        lexer.consumeToken();
+    static jsonParse_IRTypedeclStringTypeDecl(obj: any): IRTypedeclStringTypeDecl {
+        const ntv = IRAbstractNominalTypeDecl.jsonParseMeta_IRAbstractNominalTypeDecl(obj);
+        const rngchk = obj.rngchk === null ? undefined : IRTypedeclRngCheck.jsonParse_IRTypedeclRngCheck(obj.rngchk[1]);
+        const rechk = obj.rechk === null ? undefined : IRLiteralUnicodeRegexExpression.jsonParse_IRLiteralUnicodeRegexExpression(obj.rechk);
 
-        const etdfields = IRAbstractEntityTypeDecl.parseBAPI_IRAbstractEntityTypeDecl(lexer);
-        lexer.ensureAndConsumeSymbol(",");
-        IRTypeSignature.parseBAPI(lexer);
-        lexer.ensureAndConsumeSymbol(",");
-        lexer.consumeToken().kind === BAPITokenKind.TrueLiteral;
-        lexer.ensureAndConsumeSymbol(",");
-        lexer.consumeToken().kind === BAPITokenKind.TrueLiteral;
-        lexer.ensureAndConsumeSymbol(",");
-        let rngchk: {min: IRImmediateExpression | undefined, max: IRImmediateExpression | undefined} | undefined = undefined;
-        if(lexer.peekTokenKind() === BAPITokenKind.NoneLiteral) {
-            lexer.consumeToken();
-        }
-        else {
-            lexer.ensureAndConsumeSymbol("some");
-            lexer.ensureAndConsumeSymbol("(");
-            rngchk = IRTypedeclTypeDecl.parseBAPI_RNGCheck(lexer);
-            lexer.ensureAndConsumeSymbol(")");
-        }
-        lexer.ensureAndConsumeSymbol(",");
-        let rechk: IRLiteralUnicodeRegexExpression | undefined = undefined;
-        const rechktok = lexer.consumeToken();
-        if(rechktok.kind !== BAPITokenKind.NoneLiteral) {
-            lexer.ensureAndConsumeSymbol("(");
-            const id = lexer.ensureAndConsumeToken(BAPITokenKind.NatLiteral);
-            rechk = new IRLiteralUnicodeRegexExpression(Number(id.slice(0, -1)));
-            lexer.ensureAndConsumeSymbol(")");
-        }
-
-        lexer.ensureAndConsumeSymbol("}");
-        return new IRTypedeclStringDecl(etdfields.tkey, etdfields.invariants, etdfields.validates, etdfields.saturatedProvides, etdfields.allInvariants, etdfields.allValidates, etdfields.docstr, etdfields.metatags, etdfields.file, etdfields.sinfo, rngchk, rechk);
+        return new IRTypedeclStringTypeDecl(
+            ntv[0], ntv[1], ntv[2], ntv[5], ntv[7], ntv[8], ntv[9], ntv[10], ntv[11], ntv[12], 
+            rngchk,
+            rechk
+        );
     }
 }
 
@@ -626,12 +627,12 @@ abstract class IRInternalEntityTypeDecl extends IRAbstractEntityTypeDecl {
         super(tkey, [], [], [], "std", saturatedProvides, [], [], [], docstr, metatags, file, sinfo);
     }
 
-    toBAPI_IRInternalEntityTypeDecl(): string {
-        return this.toBAPI_IRAbstractEntityTypeDecl();
+    static jsonEmit_IRInternalEntityTypeDecl(tsig: IRInternalEntityTypeDecl): object {
+        return IRAbstractNominalTypeDecl.jsonEmit_IRAbstractNominalTypeDecl(tsig);
     }
 
-    static parseBAPI_IRInternalEntityTypeDecl(lexer: BAPILexer): { tkey: string, invariants: IRInvariantDecl[], validates: IRValidateDecl[], fields: IRMemberFieldDecl[], etag: "std" | "status" | "event", saturatedProvides: IRTypeSignature[], saturatedBFieldInfo: { containingtype: IRNominalTypeSignature, fkey: string, fname: string, ftype: IRTypeSignature }[], allInvariants: { containingtype: IRNominalTypeSignature, ii: number }[], allValidates: { containingtype: IRNominalTypeSignature, ii: number }[], docstr: IRDeclarationDocString | undefined, metatags: IRDeclarationMetaTag[], file: string, sinfo: IRSourceInfo } {
-        return IRAbstractEntityTypeDecl.parseBAPI_IRAbstractEntityTypeDecl(lexer);
+    static jsonParse_IRInternalEntityTypeDecl(obj: any): IRInternalEntityTypeDecl {
+        return IRAbstractNominalTypeDecl.jsonParse_IRAbstractNominalTypeDecl(obj) as IRInternalEntityTypeDecl;
     }
 }
 
@@ -644,17 +645,14 @@ class IRPrimitiveEntityTypeDecl extends IRInternalEntityTypeDecl {
         return [];
     }
 
-    override toBAPI(): string {
-        return `Assembly::PrimitiveEntityTypeDecl{${this.toBAPI_IRInternalEntityTypeDecl()}}`;
+    static jsonEmit_IRPrimitiveEntityTypeDecl(tsig: IRPrimitiveEntityTypeDecl): object {
+        return IRAbstractNominalTypeDecl.jsonEmit_IRAbstractNominalTypeDecl(tsig);
     }
 
-    static parseBAPIAsIRPrimitiveEntityTypeDecl(lexer: BAPILexer): IRPrimitiveEntityTypeDecl {
-        lexer.consumeToken(); //Assembly::PrimitiveEntityTypeDecl
-        lexer.ensureAndConsumeSymbol("{");
-        const etdfields = IRInternalEntityTypeDecl.parseBAPI_IRInternalEntityTypeDecl(lexer);
-        lexer.ensureAndConsumeSymbol("}");
+    static jsonParse_IRPrimitiveEntityTypeDecl(obj: any): IRPrimitiveEntityTypeDecl {
+        const ntv = IRAbstractNominalTypeDecl.jsonParseMeta_IRAbstractNominalTypeDecl(obj);
 
-        return new IRPrimitiveEntityTypeDecl(etdfields.tkey, etdfields.docstr, etdfields.file, etdfields.sinfo);
+        return new IRPrimitiveEntityTypeDecl(ntv[0], ntv[9], ntv[11], ntv[12]);
     }
 }
 
@@ -1791,7 +1789,7 @@ export {
     IRMemberFieldDecl,
     IRAbstractNominalTypeDecl, IRAbstractEntityTypeDecl, 
     IREnumTypeDecl, 
-    IRTypedeclTypeDecl, IRTypedeclCStringDecl, IRTypedeclStringDecl,
+    IRTypedeclRngCheck, IRTypedeclAbstractTypeDecl, IRTypedeclSimpleTypeDecl, IRTypedeclBoundedTypeDecl, IRTypedeclCStringTypeDecl, IRTypedeclStringTypeDecl,
     IRInternalEntityTypeDecl, IRPrimitiveEntityTypeDecl, IRConstructableTypeDecl, 
     IROkTypeDecl, IRFailTypeDecl,
     IRAPIResultEntityTypeDecl, IRAPIDeniedTypeDecl, IRAPIErrorTypeDecl, IRAPIRejectedTypeDecl, IRAPIDroppedTypeDecl, IRAPISuccessTypeDecl,

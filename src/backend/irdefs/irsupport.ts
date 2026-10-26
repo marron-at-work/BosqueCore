@@ -24,7 +24,7 @@ class IRCodeFileInfo
         return { srcpath: this.srcpath, filename: this.filename, contents: this.contents };
     }
 
-    static jsonParse_IRCodeFileInfo(obj: any): IRCodeFileInfo {
+    static jsonParse(obj: any): IRCodeFileInfo {
         return new IRCodeFileInfo(obj["srcpath"] as string, obj["filename"] as string, obj["contents"] as string);
     }
 }
@@ -44,7 +44,7 @@ class IRSourceInfo
         return { line: this.line, column: this.column };
     }
 
-    static jsonParse_IRSourceInfo(obj: any): IRSourceInfo {
+    static jsonParse(obj: any): IRSourceInfo {
         return new IRSourceInfo(obj["line"] as number, obj["column"] as number);
     }
 }
@@ -70,7 +70,7 @@ class IRCRegex
         return { regexID: this.regexID, bsqregex: jsonEmitStrAsByteBuffer(this.bsqregex), smtregex: jsonEmitStrAsByteBuffer(this.smtregex), cppregex: jsonEmitStrAsByteBuffer(this.cppregex) };
     }
 
-    static jsonParse_IRCRegex(obj: any): IRCRegex {
+    static jsonParse(obj: any): IRCRegex {
         return new IRCRegex(obj["regexID"] as number, jsonParseByteBufferAsStr(obj["bsqregex"] as number[]), jsonParseByteBufferAsStr(obj["smtregex"] as number[]), jsonParseByteBufferAsStr(obj["cppregex"] as number[]));
     }
 }
@@ -96,7 +96,7 @@ class IRURegex
         return { regexID: this.regexID, bsqregex: jsonEmitStrAsByteBuffer(this.bsqregex), smtregex: jsonEmitStrAsByteBuffer(this.smtregex), cppregex: jsonEmitStrAsByteBuffer(this.cppregex) };
     }
 
-    static jsonParse_IRURegex(obj: any): IRURegex {
+    static jsonParse(obj: any): IRURegex {
         return new IRURegex(obj["regexID"] as number, jsonParseByteBufferAsStr(obj["bsqregex"] as number[]), jsonParseByteBufferAsStr(obj["smtregex"] as number[]), jsonParseByteBufferAsStr(obj["cppregex"] as number[]));
     }
 }

@@ -15,26 +15,8 @@ of
     DashResultTypeSignature { field entries: List<TypeSignature>; }
     FormatCStringTypeSignature { field rtype: TypeSignature; field terms: List<FormatTypeSignatureTerm>; }
     FormatStringTypeSignature { field rtype: TypeSignature; field terms: List<FormatTypeSignatureTerm>; }
-    %% More Here -- see below
+    FormatPathTypeSignature { }
+    FormatPathFragmentTypeSignature { }
+    FormatPathGlobTypeSignature { }
     LambdaParameterPackTypeSignature { }
 ;
-
-%*
-class IRFormatPathTypeSignature extends IRFormatTypeSignature {
-    constructor(tkeystr: string, rtype: IRTypeSignature, terms: {argname: string, argtype: IRTypeSignature}[]) {
-        super(tkeystr, rtype, terms);
-    }
-}
-
-class IRFormatPathFragmentTypeSignature extends IRFormatTypeSignature {
-    constructor(tkeystr: string, rtype: IRTypeSignature, terms: {argname: string, argtype: IRTypeSignature}[]) {
-        super(tkeystr, rtype, terms);
-    }
-}
-
-class IRFormatPathGlobTypeSignature extends IRFormatTypeSignature {
-    constructor(tkeystr: string, rtype: IRTypeSignature, terms: {argname: string, argtype: IRTypeSignature}[]) {
-        super(tkeystr, rtype, terms);
-    }
-}
-*%
