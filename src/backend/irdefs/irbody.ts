@@ -182,7 +182,7 @@ abstract class IRExpression {
     static jsonParse_IRExpression(obj: any): IRExpression {
         xxxx;
     }
-
+    
     static parseBAPI(lexer: BAPILexer): IRExpression {
         const tok = lexer.peekToken();
         if(tok.kind !== BAPITokenKind.TypeIdentifier) {

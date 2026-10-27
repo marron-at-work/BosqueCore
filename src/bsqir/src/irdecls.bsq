@@ -30,7 +30,7 @@ entity SourceInfo {
     field column: Nat;
 }
 
-entity IRCodeFileInfo {
+entity CodeFileInfo {
     field srcpath: string;
     field filename: string;
     field contents: string;

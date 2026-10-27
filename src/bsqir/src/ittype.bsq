@@ -11,8 +11,8 @@ datatype TypeSignature using {
 of
     VoidTypeSignature { }
     NominalTypeSignature { }
-    EListTypeSignature { field entries: List<TypeSignature>; }
-    DashResultTypeSignature { field entries: List<TypeSignature>; }
+    EListTypeSignature { field entries: List<TypeSignature>; invariant !$entries.empty(); }
+    DashResultTypeSignature { field entries: List<TypeSignature>; invariant !$entries.empty(); }
     FormatCStringTypeSignature { field rtype: TypeSignature; field terms: List<FormatTypeSignatureTerm>; }
     FormatStringTypeSignature { field rtype: TypeSignature; field terms: List<FormatTypeSignatureTerm>; }
     FormatPathTypeSignature { }
