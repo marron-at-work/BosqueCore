@@ -2731,7 +2731,6 @@ abstract class UpdateStatement extends Statement {
 
     updatetype: TypeSignature | undefined = undefined;
     updateinfo: {fieldname: string, declin: TypeSignature, fieldtype: TypeSignature, etype: TypeSignature}[] = [];
-    isdirect: boolean = false;
 }
 
 class VarUpdateStatement extends UpdateStatement {

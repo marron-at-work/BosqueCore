@@ -4767,7 +4767,7 @@ class TypeChecker {
         }
 
         const [okupdate, isdirect] = TypeChecker.isTypeUpdatable(vtype);
-        if(!okupdate) {
+        if(!okupdate || !isdirect) {
             this.reportError(stmt.sinfo, `Variable ${vname} is not an updatable type (entity/concept or datatype)`);
             return env;
         }
@@ -4783,8 +4783,12 @@ class TypeChecker {
             const declin = finfo.typeinfo.tsig;
             const ftype = finfo.member.declaredType.remapTemplateBindings(finfo.typeinfo.mapping);
 
+            //TODO: this is too conservative as we might not use the name in the expression! Need to check if upd[1] uses the special name (and not nested), and only then check shaddowing -- also flag so we aren't always generating binders at runtime
+            this.checkError(stmt.sinfo, env.resolveLocalVarInfoFromSrcName(vname) !== undefined, `Variable ${vname} would be shadowed in this update (todo make less conservative)`);
+
             const cenv = env.pushNewLocalBinderScope([new VarInfo(bname, ftype, "let", true)]);
             const etype = this.checkExpression(cenv, upd[1], new SimpleTypeInferContext(ftype));
+
             if(!(etype instanceof ErrorTypeSignature) && !this.relations.isSubtypeOf(etype, ftype, this.constraints)) {
                 this.reportError(stmt.sinfo, `Expression of type ${etype.emit()} cannot be assigned to field ${upd[0]} of type ${ftype.emit()}`);
             }
@@ -4794,7 +4798,6 @@ class TypeChecker {
 
         stmt.updatetype = vtype;
         stmt.updateinfo = updates.sort((a, b) => a.fieldname.localeCompare(b.fieldname));
-        stmt.isdirect = isdirect;
 
         return env;
     }

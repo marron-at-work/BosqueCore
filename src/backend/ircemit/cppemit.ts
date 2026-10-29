@@ -1166,14 +1166,6 @@ class CPPEmitter {
             const ias = stmt as IRAssertStatement;
             return `${RUNTIME_NAMESPACE}::bsq_assert((bool)(${this.emitIRSimpleExpression(ias.cond, true)}), "${ias.file}", ${ias.sinfo.line}, nullptr, "Assertion Failed");`;
         }
-        else if(ttag === IRStatementTag.IRAssumeStatement) {
-            return ";"; //nop for execution
-        }
-        else if(ttag === IRStatementTag.IRValidateStatement) {
-            const ivs = stmt as IRValidateStatement;
-            const ttagstr = ivs.diagnosticTag !== undefined ? `"${ivs.diagnosticTag.slice(1, -1)}"` : "nullptr";
-            return `${RUNTIME_NAMESPACE}::bsq_validate((bool)(${this.emitIRSimpleExpression(ivs.cond, true)}), "${ivs.file}", ${ivs.sinfo.line}, ${ttagstr}, "Validation Failed");`;
-        }
         else if(ttag === IRStatementTag.IRDebugStatement) {
             const ids = stmt as IRDebugStatement;
 
